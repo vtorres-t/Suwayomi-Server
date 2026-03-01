@@ -13,6 +13,8 @@ jobs:
   check_wrapper:
     name: Validate Gradle Wrapper
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Permite al bot hacer push al repositorio
     steps:
       - name: Clone repo
         uses: actions/checkout@v6
@@ -165,6 +167,8 @@ jobs:
   release:
     needs: bundle
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Permite al bot hacer push al repositorio
     steps:
       - uses: actions/download-artifact@v7
         with:
