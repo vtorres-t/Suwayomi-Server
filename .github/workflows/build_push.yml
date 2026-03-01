@@ -119,7 +119,7 @@ jobs:
             jre: linux-x64
           - name: windows-x64
             jre: windows-x64
-        name: [debian-all, appimage, linux-assets, linux-x64, macOS-x64, macOS-arm64, windows-x64]
+        name: [debian-all, appimage, linux-assets, linux-x64, windows-x64]
 
     name: Make ${{ matrix.name }} release
     needs: [build, jlink]
