@@ -194,7 +194,7 @@ jobs:
       - name: Checkout Preview branch
         uses: actions/checkout@v6
         with:
-          repository: "Suwayomi/Suwayomi-Server-preview"
+          repository: "vtorres-t/Suwayomi-Server-preview"
           ref: main
           path: preview
           token: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
@@ -227,7 +227,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
-          repository: "Suwayomi/Suwayomi-Server-preview"
+          repository: "vtorres-t/Suwayomi-Server-preview"
           tag_name:  ${{ steps.GenTagName.outputs.value }}
           files: release/*
 
