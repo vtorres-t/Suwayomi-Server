@@ -86,11 +86,7 @@ jobs:
             name: linux-x64
           - os: windows-latest
             name: windows-x64
-          - os: macos-15
-            name: macOS-arm64
-          - os: macos-15-intel
-            name: macOS-x64
-        os: [ubuntu-latest, windows-latest, macos-15, macos-15-intel]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Set up JDK
@@ -121,10 +117,6 @@ jobs:
             jre: linux-assets
           - name: linux-x64
             jre: linux-x64
-          - name: macOS-x64
-            jre: macOS-x64
-          - name: macOS-arm64
-            jre: macOS-arm64
           - name: windows-x64
             jre: windows-x64
         name: [debian-all, appimage, linux-assets, linux-x64, windows-x64]
@@ -193,14 +185,6 @@ jobs:
       - uses: actions/download-artifact@v7
         with:
           name: linux-x64
-          path: release
-      - uses: actions/download-artifact@v7
-        with:
-          name: macOS-x64
-          path: release
-      - uses: actions/download-artifact@v7
-        with:
-          name: macOS-arm64
           path: release
       - uses: actions/download-artifact@v7
         with:
