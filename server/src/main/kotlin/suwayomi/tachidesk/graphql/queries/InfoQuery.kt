@@ -22,7 +22,6 @@ class InfoQuery {
         val buildType: String,
         val buildTime: Long,
         val github: String,
-        val discord: String,
     )
 
     fun aboutServer(): AboutServerPayload =
@@ -33,7 +32,6 @@ class InfoQuery {
             BuildConfig.BUILD_TYPE,
             BuildConfig.BUILD_TIME,
             BuildConfig.GITHUB,
-            BuildConfig.DISCORD,
         )
 
     data class CheckForServerUpdatesPayload(
