@@ -201,7 +201,7 @@ jobs:
           repository: "vtorres-t/Suwayomi-Server-preview"
           ref: main
           path: preview
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate Tag Name
         id: GenTagName
@@ -230,7 +230,7 @@ jobs:
       - name: Upload Preview Release
         uses: softprops/action-gh-release@v2
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: "vtorres-t/Suwayomi-Server-preview"
           tag_name:  ${{ steps.GenTagName.outputs.value }}
           files: release/*
