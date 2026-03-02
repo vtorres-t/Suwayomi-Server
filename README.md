@@ -1,7 +1,7 @@
 
-| Build                                                                                         | Stable                                                                                                                                                                   | Preview                                                                                                                                                                                                                                           | Support Server |
-|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| ![CI](https://github.com/vtorres-t/Suwayomi-Server/actions/workflows/build_push.yml/badge.svg) | [![stable release](https://img.shields.io/github/release/Suwayomi/Suwayomi-Server.svg?maxAge=3600&label=download)](https://github.com/Suwayomi/Suwayomi-Server/releases) | [![preview](https://img.shields.io/badge/dynamic/json?url=https://github.com/Suwayomi/Suwayomi-Server-preview/raw/main/index.json&label=download&query=$.latest&color=blue)](https://github.com/Suwayomi/Suwayomi-Server-preview/releases/latest) | [![Discord](https://img.shields.io/discord/801021177333940224.svg?label=discord&labelColor=7289da&color=2c2f33&style=flat)](https://discord.gg/DDZdqZWaHA) |
+| Build                                                                                         | Stable                                                                                                                                                                    | Preview                                                                                                                                                                                                                                             | Support Server |
+|-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| ![CI](https://github.com/vtorres-t/Suwayomi-Server/actions/workflows/build_push.yml/badge.svg) | [![stable release](https://img.shields.io/github/release/Suwayomi/Suwayomi-Server.svg?maxAge=3600&label=download)](https://github.com/vtorres-t/Suwayomi-Server/releases) | [![preview](https://img.shields.io/badge/dynamic/json?url=https://github.com/vtorres-t/Suwayomi-Server-preview/raw/main/index.json&label=download&query=$.latest&color=blue)](https://github.com/vtorres-t/Suwayomi-Server-preview/releases/latest) |
 
 ## Table of Content
 - [What is Suwayomi?](#what-is-suwayomi)
@@ -66,12 +66,12 @@ You can use Mihon (Tachiyomi) to access your Suwayomi-Server. For more info look
 - OPDS and OPDS-PSE support (endpoint: `/api/opds/v1.2`)
 
 # Suwayomi client projects
-**You need a client/user interface app as a front-end for Suwayomi-Server, if you [Directly Download Suwayomi-Server](https://github.com/vtorres-t/Suwayomi-Server/releases/latest) you'll get a bundled version of [Suwayomi-WebUI](https://github.com/Suwayomi/Suwayomi-WebUI) with it.**
+**You need a client/user interface app as a front-end for Suwayomi-Server, if you [Directly Download Suwayomi-Server](https://github.com/vtorres-t/Suwayomi-Server/releases/latest) you'll get a bundled version of [Suwayomi-WebUI](https://github.com/vtorres-t/Suwayomi-WebUI) with it.**
 
 Here's a list of known clients/user interfaces for Suwayomi-Server (checkout the respective GitHub repository for their features):
 ##### Actively Developed Clients
-- [Suwayomi-WebUI](https://github.com/Suwayomi/Suwayomi-WebUI): The web front-end that Suwayomi-Server ships with by default.
-- [Suwayomi-VUI](https://github.com/Suwayomi/Suwayomi-VUI): A Suwayomi-Server preview focused web frontend built with svelte
+- [Suwayomi-WebUI](https://github.com/vtorres-t/Suwayomi-WebUI): The web front-end that Suwayomi-Server ships with by default.
+- [Suwayomi-VUI](https://github.com/vtorres-t/Suwayomi-VUI): A Suwayomi-Server preview focused web frontend built with svelte
 - [Tachidesk-VaadinUI](https://github.com/Suwayomi/Tachidesk-VaadinUI): A Web front-end for Suwayomi-Server built with Vaadin.
 ##### Inactive Clients (functional but outdated)
 - [Tachidesk-JUI](https://github.com/Suwayomi/Tachidesk-JUI): The native desktop front-end for Suwayomi-Server.
@@ -88,17 +88,17 @@ To facilitate the use of Suwayomi we provide bundle releases that include The Ja
 If a bundle for your operating system or cpu architecture is not provided then refer to [Advanced Methods](#advanced-methods)
 
 ### Windows
-Download the latest `win64`(Windows 64-bit) release from [the releases section](https://github.com/Suwayomi/Suwayomi-Server/releases) or a preview one from [the preview repository](https://github.com/Suwayomi/Suwayomi-Server-preview/releases).
+Download the latest `win64`(Windows 64-bit) release from [the releases section](https://github.com/Suwayomi/Suwayomi-Server/releases) or a preview one from [the preview repository](https://github.com/vtorres-t/Suwayomi-Server-preview/releases).
 
 Unzip the downloaded file and double-click on one of the launcher scripts.
 
 ### macOS
-Download the latest `macOS-x64`(older macOS systems) or `macOS-arm64`(Apple M1 and newer) release from [the releases section](https://github.com/Suwayomi/Suwayomi-Server/releases) or a preview one from [the preview repository](https://github.com/Suwayomi/Suwayomi-Server-preview/releases).
+Download the latest `macOS-x64`(older macOS systems) or `macOS-arm64`(Apple M1 and newer) release from [the releases section](https://github.com/vtorres-t/Suwayomi-Server/releases) or a preview one from [the preview repository](https://github.com/vtorres-t/Suwayomi-Server-preview/releases).
 
 Unzip the downloaded file and double-click on one of the launcher scripts.
 
 ### GNU/Linux
-Download the latest `linux-x64`(x86_64) release from [the releases section](https://github.com/Suwayomi/Suwayomi-Server/releases) or a preview one from [the preview repository](https://github.com/Suwayomi/Suwayomi-Server-preview/releases).
+Download the latest `linux-x64`(x86_64) release from [the releases section](https://github.com/vtorres-t/Suwayomi-Server/releases) or a preview one from [the preview repository](https://github.com/vtorres-t/Suwayomi-Server-preview/releases).
 
 `tar xvf` the downloaded file and double-click on one of the launcher scripts or run them using the terminal.
 
@@ -122,9 +122,6 @@ This search path includes the current working directory, if you do not want to m
 Refer to the [Dockerfile](https://github.com/Suwayomi/Suwayomi-Server-docker/blob/main/Dockerfile) for more details.
 
 ## Other methods of getting Suwayomi
-### Docker
-Check our Official Docker release [Suwayomi Container](https://github.com/orgs/Suwayomi/packages/container/package/tachidesk) for running Suwayomi Server in a docker container. Source code for our container is available at [docker-tachidesk](https://github.com/Suwayomi/docker-tachidesk), an example compose file can also be found there. By default, the server will be running on http://localhost:4567 open this url in your browser.
-
 ### Arch Linux
 You can install Suwayomi from the AUR:
 ```
@@ -172,7 +169,7 @@ In order to run the app you need the following:
 - A Browser like Google Chrome, Firefox, Edge, etc.
 - ElectronJS (optional)
 
-Download the latest `.jar` release from [the releases section](https://github.com/Suwayomi/Suwayomi-Server/releases) or a preview jar build from [the preview repository](https://github.com/Suwayomi/Suwayomi-Server-preview/releases).
+Download the latest `.jar` release from [the releases section](https://github.com/vtorres-t/Suwayomi-Server/releases) or a preview jar build from [the preview repository](https://github.com/vtorres-t/Suwayomi-Server-preview/releases).
 
 Make sure you have The Java Runtime Environment installed on your system, Double-click on the jar file or run `java -jar Suwayomi-Server-vX.Y.Z-rxxxx.jar` from a Terminal/Command Prompt window to run the app which will open a new browser window automatically.
 
@@ -210,15 +207,6 @@ See [this troubleshooting wiki page](https://github.com/Suwayomi/Suwayomi-Server
 
 ## Contributing and Technical info
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
-
-## Translation
-Feel free to translate the project on [Weblate](https://hosted.weblate.org/projects/suwayomi/suwayomi-server/)
-
-<details><summary>Translation Progress</summary>
-<a href="https://hosted.weblate.org/engage/suwayomi-server/">
-<img src="https://hosted.weblate.org/widgets/suwayomi/-/suwayomi-server/multi-auto.svg" alt="Translation status" />
-</a>
-</details>
 
 ## Credit
 This project is a spiritual successor of [TachiWeb-Server](https://github.com/Tachiweb/TachiWeb-server), Many of the ideas and the groundwork adopted in this project comes from TachiWeb.
