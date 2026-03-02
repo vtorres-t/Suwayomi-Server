@@ -13,8 +13,6 @@ jobs:
   check_wrapper:
     name: Validate Gradle Wrapper
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # Permite al bot hacer push al repositorio
     steps:
       - name: Clone repo
         uses: actions/checkout@v6
@@ -167,8 +165,6 @@ jobs:
   release:
     needs: bundle
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # Permite al bot hacer push al repositorio
     steps:
       - uses: actions/download-artifact@v7
         with:
@@ -201,7 +197,7 @@ jobs:
           repository: "vtorres-t/Suwayomi-Server-preview"
           ref: main
           path: preview
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
 
       - name: Generate Tag Name
         id: GenTagName
@@ -230,7 +226,7 @@ jobs:
       - name: Upload Preview Release
         uses: softprops/action-gh-release@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DEPLOY_PREVIEW_TOKEN }}
           repository: "vtorres-t/Suwayomi-Server-preview"
           tag_name:  ${{ steps.GenTagName.outputs.value }}
           files: release/*
