@@ -1,7 +1,7 @@
 
 | Build                                                                                         | Stable                                                                                                                                                                   | Preview                                                                                                                                                                                                                                           | Support Server |
 |-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| ![CI](https://github.com/Suwayomi/Suwayomi-Server/actions/workflows/build_push.yml/badge.svg) | [![stable release](https://img.shields.io/github/release/Suwayomi/Suwayomi-Server.svg?maxAge=3600&label=download)](https://github.com/Suwayomi/Suwayomi-Server/releases) | [![preview](https://img.shields.io/badge/dynamic/json?url=https://github.com/Suwayomi/Suwayomi-Server-preview/raw/main/index.json&label=download&query=$.latest&color=blue)](https://github.com/Suwayomi/Suwayomi-Server-preview/releases/latest) | [![Discord](https://img.shields.io/discord/801021177333940224.svg?label=discord&labelColor=7289da&color=2c2f33&style=flat)](https://discord.gg/DDZdqZWaHA) |
+| ![CI](https://github.com/vtorres-t/Suwayomi-Server/actions/workflows/build_push.yml/badge.svg) | [![stable release](https://img.shields.io/github/release/Suwayomi/Suwayomi-Server.svg?maxAge=3600&label=download)](https://github.com/Suwayomi/Suwayomi-Server/releases) | [![preview](https://img.shields.io/badge/dynamic/json?url=https://github.com/Suwayomi/Suwayomi-Server-preview/raw/main/index.json&label=download&query=$.latest&color=blue)](https://github.com/Suwayomi/Suwayomi-Server-preview/releases/latest) | [![Discord](https://img.shields.io/discord/801021177333940224.svg?label=discord&labelColor=7289da&color=2c2f33&style=flat)](https://discord.gg/DDZdqZWaHA) |
 
 ## Table of Content
 - [What is Suwayomi?](#what-is-suwayomi)
@@ -36,7 +36,7 @@
 <!-- Generated with https://ecotrust-canada.github.io/markdown-toc/ -->
 
 # What is Suwayomi?
-<img src="https://github.com/Suwayomi/Suwayomi-Server/raw/master/server/src/main/resources/icon/faviconlogo.png" alt="drawing" width="200"/>
+<img src="https://github.com/vtorres-t/Suwayomi-Server/raw/master/server/src/main/resources/icon/faviconlogo.png" alt="drawing" width="200"/>
 
 A free and open source manga reader server that runs extensions built for [Mihon (Tachiyomi)](https://mihon.app/). 
 
@@ -66,7 +66,7 @@ You can use Mihon (Tachiyomi) to access your Suwayomi-Server. For more info look
 - OPDS and OPDS-PSE support (endpoint: `/api/opds/v1.2`)
 
 # Suwayomi client projects
-**You need a client/user interface app as a front-end for Suwayomi-Server, if you [Directly Download Suwayomi-Server](https://github.com/Suwayomi/Suwayomi-Server/releases/latest) you'll get a bundled version of [Suwayomi-WebUI](https://github.com/Suwayomi/Suwayomi-WebUI) with it.**
+**You need a client/user interface app as a front-end for Suwayomi-Server, if you [Directly Download Suwayomi-Server](https://github.com/vtorres-t/Suwayomi-Server/releases/latest) you'll get a bundled version of [Suwayomi-WebUI](https://github.com/Suwayomi/Suwayomi-WebUI) with it.**
 
 Here's a list of known clients/user interfaces for Suwayomi-Server (checkout the respective GitHub repository for their features):
 ##### Actively Developed Clients

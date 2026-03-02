@@ -1,6 +1,6 @@
 # Contributing
 ## Where should I start?
-Checkout [This Kanban Board](https://github.com/Suwayomi/Suwayomi-Server/projects/1) to see the rough development roadmap.
+Checkout [This Kanban Board](https://github.com/vtorres-t/Suwayomi-Server/projects/1) to see the rough development roadmap.
 
 ### Important notes
 - Notify the developers on [Suwayomi discord](https://discord.gg/DDZdqZWaHA) (#tachidesk-server and #tachidesk-webui channels) or open a WIP pull request before starting if you decide to take on working on anything from/not from the roadmap in order to avoid parallel efforts on the same issue/feature.
@@ -9,11 +9,11 @@ Checkout [This Kanban Board](https://github.com/Suwayomi/Suwayomi-Server/project
 
 ### Project goals and vision
 - Porting Mihon (Tachiyomi) and covering its features
-- Syncing with Mihon (Tachiyomi), [main issue](https://github.com/Suwayomi/Suwayomi-Server/issues/159)
+- Syncing with Mihon (Tachiyomi), [main issue](https://github.com/vtorres-t/Suwayomi-Server/issues/159)
 - Generally rejecting features that Mihon (Tachiyomi) (main app) doesn't have,
     - Unless it's something that makes sense for desktop sizes or desktop form factor (keyboard + mouse)
     - Additional/crazy features can go in forks and alternative clients
-- [Suwayomi-WebUI](https://github.com/Suwayomi/Suwayomi-WebUI) should
+- [Suwayomi-WebUI](https://github.com/vtorres-t/Suwayomi-WebUI) should
     - be responsive
     - support both desktop and mobile form factors well
      
