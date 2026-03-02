@@ -27,17 +27,17 @@ enum class WebUIFlavor(
 ) {
     WEBUI(
         "WebUI",
-        "https://github.com/Suwayomi/Suwayomi-WebUI-preview",
-        "https://raw.githubusercontent.com/Suwayomi/Suwayomi-WebUI/master/versionToServerVersionMapping.json",
-        "https://api.github.com/repos/Suwayomi/Suwayomi-WebUI-preview/releases/latest",
+        "https://github.com/vtorres-t/Suwayomi-WebUI-preview",
+        "https://raw.githubusercontent.com/vtorres-t/Suwayomi-WebUI/master/versionToServerVersionMapping.json",
+        "https://api.github.com/repos/vtorres-t/Suwayomi-WebUI-preview/releases/latest",
         "Suwayomi-WebUI",
     ),
 
     VUI(
         "VUI",
-        "https://github.com/Suwayomi/Suwayomi-VUI",
-        "https://raw.githubusercontent.com/Suwayomi/Suwayomi-VUI/main/versionToServerVersionMapping.json",
-        "https://api.github.com/repos/Suwayomi/Suwayomi-VUI/releases/latest",
+        "https://github.com/vtorres-t/Suwayomi-VUI",
+        "https://raw.githubusercontent.com/vtorres-t/Suwayomi-VUI/main/versionToServerVersionMapping.json",
+        "https://api.github.com/repos/vtorres-t/Suwayomi-VUI/releases/latest",
         "Suwayomi-VUI-Web",
     ),
 

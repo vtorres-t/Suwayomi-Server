@@ -1,4 +1,4 @@
-Suwayomi-Server configuration file is named `server.conf` and is located inside [the data directory](https://github.com/Suwayomi/Suwayomi-Server/wiki/The-Data-Directory).
+Suwayomi-Server configuration file is named `server.conf` and is located inside [the data directory](https://github.com/vtorres-t/Suwayomi-Server/wiki/The-Data-Directory).
 
 The configuration file is written in HOCON. Google is your friend if you want to know more. 
 
@@ -74,7 +74,7 @@ server.autoDownloadIgnoreReUploads = false
 server.downloadConversions = {}
 ```
 - `server.downloadAsCbz = true` configures Suwayomi to automatically compress chapters into CBZ.
-- `server.downloadsPath = ""` the path where manga downloads will be stored, if the value is empty, the default directory `downloads` inside [the data directory](https://github.com/Suwayomi/Suwayomi-Server/wiki/The-Data-Directory) will be used. If you are on Windows the slashes `\` needs to be doubled(`\\`) or replaced with `/`
+- `server.downloadsPath = ""` the path where manga downloads will be stored, if the value is empty, the default directory `downloads` inside [the data directory](https://github.com/vtorres-t/Suwayomi-Server/wiki/The-Data-Directory) will be used. If you are on Windows the slashes `\` needs to be doubled(`\\`) or replaced with `/`
 - `server.autoDownloadNewChapters = false` controls if Suwayomi should automatically download new chapters after a library update.
 - `server.excludeEntryWithUnreadChapters = true` controls if Suwayomi will download new chapters for titles with unread chapters (requires `server.autoDownloadNewChapters`).
 - `server.autoDownloadNewChaptersLimit = 0` sets how many chapters should be downloaded at most, `0` to disable the limit; if the limit is reached, new chapters will not be downloaded (requires `server.autoDownloadNewChapters`).

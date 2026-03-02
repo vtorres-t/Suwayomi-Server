@@ -25,7 +25,7 @@
 - Improve library update and auto backup scheduling
 
 ## Suwayomi-Server Changelog
-- ([r1866](https://github.com/Suwayomi/Suwayomi-Server/commit/8e8883ba37026bf0576390eda23dd0639c94d2b9)) Update electron ([#1556](https://github.com/Suwayomi/Suwayomi-Server/pull/1556) by @Syer10)
+- ([r1866](https://github.com/vtorres-t/Suwayomi-Server/commit/8e8883ba37026bf0576390eda23dd0639c94d2b9)) Update electron ([#1556](https://github.com/Suwayomi/Suwayomi-Server/pull/1556) by @Syer10)
 - ([r1865](https://github.com/Suwayomi/Suwayomi-Server/commit/02c4398e48c95c23f61d13f9619e88a67caa88e5)) Fix handling of too long page image urls migration ([#1552](https://github.com/Suwayomi/Suwayomi-Server/pull/1552) by @schroda)
 - ([r1864](https://github.com/Suwayomi/Suwayomi-Server/commit/ad7a8dd7dc70ba86f52b5ed74af4e91f8dca3187)) Fix/page download conversion reduce logs ([#1545](https://github.com/Suwayomi/Suwayomi-Server/pull/1545) by @schroda)
 - ([r1863](https://github.com/Suwayomi/Suwayomi-Server/commit/e3338211d6b071d4512e5dbcbc480cda8666c915)) Handle too long page image urls ([#1544](https://github.com/Suwayomi/Suwayomi-Server/pull/1544) by @schroda)
