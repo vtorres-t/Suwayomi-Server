@@ -35,8 +35,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import net.lingala.zip4j.ZipFile
 import org.eclipse.jetty.server.handler.ContextHandler
@@ -46,7 +44,6 @@ import suwayomi.tachidesk.graphql.types.UpdateState.DOWNLOADING
 import suwayomi.tachidesk.graphql.types.UpdateState.ERROR
 import suwayomi.tachidesk.graphql.types.UpdateState.FINISHED
 import suwayomi.tachidesk.graphql.types.UpdateState.IDLE
-import suwayomi.tachidesk.graphql.types.WebUIChannel
 import suwayomi.tachidesk.graphql.types.WebUIFlavor
 import suwayomi.tachidesk.graphql.types.WebUIUpdateInfo
 import suwayomi.tachidesk.graphql.types.WebUIUpdateStatus
@@ -595,10 +592,10 @@ object WebInterfaceManager {
         return versionString.substring(1).toInt()
     }
 
-    private suspend fun fetchPreviewVersion(flavor: WebUIFlavor): String =
+    private suspend fun fetchUIVersion(flavor: WebUIFlavor): String =
         previewVersionCache.get(flavor.uiName) {
             executeWithRetry(
-                KotlinLogging.logger("${logger.name} fetchPreviewVersion(${flavor.uiName})"),
+                KotlinLogging.logger("${logger.name} fetchUIVersion(${flavor.uiName})"),
                 {
                     val releaseInfoJson =
                         network.client
@@ -612,82 +609,71 @@ object WebInterfaceManager {
             )
         }
 
-    private suspend fun fetchServerMappingFile(flavor: WebUIFlavor): JsonArray =
-        versionMappingCache.get(flavor.uiName) {
-            executeWithRetry(
-                KotlinLogging.logger("$logger fetchServerMappingFile(${flavor.uiName})"),
-                {
-                    json
-                        .parseToJsonElement(
-                            network.client
-                                .newCall(GET(flavor.versionMappingUrl))
-                                .awaitSuccess()
-                                .body
-                                .string(),
-                        ).jsonArray
-                },
-            )
-        }
-
     private suspend fun getLatestCompatibleVersion(flavor: WebUIFlavor): String {
-        if (serverConfig.webUIChannel.value == WebUIChannel.BUNDLED) {
-            logger.debug { "getLatestCompatibleVersion: Channel is \"${WebUIChannel.BUNDLED}\", do not check for update" }
-            return BuildConfig.WEBUI_TAG
-        }
+        val versionUI = fetchUIVersion(flavor)
 
-        val currentServerVersionNumber =
-            BuildConfig.VERSION
-                .split(".")
-                .last()
-                .toInt()
-        val webUIToServerVersionMappings = fetchServerMappingFile(flavor)
-
-        logger.debug {
-            "getLatestCompatibleVersion: " +
-                "flavor= ${flavor.uiName}, " +
-                "webUIChannel= ${serverConfig.webUIChannel.value}, " +
-                "currentServerVersion= ${BuildConfig.VERSION}, " +
-                "mappingFile= $webUIToServerVersionMappings"
-        }
-
-        for (i in 0 until webUIToServerVersionMappings.size) {
-            val webUIToServerVersionEntry = webUIToServerVersionMappings[i].jsonObject
-            var webUIVersion =
-                webUIToServerVersionEntry["uiVersion"]?.jsonPrimitive?.content
-                    ?: throw Exception("Invalid mappingFile")
-            val minServerVersionString =
-                webUIToServerVersionEntry["serverVersion"]
-                    ?.jsonPrimitive
-                    ?.content
-                    ?: throw Exception("Invalid mappingFile")
-            val minServerVersionNumber = extractVersion(minServerVersionString)
-
-            // is a STABLE webUI release, without a specified webUI version, which requires same handling as the PREVIEW release
-            val isUnknownStableVersion = webUIVersion == "STABLEPREVIEW"
-
-            if (serverConfig.webUIChannel.value != WebUIChannel.from(webUIVersion)) {
-                // allow only STABLE versions for STABLE channel
-                if (serverConfig.webUIChannel.value == WebUIChannel.STABLE && !isUnknownStableVersion) {
-                    continue
-                }
-
-                // allow all versions for PREVIEW channel
-            }
-
-            if (webUIVersion == WebUIChannel.PREVIEW.name || isUnknownStableVersion) {
-                webUIVersion = fetchPreviewVersion(flavor)
-            }
-
-            val isNewerThanBundled =
-                !flavor.isDefault() || extractVersion(webUIVersion) >= extractVersion(BuildConfig.WEBUI_TAG)
-            val isCompatibleVersion = minServerVersionNumber <= currentServerVersionNumber && isNewerThanBundled
-            if (isCompatibleVersion) {
-                return webUIVersion
-            }
+        if (versionUI.isNotEmpty()) {
+            return versionUI
         }
 
         throw Exception("No compatible webUI version found")
     }
+
+//    private suspend fun getLatestCompatibleVersion(flavor: WebUIFlavor): String {
+//        if (serverConfig.webUIChannel.value == WebUIChannel.BUNDLED) {
+//            logger.debug { "getLatestCompatibleVersion: Channel is \"${WebUIChannel.BUNDLED}\", do not check for update" }
+//            return BuildConfig.WEBUI_TAG
+//        }
+//
+//        val currentServerVersionNumber =
+//            BuildConfig.VERSION
+//                .split(".")
+//                .last()
+//                .toInt()
+//        val webUIToServerVersionMappings = fetchServerMappingFile(flavor)
+//
+//        logger.debug {
+//            "getLatestCompatibleVersion: " +
+//                "flavor= ${flavor.uiName}, " +
+//                "webUIChannel= ${serverConfig.webUIChannel.value}, " +
+//                "currentServerVersion= ${BuildConfig.VERSION}, " +
+//                "mappingFile= $webUIToServerVersionMappings"
+//        }
+//
+//        for (i in 0 until webUIToServerVersionMappings.size) {
+//            val webUIToServerVersionEntry = webUIToServerVersionMappings[i].jsonObject
+//            var webUIVersion =
+//                webUIToServerVersionEntry["uiVersion"]?.jsonPrimitive?.content
+//                    ?: throw Exception("Invalid mappingFile")
+//            val minServerVersionString =
+//                webUIToServerVersionEntry["serverVersion"]
+//                    ?.jsonPrimitive
+//                    ?.content
+//                    ?: throw Exception("Invalid mappingFile")
+//            val minServerVersionNumber = extractVersion(minServerVersionString)
+//
+//            // is a STABLE webUI release, without a specified webUI version, which requires same handling as the PREVIEW release
+//            val isUnknownStableVersion = webUIVersion == "STABLEPREVIEW"
+//
+//            if (serverConfig.webUIChannel.value != WebUIChannel.from(webUIVersion)) {
+//                // allow only STABLE versions for STABLE channel
+//                if (serverConfig.webUIChannel.value == WebUIChannel.STABLE && !isUnknownStableVersion) {
+//                    continue
+//                }
+//
+//                // allow all versions for PREVIEW channel
+//            }
+//
+//            val isNewerThanBundled =
+//                !flavor.isDefault() || extractVersion(webUIVersion) >= extractVersion(BuildConfig.WEBUI_TAG)
+//            val isCompatibleVersion = minServerVersionNumber <= currentServerVersionNumber && isNewerThanBundled
+//            if (isCompatibleVersion) {
+//                return webUIVersion
+//            }
+//        }
+//
+//        throw Exception("No compatible webUI version found")
+//    }
 
     private fun emitStatus(
         version: String,
@@ -726,7 +712,7 @@ object WebInterfaceManager {
         emitStatus(version, DOWNLOADING, 0, immediate = true)
 
         try {
-            val webUIZip = "${flavor.baseFileName}-$version.zip"
+            val webUIZip = "${flavor.baseFileName}.zip"
             val webUIZipPath = "$tmpDir/$webUIZip"
             val webUIZipURL = "${getDownloadUrlFor(flavor, version)}/$webUIZip"
 

@@ -1,7 +1,7 @@
 
-| Build                                                                                         | Stable                                                                                                                                                                    | Preview                                                                                                                                                                                                                                             | Support Server |
-|-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
-| ![CI](https://github.com/vtorres-t/Suwayomi-Server/actions/workflows/build_push.yml/badge.svg) | [![stable release](https://img.shields.io/github/release/Suwayomi/Suwayomi-Server.svg?maxAge=3600&label=download)](https://github.com/vtorres-t/Suwayomi-Server/releases) | [![preview](https://img.shields.io/badge/dynamic/json?url=https://github.com/vtorres-t/Suwayomi-Server-preview/raw/main/index.json&label=download&query=$.latest&color=blue)](https://github.com/vtorres-t/Suwayomi-Server-preview/releases/latest) |
+| Build                                                                                         | Stable                                                                                                                                                                    | Support Server |
+|-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| ![CI](https://github.com/vtorres-t/Suwayomi-Server/actions/workflows/build_push.yml/badge.svg) | [![stable release](https://img.shields.io/github/release/Suwayomi/Suwayomi-Server.svg?maxAge=3600&label=download)](https://github.com/vtorres-t/Suwayomi-Server/releases) | 
 
 ## Table of Content
 - [What is Suwayomi?](#what-is-suwayomi)
@@ -88,17 +88,14 @@ To facilitate the use of Suwayomi we provide bundle releases that include The Ja
 If a bundle for your operating system or cpu architecture is not provided then refer to [Advanced Methods](#advanced-methods)
 
 ### Windows
-Download the latest `win64`(Windows 64-bit) release from [the releases section](https://github.com/Suwayomi/Suwayomi-Server/releases) or a preview one from [the preview repository](https://github.com/vtorres-t/Suwayomi-Server-preview/releases).
+Download the latest `win64`(Windows 64-bit) release from [the releases section](https://github.com/Suwayomi/Suwayomi-Server/releases).
 
 Unzip the downloaded file and double-click on one of the launcher scripts.
-
-### macOS
-Download the latest `macOS-x64`(older macOS systems) or `macOS-arm64`(Apple M1 and newer) release from [the releases section](https://github.com/vtorres-t/Suwayomi-Server/releases) or a preview one from [the preview repository](https://github.com/vtorres-t/Suwayomi-Server-preview/releases).
 
 Unzip the downloaded file and double-click on one of the launcher scripts.
 
 ### GNU/Linux
-Download the latest `linux-x64`(x86_64) release from [the releases section](https://github.com/vtorres-t/Suwayomi-Server/releases) or a preview one from [the preview repository](https://github.com/vtorres-t/Suwayomi-Server-preview/releases).
+Download the latest `linux-x64`(x86_64) release from [the releases section](https://github.com/vtorres-t/Suwayomi-Server/releases).
 
 `tar xvf` the downloaded file and double-click on one of the launcher scripts or run them using the terminal.
 
@@ -169,7 +166,7 @@ In order to run the app you need the following:
 - A Browser like Google Chrome, Firefox, Edge, etc.
 - ElectronJS (optional)
 
-Download the latest `.jar` release from [the releases section](https://github.com/vtorres-t/Suwayomi-Server/releases) or a preview jar build from [the preview repository](https://github.com/vtorres-t/Suwayomi-Server-preview/releases).
+Download the latest `.jar` release from [the releases section](https://github.com/vtorres-t/Suwayomi-Server/releases).
 
 Make sure you have The Java Runtime Environment installed on your system, Double-click on the jar file or run `java -jar Suwayomi-Server-vX.Y.Z-rxxxx.jar` from a Terminal/Command Prompt window to run the app which will open a new browser window automatically.
 

@@ -201,7 +201,7 @@ tasks {
     }
 
     register<Download>("downloadWebUI") {
-        src("https://github.com/vtorres-t/Suwayomi-WebUI-preview/releases/download/$webUIRevisionTag/Suwayomi-WebUI-$webUIRevisionTag.zip")
+        src("https://github.com/vtorres-t/Suwayomi-WebUI/releases/latest/download/Suwayomi-WebUI.zip")
         dest("src/main/resources/WebUI.zip")
 
         fun shouldOverwrite(): Boolean {

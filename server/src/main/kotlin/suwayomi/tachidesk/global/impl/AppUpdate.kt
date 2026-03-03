@@ -24,7 +24,6 @@ data class UpdateDataClass(
 
 object AppUpdate {
     private const val LATEST_STABLE_CHANNEL_URL = "https://api.github.com/repos/vtorres-t/Suwayomi-Server/releases/latest"
-    private const val LATEST_PREVIEW_CHANNEL_URL = "https://api.github.com/repos/vtorres-t/Suwayomi-Server-preview/releases/latest"
 
     private val json: Json by injectLazy()
     private val network: NetworkHelper by injectLazy()
@@ -41,27 +40,11 @@ object AppUpdate {
                         .string(),
                 ).jsonObject
 
-        val previewJson =
-            json
-                .parseToJsonElement(
-                    network.client
-                        .newCall(
-                            GET(LATEST_PREVIEW_CHANNEL_URL),
-                        ).await()
-                        .body
-                        .string(),
-                ).jsonObject
-
         return listOf(
             UpdateDataClass(
                 "Stable",
                 stableJson["tag_name"]!!.jsonPrimitive.content,
                 stableJson["html_url"]!!.jsonPrimitive.content,
-            ),
-            UpdateDataClass(
-                "Preview",
-                previewJson["tag_name"]!!.jsonPrimitive.content,
-                previewJson["html_url"]!!.jsonPrimitive.content,
             ),
         )
     }
