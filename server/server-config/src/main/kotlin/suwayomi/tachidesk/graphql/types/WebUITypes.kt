@@ -21,22 +21,19 @@ enum class WebUIChannel {
 enum class WebUIFlavor(
     val uiName: String,
     val repoUrl: String,
-    val versionMappingUrl: String,
     val latestReleaseInfoUrl: String,
     val baseFileName: String,
 ) {
     WEBUI(
         "WebUI",
-        "https://github.com/vtorres-t/Suwayomi-WebUI-preview",
-        "https://raw.githubusercontent.com/vtorres-t/Suwayomi-WebUI/master/versionToServerVersionMapping.json",
-        "https://api.github.com/repos/vtorres-t/Suwayomi-WebUI-preview/releases/latest",
+        "https://github.com/vtorres-t/Suwayomi-WebUI",
+        "https://api.github.com/repos/vtorres-t/Suwayomi-WebUI/releases/latest",
         "Suwayomi-WebUI",
     ),
 
     VUI(
         "VUI",
         "https://github.com/vtorres-t/Suwayomi-VUI",
-        "https://raw.githubusercontent.com/vtorres-t/Suwayomi-VUI/main/versionToServerVersionMapping.json",
         "https://api.github.com/repos/vtorres-t/Suwayomi-VUI/releases/latest",
         "Suwayomi-VUI-Web",
     ),
@@ -44,7 +41,6 @@ enum class WebUIFlavor(
     CUSTOM(
         "Custom",
         "repoURL",
-        "versionMappingUrl",
         "latestReleaseInfoURL",
         "baseFileName",
     ),

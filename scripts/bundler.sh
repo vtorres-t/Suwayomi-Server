@@ -85,36 +85,6 @@ main() {
       make_linux_bundle
       move_release_to_output_dir
       ;;
-    macOS-x64)
-      JRE="$ZULU_RELEASE-ca-$JRE_RELEASE-macosx_x64.zip"
-      JRE_DIR="${JRE%.*}"
-      JRE_URL="https://cdn.azul.com/zulu/bin/$JRE"
-      ELECTRON="electron-$electron_version-darwin-x64.zip"
-      ELECTRON_URL="https://github.com/electron/electron/releases/download/$electron_version/$ELECTRON"
-      download_electron
-      download_jogamp "macosx-universal"
-      setup_jre
-      tree "$RELEASE_NAME"
-
-      RELEASE="$RELEASE_NAME.tar.gz"
-      make_macos_bundle
-      move_release_to_output_dir
-      ;;
-    macOS-arm64)
-      JRE="$ZULU_RELEASE-ca-$JRE_RELEASE-macosx_aarch64.zip"
-      JRE_DIR="${JRE%.*}"
-      JRE_URL="https://cdn.azul.com/zulu/bin/$JRE"
-      ELECTRON="electron-$electron_version-darwin-arm64.zip"
-      ELECTRON_URL="https://github.com/electron/electron/releases/download/$electron_version/$ELECTRON"
-      download_electron
-      download_jogamp "macosx-universal"
-      setup_jre
-      tree "$RELEASE_NAME"
-
-      RELEASE="$RELEASE_NAME.tar.gz"
-      make_macos_bundle
-      move_release_to_output_dir
-      ;;
     windows-x64)
       JRE="$ZULU_RELEASE-ca-$JRE_RELEASE-win_x64.zip"
       JRE_DIR="${JRE%.*}"
@@ -149,7 +119,7 @@ move_release_to_output_dir() {
 }
 
 download_launcher() {
-  LAUNCHER_URL=$(curl -s "https://api.github.com/repos/Suwayomi/Suwayomi-Launcher/releases/latest" | grep "browser_download_url" | grep ".jar" | head -n 1 | cut -d '"' -f 4)
+  LAUNCHER_URL=$(curl -s "https://api.github.com/repos/vtorres-t/Suwayomi-Launcher/releases/latest" | grep "browser_download_url" | grep ".jar" | head -n 1 | cut -d '"' -f 4)
   curl -L "$LAUNCHER_URL" -o "Suwayomi-Launcher.jar"
   mv "Suwayomi-Launcher.jar" "$RELEASE_NAME/Suwayomi-Launcher.jar"
 }
@@ -213,14 +183,6 @@ make_linux_bundle() {
   cp "scripts/resources/suwayomi-launcher.sh" "$RELEASE_NAME/"
   cp "scripts/resources/suwayomi-server.sh" "$RELEASE_NAME/"
   cp "scripts/resources/catch_abort.so" "$RELEASE_NAME/bin/"
-
-  tar -I "gzip -9" -cvf "$RELEASE" "$RELEASE_NAME/"
-}
-
-make_macos_bundle() {
-  mkdir "$RELEASE_NAME/bin"
-  cp "$JAR" "$RELEASE_NAME/bin/Suwayomi-Server.jar"
-  cp "scripts/resources/Suwayomi Launcher.command" "$RELEASE_NAME/"
 
   tar -I "gzip -9" -cvf "$RELEASE" "$RELEASE_NAME/"
 }

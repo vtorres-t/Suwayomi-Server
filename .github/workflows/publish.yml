@@ -3,8 +3,8 @@ name: CI Publish
 on:
   workflow_dispatch:
   push:
-    tags:
-      - "v*"
+    branches:
+      - master
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
