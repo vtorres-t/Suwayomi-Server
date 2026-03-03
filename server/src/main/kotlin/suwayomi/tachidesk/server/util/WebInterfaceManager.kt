@@ -610,9 +610,9 @@ object WebInterfaceManager {
         }
 
     private suspend fun getLatestCompatibleVersion(flavor: WebUIFlavor): String {
-        val versionUI = fetchUIVersion(flavor);
+        val versionUI = fetchUIVersion(flavor)
 
-        if(versionUI.isNotEmpty()) {
+        if (versionUI.isNotEmpty()) {
             return versionUI
         }
 
