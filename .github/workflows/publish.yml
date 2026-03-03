@@ -197,7 +197,7 @@ jobs:
         run: cd release && sha256sum * > Checksums.sha256
 
       - name: set env
-        run: echo "::set-env name=NOW::$(date +'%Y-%m-%dT%H:%M:%S')"
+        run: echo "NOW=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
       - name: Release
         uses: softprops/action-gh-release@v2
