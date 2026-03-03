@@ -196,8 +196,14 @@ jobs:
       - name: Generate checksums
         run: cd release && sha256sum * > Checksums.sha256
 
+      - name: set env
+        run: echo "::set-env name=NOW::$(date +'%Y-%m-%dT%H:%M:%S')"
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.BUILD_PREVIEW_TOKEN }}
           files: release/*
+          prerelease: false
+          draft: false
+          tag_name: ${{ env.NOW }}
