@@ -31,7 +31,7 @@
     <string name="opds_facet_filter_all_chapters">Todos los capitulos</string>
     <string name="opds_facet_filter_unread_only">Sin leer</string>
     <string name="opds_facet_filter_read_only">Leídos</string>
-    <string name="opds_linktitle_view_chapter_details">Ver detalles del capítulo y obtener paginas</string>
+    <string name="opds_linktitle_view_chapter_details">Ver detalles del capitulo y obtener paginas</string>
     <string name="opds_linktitle_download_cbz">Descargar CBZ</string>
     <string name="opds_linktitle_chapter_cover">Portada del capitulo</string>
     <string name="opds_linktitle_catalog_root">Raíz del catalogo</string>
@@ -77,7 +77,7 @@
     <string name="opds_facet_sort_alpha_asc">Alfabetico A-Z</string>
     <string name="opds_facet_sort_alpha_desc">Alfabetico Z-A</string>
     <string name="opds_facet_sort_last_read_desc">Último leido</string>
-    <string name="opds_facet_sort_latest_chapter_desc">Último capitulo</string>
+    <string name="opds_facet_sort_latest_chapter_desc">Ultimo capitulo</string>
     <string name="opds_facet_sort_date_added_desc">Fecha agregado</string>
     <string name="opds_facet_sort_unread_desc">Capitulos sin leer</string>
     <string name="opds_facet_filter_all">Todos</string>
@@ -95,10 +95,10 @@
     <string name="opds_manga_summary_language">Idioma: %1$s</string>
     <string name="webview_label_title">Vista web de Suwayomi</string>
     <string name="label_error">Error</string>
-    <string name="label_version">Versión <xliff:g id="version" example="v2.0.1833">%1$s</xliff:g></string>
+    <string name="label_version">Version <xliff:g id="version" example="v2.0.1833">%1$s</xliff:g></string>
     <string name="webview_label_disconnected">Desconectado, por favor actualizar</string>
     <string name="webview_label_reversescroll">Desplazamiento invertido</string>
-    <string name="webview_label_bindingshint">Nota: Mientras el foco esté en la parte de vista web, ningun atajo de teclado, incluido actualizar, será manejado por el navegador.</string>
+    <string name="webview_label_bindingshint">Nota: Mientras el foco este en la parte de vista web, ningun atajo de teclado, incluido actualizar, será manejado por el navegador.</string>
     <string name="webview_label_init">Inicializando... Por favor espera</string>
     <string name="webview_label_getstarted">Ingresa una URL para comenzar</string>
     <string name="webview_label_loading">Cargando pagina...</string>
@@ -106,7 +106,7 @@
     <string name="login_label_title">Inicio de sesion de Suwayomi</string>
     <string name="login_label_username">Usuario</string>
     <string name="login_label_password">Password</string>
-    <string name="login_label_login">Iniciar sesión</string>
+    <string name="login_label_login">Iniciar sesion</string>
     <string name="login_placeholder_username">Escribe nombre de usuario...</string>
     <string name="login_placeholder_password">Secreto...</string>
     <string name="opds_linktitle_stream_pages_start">Leer en linea</string>
