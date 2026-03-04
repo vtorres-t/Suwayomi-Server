@@ -66,7 +66,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
     // Stores reference to all databases opened in the current process.
     // (The referent Object is not used at this time.)
     // INVARIANT: Guarded by sActiveDatabases.
-    private static WeakHashMap<SQLiteDatabase, Object> sActiveDatabases =
+    private static final WeakHashMap<SQLiteDatabase, Object> sActiveDatabases =
             new WeakHashMap<>();
 
     // The optional factory to use when creating new Cursors.  May be null.
@@ -1912,9 +1912,9 @@ public final class SQLiteDatabase extends SQLiteClosable {
     }
 
     private static ArrayList<SQLiteDatabase> getActiveDatabases() {
-        ArrayList<SQLiteDatabase> databases = new ArrayList<>();
+        ArrayList<SQLiteDatabase> databases;
         synchronized (sActiveDatabases) {
-            databases.addAll(sActiveDatabases.keySet());
+            databases = new ArrayList<>(sActiveDatabases.keySet());
         }
         return databases;
     }

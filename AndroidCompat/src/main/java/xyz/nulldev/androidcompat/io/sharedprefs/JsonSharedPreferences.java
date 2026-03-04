@@ -256,8 +256,7 @@ public class JsonSharedPreferences implements SharedPreferences {
 
         @Override
         public synchronized Editor putStringSet(String s, Set<String> set) {
-            Set<String> clonedSet = new HashSet<>();
-            clonedSet.addAll(set);
+            Set<String> clonedSet = new HashSet<>(set);
             prefsClone.put(s, clonedSet);
             recordChange(s);
             return this;

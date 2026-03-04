@@ -269,11 +269,6 @@ public abstract class AbstractCursor implements CrossProcessCursor {
                 return i;
             }
         }
-        if (false) {
-            if (getCount() > 0) {
-                Log.w("AbstractCursor", "Unknown column " + columnName);
-            }
-        }
         return -1;
     }
     @Override
