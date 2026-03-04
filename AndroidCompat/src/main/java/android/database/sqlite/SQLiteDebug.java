@@ -164,6 +164,7 @@ public final class SQLiteDebug {
         for (String arg : args) {
             if (arg.equals("-v")) {
                 verbose = true;
+                break;
             }
         }
     }

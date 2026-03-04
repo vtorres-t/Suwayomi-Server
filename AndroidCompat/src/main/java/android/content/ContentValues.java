@@ -465,8 +465,8 @@ public final class ContentValues implements Parcelable {
         StringBuilder sb = new StringBuilder();
         for (String name : mValues.keySet()) {
             String value = getAsString(name);
-            if (sb.length() > 0) sb.append(" ");
-            sb.append(name + "=" + value);
+            if (!sb.isEmpty()) sb.append(" ");
+            sb.append(name).append("=").append(value);
         }
         return sb.toString();
     }

@@ -163,7 +163,7 @@ public class Typeface {
             // In Java, regular weight is at 1.0 and bold at 2.0, compared to 400 and 700 in TTF
             // Typical range is 0 to 1000
 
-            float jWeight = (weight - NORMAL_WEIGHT) / (BOLD_WEIGHT - NORMAL_WEIGHT) * (TextAttribute.WEIGHT_BOLD - TextAttribute.WEIGHT_REGULAR) + TextAttribute.WEIGHT_REGULAR;
+            float jWeight = (float) (weight - NORMAL_WEIGHT) / (BOLD_WEIGHT - NORMAL_WEIGHT) * (TextAttribute.WEIGHT_BOLD - TextAttribute.WEIGHT_REGULAR) + TextAttribute.WEIGHT_REGULAR;
             mAttributes.put(TextAttribute.WEIGHT, jWeight);
             return this;
         }

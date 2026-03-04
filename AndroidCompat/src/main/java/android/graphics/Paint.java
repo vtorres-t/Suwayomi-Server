@@ -735,7 +735,7 @@ public class Paint {
     }
 
     public void setFontFeatureSettings(String settings) {
-        if (settings != null && settings.equals("")) {
+        if (settings != null && settings.isEmpty()) {
             settings = null;
         }
         if ((settings == null && mFontFeatureSettings == null)

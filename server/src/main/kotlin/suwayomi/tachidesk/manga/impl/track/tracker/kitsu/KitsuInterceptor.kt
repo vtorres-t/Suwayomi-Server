@@ -1,7 +1,7 @@
 package suwayomi.tachidesk.manga.impl.track.tracker.kitsu
 
-import eu.kanade.tachiyomi.data.track.kitsu.dto.KitsuOAuth
-import eu.kanade.tachiyomi.data.track.kitsu.dto.isExpired
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuOAuth
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.isExpired
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.Response

@@ -1359,7 +1359,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
                     sql.append((i > 0) ? ",?" : "?");
                 }
             } else {
-                sql.append(nullColumnHack + ") VALUES (NULL");
+                sql.append(nullColumnHack).append(") VALUES (NULL");
             }
             sql.append(')');
 
