@@ -118,7 +118,7 @@ public class WebAddress {
         String port = "";
         if ((mPort != 443 && mScheme.equals("https")) ||
             (mPort != 80 && mScheme.equals("http"))) {
-            port = ":" + Integer.toString(mPort);
+            port = ":" + mPort;
         }
         String authInfo = "";
         if (mAuthInfo.length() > 0) {

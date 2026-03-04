@@ -128,6 +128,6 @@ public class FeatureInfo implements Parcelable {
     public String getGlEsVersion() {
         int major = ((reqGlEsVersion & 0xffff0000) >> 16);
         int minor = reqGlEsVersion & 0x0000ffff;
-        return String.valueOf(major)+"."+String.valueOf(minor);
+        return major +"."+ minor;
     }
 }

@@ -45,7 +45,6 @@ public class FastXmlSerializer implements XmlSerializer {
         null,     null,     null,     null,     "&lt;",   null,     "&gt;",   null,   // 56-63
     };
     private static final int DEFAULT_BUFFER_LEN = 32*1024;
-    private static String sSpace = "                                                              ";
     private final int mBufferLen;
     private final char[] mText;
     private int mPos;
@@ -121,6 +120,7 @@ public class FastXmlSerializer implements XmlSerializer {
     }
     private void appendIndent(int indent) throws IOException {
         indent *= 4;
+        String sSpace = "                                                              ";
         if (indent > sSpace.length()) {
             indent = sSpace.length();
         }

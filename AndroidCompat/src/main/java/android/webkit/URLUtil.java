@@ -258,7 +258,7 @@ public final class URLUtil {
      *
      * @return suggested filename
      */
-    public static final String guessFileName(
+    public static String guessFileName(
             String url,
             String contentDisposition,
             String mimeType) {

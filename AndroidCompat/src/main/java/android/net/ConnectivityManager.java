@@ -1490,12 +1490,12 @@ public class ConnectivityManager {
     /* TODO: These permissions checks don't belong in client-side code. Move them to
      * services.jar, possibly in com.android.server.net. */
     /** {@hide} */
-    public static final void enforceChangePermission(Context context) {
+    public static void enforceChangePermission(Context context) {
         throw new RuntimeException("Stub!");
     }
 
     /** {@hide} */
-    public static final void enforceTetherChangePermission(Context context, String callingPkg) {
+    public static void enforceTetherChangePermission(Context context, String callingPkg) {
         throw new RuntimeException("Stub!");
     }
 

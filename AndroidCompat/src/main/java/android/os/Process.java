@@ -389,82 +389,82 @@ public class Process {
      * 
      * {@hide}
      */
-    public static final ProcessStartResult start(final String processClass,
-                                  final String niceName,
-                                  int uid, int gid, int[] gids,
-                                  int runtimeFlags, int mountExternal,
-                                  int targetSdkVersion,
-                                  String seInfo,
-                                  String abi,
-                                  String instructionSet,
-                                  String appDataDir,
-                                  String invokeWith,
-                                  String[] zygoteArgs) {
+    public static ProcessStartResult start(final String processClass,
+                                           final String niceName,
+                                           int uid, int gid, int[] gids,
+                                           int runtimeFlags, int mountExternal,
+                                           int targetSdkVersion,
+                                           String seInfo,
+                                           String abi,
+                                           String instructionSet,
+                                           String appDataDir,
+                                           String invokeWith,
+                                           String[] zygoteArgs) {
         return zygoteProcess.start(processClass, niceName, uid, gid, gids,
                     runtimeFlags, mountExternal, targetSdkVersion, seInfo,
                     abi, instructionSet, appDataDir, invokeWith, zygoteArgs);
     }
     /** @hide */
-    public static final ProcessStartResult startWebView(final String processClass,
-                                  final String niceName,
-                                  int uid, int gid, int[] gids,
-                                  int runtimeFlags, int mountExternal,
-                                  int targetSdkVersion,
-                                  String seInfo,
-                                  String abi,
-                                  String instructionSet,
-                                  String appDataDir,
-                                  String invokeWith,
-                                  String[] zygoteArgs) {
+    public static ProcessStartResult startWebView(final String processClass,
+                                                  final String niceName,
+                                                  int uid, int gid, int[] gids,
+                                                  int runtimeFlags, int mountExternal,
+                                                  int targetSdkVersion,
+                                                  String seInfo,
+                                                  String abi,
+                                                  String instructionSet,
+                                                  String appDataDir,
+                                                  String invokeWith,
+                                                  String[] zygoteArgs) {
         throw new NotImplementedError();
     }
     /**
      * Returns elapsed milliseconds of the time this process has run.
      * @return  Returns the number of milliseconds this process has return.
      */
-    public static final native long getElapsedCpuTime();
+    public static native long getElapsedCpuTime();
     /**
      * Return the {@link SystemClock#elapsedRealtime()} at which this process was started.
      */
-    public static final long getStartElapsedRealtime() {
+    public static long getStartElapsedRealtime() {
         return sStartElapsedRealtime;
     }
     /**
      * Return the {@link SystemClock#uptimeMillis()} at which this process was started.
      */
-    public static final long getStartUptimeMillis() {
+    public static long getStartUptimeMillis() {
         return sStartUptimeMillis;
     }
     /** @hide */
-    public static final void setStartTimes(long elapsedRealtime, long uptimeMillis) {
+    public static void setStartTimes(long elapsedRealtime, long uptimeMillis) {
         sStartElapsedRealtime = elapsedRealtime;
         sStartUptimeMillis = uptimeMillis;
     }
     /**
      * Returns true if the current process is a 64-bit runtime.
      */
-    public static final boolean is64Bit() {
+    public static boolean is64Bit() {
         throw new NotImplementedError();
     }
     /**
      * Returns the identifier of this process, which can be used with
      * {@link #killProcess} and {@link #sendSignal}.
      */
-    public static final int myPid() {
+    public static int myPid() {
         return Os.getpid();
     }
     /**
      * Returns the identifier of this process' parent.
      * @hide
      */
-    public static final int myPpid() {
+    public static int myPpid() {
         return Os.getppid();
     }
     /**
      * Returns the identifier of the calling thread, which be used with
      * {@link #setThreadPriority(int, int)}.
      */
-    public static final int myTid() {
+    public static int myTid() {
         return Os.gettid();
     }
     /**
@@ -473,7 +473,7 @@ public class Process {
      * app-specific sandbox.  It is different from {@link #myUserHandle} in that
      * a uid identifies a specific app sandbox in a specific user.
      */
-    public static final int myUid() {
+    public static int myUid() {
         return Os.getuid();
     }
     /**
@@ -498,11 +498,11 @@ public class Process {
      * Returns whether the current process is in an isolated sandbox.
      * @hide
      */
-    public static final boolean isIsolated() {
+    public static boolean isIsolated() {
         return isIsolated(myUid());
     }
     /** {@hide} */
-    public static final boolean isIsolated(int uid) {
+    public static boolean isIsolated(int uid) {
         uid = UserHandle.getAppId(uid);
         return uid >= FIRST_ISOLATED_UID && uid <= LAST_ISOLATED_UID;
     }
@@ -511,21 +511,21 @@ public class Process {
      * none.  If the given string consists of only numbers, it is converted
      * directly to a uid.
      */
-    public static final native int getUidForName(String name);
+    public static native int getUidForName(String name);
     
     /**
      * Returns the GID assigned to a particular user name, or -1 if there is
      * none.  If the given string consists of only numbers, it is converted
      * directly to a gid.
      */
-    public static final native int getGidForName(String name);
+    public static native int getGidForName(String name);
     /**
      * Returns a uid for a currently running process.
      * @param pid the process id
      * @return the uid of the process, or -1 if the process is not running.
      * @hide pending API council review
      */
-    public static final int getUidForPid(int pid) {
+    public static int getUidForPid(int pid) {
         String[] procStatusLabels = { "Uid:" };
         long[] procStatusValues = new long[1];
         procStatusValues[0] = -1;
@@ -538,7 +538,7 @@ public class Process {
      * @return the parent process id of the process, or -1 if the process is not running.
      * @hide
      */
-    public static final int getParentPid(int pid) {
+    public static int getParentPid(int pid) {
         String[] procStatusLabels = { "PPid:" };
         long[] procStatusValues = new long[1];
         procStatusValues[0] = -1;
@@ -552,7 +552,7 @@ public class Process {
      *         This is same as what getpid(2) would return if called by tid.
      * @hide
      */
-    public static final int getThreadGroupLeader(int tid) {
+    public static int getThreadGroupLeader(int tid) {
         String[] procStatusLabels = { "Tgid:" };
         long[] procStatusValues = new long[1];
         procStatusValues[0] = -1;
@@ -572,7 +572,7 @@ public class Process {
      * not have permission to modify the given thread, or to use the given
      * priority.
      */
-    public static final native void setThreadPriority(int tid, int priority)
+    public static native void setThreadPriority(int tid, int priority)
             throws IllegalArgumentException, SecurityException;
     /**
      * Call with 'false' to cause future calls to {@link #setThreadPriority(int)} to
@@ -581,7 +581,7 @@ public class Process {
      *
      * @hide
      */
-    public static final native void setCanSelfBackground(boolean backgroundOk);
+    public static native void setCanSelfBackground(boolean backgroundOk);
     /**
      * Sets the scheduling group for a thread.
      * @hide
@@ -599,7 +599,7 @@ public class Process {
      * Does not set cpuset for some historical reason, just calls
      * libcutils::set_sched_policy().
      */
-    public static final native void setThreadGroup(int tid, int group)
+    public static native void setThreadGroup(int tid, int group)
             throws IllegalArgumentException, SecurityException;
     /**
      * Sets the scheduling group and the corresponding cpuset group
@@ -613,7 +613,7 @@ public class Process {
      * not have permission to modify the given thread, or to use the given
      * priority.
      */
-    public static final native void setThreadGroupAndCpuset(int tid, int group)
+    public static native void setThreadGroupAndCpuset(int tid, int group)
             throws IllegalArgumentException, SecurityException;
     /**
      * Sets the scheduling group for a process and all child threads
@@ -635,14 +635,14 @@ public class Process {
      *
      * Always sets cpusets.
      */
-    public static final native void setProcessGroup(int pid, int group)
+    public static native void setProcessGroup(int pid, int group)
             throws IllegalArgumentException, SecurityException;
     /**
      * Return the scheduling group of requested process.
      *
      * @hide
      */
-    public static final native int getProcessGroup(int pid)
+    public static native int getProcessGroup(int pid)
             throws IllegalArgumentException, SecurityException;
     /**
      * On some devices, the foreground process may have one or more CPU
@@ -667,7 +667,7 @@ public class Process {
      * CPU cores are exclusively reserved for this process at this point
      * in time.
      */
-    public static final native int[] getExclusiveCores();
+    public static native int[] getExclusiveCores();
     /**
      * Set the priority of the calling thread, based on Linux priorities.  See
      * {@link #setThreadPriority(int, int)} for more information.
@@ -683,7 +683,7 @@ public class Process {
      * 
      * @see #setThreadPriority(int, int)
      */
-    public static final native void setThreadPriority(int priority)
+    public static native void setThreadPriority(int priority)
             throws IllegalArgumentException, SecurityException;
     
     /**
@@ -699,7 +699,7 @@ public class Process {
      * @throws IllegalArgumentException Throws IllegalArgumentException if
      * <var>tid</var> does not exist.
      */
-    public static final native int getThreadPriority(int tid)
+    public static native int getThreadPriority(int tid)
             throws IllegalArgumentException;
     
     /**
@@ -717,7 +717,7 @@ public class Process {
      */
     
     @TestApi
-    public static final native int getThreadScheduler(int tid)
+    public static native int getThreadScheduler(int tid)
             throws IllegalArgumentException;
     /**
      * Set the scheduling policy and priority of a thread, based on Linux.
@@ -734,7 +734,7 @@ public class Process {
      *
      * {@hide}
      */
-    public static final native void setThreadScheduler(int tid, int policy, int priority)
+    public static native void setThreadScheduler(int tid, int policy, int priority)
             throws IllegalArgumentException;
     /**
      * Determine whether the current environment supports multiple processes.
@@ -745,7 +745,7 @@ public class Process {
      * @deprecated This method always returns true.  Do not use.
      */
     @Deprecated
-    public static final boolean supportsProcesses() {
+    public static boolean supportsProcesses() {
         return true;
     }
     /**
@@ -759,7 +759,7 @@ public class Process {
      *
      * {@hide}
      */
-    public static final native boolean setSwappiness(int pid, boolean is_increased);
+    public static native boolean setSwappiness(int pid, boolean is_increased);
     /**
      * Change this process's argv[0] parameter.  This can be useful to show
      * more descriptive information in things like the 'ps' command.
@@ -768,7 +768,7 @@ public class Process {
      * 
      * {@hide}
      */
-    public static final native void setArgV0(String text);
+    public static native void setArgV0(String text);
     /**
      * Kill the process with the given PID.
      * Note that, though this API allows us to request to
@@ -780,20 +780,20 @@ public class Process {
      * sharing a common UID will also be able to kill each
      * other's processes.
      */
-    public static final void killProcess(int pid) {
+    public static void killProcess(int pid) {
         sendSignal(pid, SIGNAL_KILL);
     }
     /** @hide */
-    public static final native int setUid(int uid);
+    public static native int setUid(int uid);
     /** @hide */
-    public static final native int setGid(int uid);
+    public static native int setGid(int uid);
     /**
      * Send a signal to the given process.
      * 
      * @param pid The pid of the target process.
      * @param signal The signal to send.
      */
-    public static final native void sendSignal(int pid, int signal);
+    public static native void sendSignal(int pid, int signal);
     
     /**
      * @hide
@@ -801,7 +801,7 @@ public class Process {
      * your own log, or the Android Illuminati will find you some night and
      * beat you up.
      */
-    public static final void killProcessQuiet(int pid) {
+    public static void killProcessQuiet(int pid) {
         sendSignalQuiet(pid, SIGNAL_KILL);
     }
     /**
@@ -810,20 +810,20 @@ public class Process {
      * your own log, or the Android Illuminati will find you some night and
      * beat you up.
      */
-    public static final native void sendSignalQuiet(int pid, int signal);
+    public static native void sendSignalQuiet(int pid, int signal);
     
     /** @hide */
-    public static final native long getFreeMemory();
+    public static native long getFreeMemory();
     
     /** @hide */
-    public static final native long getTotalMemory();
+    public static native long getTotalMemory();
     
     /** @hide */
-    public static final native void readProcLines(String path,
-            String[] reqFields, long[] outSizes);
+    public static native void readProcLines(String path,
+                                            String[] reqFields, long[] outSizes);
     
     /** @hide */
-    public static final native int[] getPids(String path, int[] lastArray);
+    public static native int[] getPids(String path, int[] lastArray);
     
     /** @hide */
     public static final int PROC_TERM_MASK = 0xff;
@@ -849,14 +849,14 @@ public class Process {
     public static final int PROC_OUT_FLOAT = 0x4000;
     
     /** @hide */
-    public static final native boolean readProcFile(String file, int[] format,
-            String[] outStrings, long[] outLongs, float[] outFloats);
+    public static native boolean readProcFile(String file, int[] format,
+                                              String[] outStrings, long[] outLongs, float[] outFloats);
     
     /** @hide */
-    public static final native boolean parseProcLine(byte[] buffer, int startIndex, 
-            int endIndex, int[] format, String[] outStrings, long[] outLongs, float[] outFloats);
+    public static native boolean parseProcLine(byte[] buffer, int startIndex,
+                                               int endIndex, int[] format, String[] outStrings, long[] outLongs, float[] outFloats);
     /** @hide */
-    public static final native int[] getPidsForCommands(String[] cmds);
+    public static native int[] getPidsForCommands(String[] cmds);
     /**
      * Gets the total Pss value for a given process, in bytes.
      * 
@@ -865,7 +865,7 @@ public class Process {
      *  or -1 if the value cannot be determined 
      * @hide
      */
-    public static final native long getPss(int pid);
+    public static native long getPss(int pid);
     /**
      * Specifies the outcome of having started a process.
      * @hide
@@ -886,20 +886,20 @@ public class Process {
      * pid.
      * @hide
      */
-    public static final native int killProcessGroup(int uid, int pid);
+    public static native int killProcessGroup(int uid, int pid);
     /**
      * Remove all process groups.  Expected to be called when ActivityManager
      * is restarted.
      * @hide
      */
-    public static final native void removeAllProcessGroups();
+    public static native void removeAllProcessGroups();
     /**
      * Check to see if a thread belongs to a given process. This may require
      * more permissions than apps generally have.
      * @return true if this thread belongs to a process
      * @hide
      */
-    public static final boolean isThreadInProcess(int tid, int pid) {
+    public static boolean isThreadInProcess(int tid, int pid) {
         StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskReads();
         try {
             if (Os.access("/proc/" + tid + "/task/" + pid, OsConstants.F_OK)) {

@@ -72,7 +72,7 @@ public class DatabaseUtils {
      * @see Parcel#writeNoException
      * @see Parcel#writeException
      */
-    public static final void writeExceptionToParcel(Parcel reply, Exception e) {
+    public static void writeExceptionToParcel(Parcel reply, Exception e) {
         int code = 0;
         boolean logException = true;
         if (e instanceof FileNotFoundException) {
@@ -280,7 +280,7 @@ public class DatabaseUtils {
     /**
      * Appends an Object to an SQL string with the proper escaping, etc.
      */
-    public static final void appendValueToSql(StringBuilder sql, Object value) {
+    public static void appendValueToSql(StringBuilder sql, Object value) {
         if (value == null) {
             sql.append("NULL");
         } else if (value instanceof Boolean) {

@@ -198,7 +198,7 @@ public class Paint {
         ROUND   (1),
         SQUARE  (2);
 
-        private Cap(int nativeInt) {
+        Cap(int nativeInt) {
             this.nativeInt = nativeInt;
         }
         final int nativeInt;
@@ -209,7 +209,7 @@ public class Paint {
         ROUND   (1),
         BEVEL   (2);
 
-        private Join(int nativeInt) {
+        Join(int nativeInt) {
             this.nativeInt = nativeInt;
         }
         final int nativeInt;
@@ -220,7 +220,7 @@ public class Paint {
         CENTER  (1),
         RIGHT   (2);
 
-        private Align(int nativeInt) {
+        Align(int nativeInt) {
             this.nativeInt = nativeInt;
         }
         final int nativeInt;

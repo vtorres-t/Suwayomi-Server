@@ -36,7 +36,7 @@ public class TextLine {
     private CharSequence mText;
     private int mStart;
     private int mLen;
-    private int mDir;
+
     private Directions mDirections;
     private boolean mHasTabs;
     private TabStops mTabs;
@@ -59,7 +59,7 @@ public class TextLine {
         public void setClusterCount(int clusterCount) {
             mClusterCount = clusterCount;
         }
-    };
+    }
 
     public float getAddedWordSpacingInPx() {
         throw new RuntimeException("Stub!");
@@ -110,7 +110,6 @@ public class TextLine {
         mText = text;
         mStart = start;
         mLen = limit - start;
-        mDir = dir;
         mDirections = directions;
         if (mDirections == null) {
             throw new IllegalArgumentException("Directions cannot be null");

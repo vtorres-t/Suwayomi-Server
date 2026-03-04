@@ -42,11 +42,11 @@ public class WebChromeClient {
         public void onCustomViewHidden();
     }
 
-    public void onShowCustomView(View view, CustomViewCallback callback) {};
+    public void onShowCustomView(View view, CustomViewCallback callback) {}
 
     @Deprecated
     public void onShowCustomView(View view, int requestedOrientation,
-            CustomViewCallback callback) {};
+            CustomViewCallback callback) {}
 
     public void onHideCustomView() {}
 
