@@ -35,7 +35,7 @@ object Jwt {
         val byteString = preferenceStore.getString(PREF_KEY, "")
         val decodedKeyBytes =
             try {
-                Base64.Default.decode(byteString)
+                Base64.decode(byteString)
             } catch (e: IllegalArgumentException) {
                 logger.warn(e) { "Invalid key specified, regenerating" }
                 null
@@ -47,7 +47,7 @@ object Jwt {
             } else {
                 val k = ByteArray(32)
                 SecureRandom().nextBytes(k)
-                preferenceStore.edit().putString(PREF_KEY, Base64.Default.encode(k)).apply()
+                preferenceStore.edit().putString(PREF_KEY, Base64.encode(k)).apply()
                 k
             }
 

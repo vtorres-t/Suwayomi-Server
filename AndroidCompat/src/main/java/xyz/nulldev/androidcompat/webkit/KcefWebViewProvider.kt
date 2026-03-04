@@ -55,7 +55,6 @@ import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
 import dev.datlag.kcef.KCEFClient
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.cef.CefSettings
 import org.cef.browser.CefBrowser
@@ -179,8 +178,8 @@ class KcefWebViewProvider(
 
         override fun getResources(): Array<String> {
             val retVal = mutableListOf<String>()
-            if ((permissionMask and (1 shl 0)) > 0) retVal.add(PermissionRequest.RESOURCE_AUDIO_CAPTURE)
-            if ((permissionMask and (1 shl 1)) > 0) retVal.add(PermissionRequest.RESOURCE_VIDEO_CAPTURE)
+            if ((permissionMask and (1 shl 0)) > 0) retVal.add(RESOURCE_AUDIO_CAPTURE)
+            if ((permissionMask and (1 shl 1)) > 0) retVal.add(RESOURCE_VIDEO_CAPTURE)
             return retVal.toTypedArray()
         }
 

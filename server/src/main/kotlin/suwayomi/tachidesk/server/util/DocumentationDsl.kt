@@ -25,7 +25,7 @@ fun <T> getParam(
         val typedItem: List<Any?> =
             when (param.clazz) {
                 String::class.java, java.lang.String::class.java -> item
-                Int::class.java, java.lang.Integer::class.java -> item.map { it.toIntOrNull() }
+                Int::class.java, Integer::class.java -> item.map { it.toIntOrNull() }
                 Long::class.java, java.lang.Long::class.java -> item.map { it.toLongOrNull() }
                 Boolean::class.java, java.lang.Boolean::class.java -> item.map { it.toBoolean() }
                 Float::class.java, java.lang.Float::class.java -> item.map { it.toFloatOrNull() }
@@ -46,7 +46,7 @@ fun <T> getParam(
                 getSimpleParamItem(ctx, param) ?: param.defaultValue
             }
 
-            Int::class.java, java.lang.Integer::class.java -> {
+            Int::class.java, Integer::class.java -> {
                 getSimpleParamItem(ctx, param)?.toIntOrNull() ?: param.defaultValue
             }
 
