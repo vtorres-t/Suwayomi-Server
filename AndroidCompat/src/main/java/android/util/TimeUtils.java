@@ -168,7 +168,7 @@ public class TimeUtils {
         }
 
         int millis = (int)(duration%1000);
-        int seconds = (int) Math.floor(duration / 1000);
+        int seconds = (int) Math.floor((double) duration / 1000);
         int days = 0, hours = 0, minutes = 0;
 
         if (seconds >= SECONDS_PER_DAY) {

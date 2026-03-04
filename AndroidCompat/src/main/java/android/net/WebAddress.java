@@ -103,7 +103,7 @@ public class WebAddress {
         }
         /* Get port from scheme or scheme from port, if necessary and
            possible */
-        if (mPort == 443 && mScheme.equals("")) {
+        if (mPort == 443 && mScheme.isEmpty()) {
             mScheme = "https";
         } else if (mPort == -1) {
             if (mScheme.equals("https"))
@@ -111,7 +111,7 @@ public class WebAddress {
             else
                 mPort = 80; // default
         }
-        if (mScheme.equals("")) mScheme = "http";
+        if (mScheme.isEmpty()) mScheme = "http";
     }
     @Override
     public String toString() {
