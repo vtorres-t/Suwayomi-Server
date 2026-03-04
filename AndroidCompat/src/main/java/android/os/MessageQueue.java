@@ -19,12 +19,10 @@ package android.os;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.TestApi;
-import android.app.Instrumentation;
 import android.os.shadows.ShadowPausedMessageQueue;
 import android.util.Log;
 import android.util.Printer;
 import android.util.SparseArray;
-import android.util.proto.ProtoOutputStream;
 
 import java.io.FileDescriptor;
 import java.lang.annotation.Retention;

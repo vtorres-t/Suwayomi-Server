@@ -16,7 +16,6 @@
 
 package android.text;
 
-import android.annotation.ColorInt;
 import android.annotation.IntRange;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -27,7 +26,6 @@ import android.util.Log;
 import java.awt.RenderingHints;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.FontRenderContext;
-import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.text.AttributedString;
 

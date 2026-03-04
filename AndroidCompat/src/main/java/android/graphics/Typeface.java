@@ -16,9 +16,7 @@
 
 package android.graphics;
 
-import android.annotation.NonNull;
 import android.annotation.Nullable;
-import android.annotation.TestApi;
 import android.content.res.AssetManager;
 import android.util.Log;
 import com.android.internal.util.Preconditions;
@@ -29,9 +27,7 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.text.AttributedString;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;

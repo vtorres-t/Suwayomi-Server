@@ -2,15 +2,6 @@ package android.os.shadows;
 // package org.robolectric.shadows;
 //  and badly gutted
 
-import android.os.Looper;
-import android.os.Message;
-import android.os.MessageQueue;
-import android.os.MessageQueue.IdleHandler;
-import android.os.SystemClock;
-import android.util.Log;
-import java.time.Duration;
-import java.util.ArrayList;
-
 /**
  * The shadow {@link} MessageQueue} for {@link LooperMode.Mode.PAUSED}
  *
