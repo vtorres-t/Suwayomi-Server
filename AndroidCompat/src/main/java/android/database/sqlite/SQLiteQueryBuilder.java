@@ -439,7 +439,7 @@ public class SQLiteQueryBuilder
         boolean hasBaseWhereClause = mWhereClause != null && mWhereClause.length() > 0;
 
         if (hasBaseWhereClause) {
-            where.append(mWhereClause.toString());
+            where.append(mWhereClause);
             where.append(')');
         }
 

@@ -452,8 +452,6 @@ public abstract class Layout {
             int end = getLineVisibleEnd(lineNum, start, previousLineEnd,
                     true /* trailingSpaceAtLastLineIsVisible */);
             // TODO: not supported
-            // paint.setStartHyphenEdit(getStartHyphenEdit(lineNum));
-            // paint.setEndHyphenEdit(getEndHyphenEdit(lineNum));
 
             int ltop = previousLineBottom;
             int lbottom = getLineTop(lineNum + 1);
@@ -1005,8 +1003,6 @@ public abstract class Layout {
         final TextPaint paint = mWorkPaint;
         paint.set(mPaint);
         // TODO: not supported
-        // paint.setStartHyphenEdit(getStartHyphenEdit(line));
-        // paint.setEndHyphenEdit(getEndHyphenEdit(line));
         tl.set(paint, mText, start, end, dir, directions, hasTabs, tabStops,
                 getEllipsisStart(line), getEllipsisStart(line) + getEllipsisCount(line),
                 isFallbackLineSpacingEnabled());

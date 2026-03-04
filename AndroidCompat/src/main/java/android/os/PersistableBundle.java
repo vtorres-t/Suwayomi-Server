@@ -244,12 +244,6 @@ public final class PersistableBundle extends BaseBundle implements Cloneable, Pa
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         throw new NotImplementedError();
-//        final boolean oldAllowFds = parcel.pushAllowFds(false);
-//        try {
-//            writeToParcelInner(parcel, flags);
-//        } finally {
-//            parcel.restoreAllowFds(oldAllowFds);
-//        }
     }
     /** @hide */
     public static PersistableBundle restoreFromXml(XmlPullParser in) throws IOException,

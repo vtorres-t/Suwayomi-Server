@@ -510,7 +510,6 @@ public final class MessageQueue {
             if (oldTopMessageNode.removeFromStack()) {
                 insertIntoPriorityQueue(oldTopMessageNode);
             }
-            MessageNode inserted = oldTopMessageNode;
             oldTop = oldTopMessageNode.mNext;
             /*
              * removeMessages can walk this list while we are consuming it.
@@ -518,7 +517,7 @@ public final class MessageQueue {
              * priority queue. This way removeMessages() will always find the
              * message, either in our list or in the priority queue.
              */
-            inserted.mNext = null;
+            oldTopMessageNode.mNext = null;
         }
     }
 
@@ -1467,39 +1466,7 @@ public final class MessageQueue {
     private void updateOnFileDescriptorEventListenerLocked(FileDescriptor fd, int events,
             OnFileDescriptorEventListener listener) {
         throw new RuntimeException("Stub!");
-        // final int fdNum = fd.getInt$();
 
-        // int index = -1;
-        // FileDescriptorRecord record = null;
-        // if (mFileDescriptorRecords != null) {
-        //     index = mFileDescriptorRecords.indexOfKey(fdNum);
-        //     if (index >= 0) {
-        //         record = mFileDescriptorRecords.valueAt(index);
-        //         if (record != null && record.mEvents == events) {
-        //             return;
-        //         }
-        //     }
-        // }
-
-        // if (events != 0) {
-        //     events |= OnFileDescriptorEventListener.EVENT_ERROR;
-        //     if (record == null) {
-        //         if (mFileDescriptorRecords == null) {
-        //             mFileDescriptorRecords = new SparseArray<FileDescriptorRecord>();
-        //         }
-        //         record = new FileDescriptorRecord(fd, events, listener);
-        //         mFileDescriptorRecords.put(fdNum, record);
-        //     } else {
-        //         record.mListener = listener;
-        //         record.mEvents = events;
-        //         record.mSeq += 1;
-        //     }
-        //     nativeSetFileDescriptorEvents(mPtr, fdNum, events);
-        // } else if (record != null) {
-        //     record.mEvents = 0;
-        //     mFileDescriptorRecords.removeAt(index);
-        //     nativeSetFileDescriptorEvents(mPtr, fdNum, 0);
-        // }
     }
 
     // Called from native code.

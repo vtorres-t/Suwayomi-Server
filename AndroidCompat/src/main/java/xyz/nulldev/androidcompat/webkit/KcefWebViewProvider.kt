@@ -247,10 +247,6 @@ class KcefWebViewProvider(
                         url,
                     )
                 }
-                if (httpStatusCode >= 400) {
-                    // TODO: create request and response
-                    // viewClient.onReceivedHttpError(_view, ...);
-                }
                 viewClient.onPageFinished(view, url)
                 chromeClient.onProgressChanged(view, 100)
             }

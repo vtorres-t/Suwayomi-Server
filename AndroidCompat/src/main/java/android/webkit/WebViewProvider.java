@@ -359,27 +359,6 @@ public interface WebViewProvider {
                 @SuppressWarnings("unused") int flags) {
         }
 
-        // @SuppressLint("NullableCollection")
-        // default void onCreateVirtualViewTranslationRequests(
-        //         @NonNull @SuppressWarnings("unused") long[] virtualIds,
-        //         @NonNull @SuppressWarnings("unused") @DataFormat int[] supportedFormats,
-        //         @NonNull @SuppressWarnings("unused")
-        //                 Consumer<ViewTranslationRequest> requestsCollector) {
-        // }
-
-        // default void onVirtualViewTranslationResponses(
-        //         @NonNull @SuppressWarnings("unused")
-        //                 LongSparseArray<ViewTranslationResponse> response) {
-        // }
-
-        // default void dispatchCreateViewTranslationRequest(
-        //         @NonNull @SuppressWarnings("unused") Map<AutofillId, long[]> viewIds,
-        //         @NonNull @SuppressWarnings("unused") @DataFormat int[] supportedFormats,
-        //         @Nullable @SuppressWarnings("unused") TranslationCapability capability,
-        //         @NonNull @SuppressWarnings("unused") List<ViewTranslationRequest> requests) {
-
-        // }
-
         public AccessibilityNodeProvider getAccessibilityNodeProvider();
 
         public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info);

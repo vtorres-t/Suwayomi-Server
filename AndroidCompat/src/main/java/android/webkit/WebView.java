@@ -977,12 +977,6 @@ public class WebView extends AbsoluteLayout
         mProvider.getViewDelegate().onAttachedToWindow();
     }
 
-    // /** @hide */
-    // protected void onDetachedFromWindowInternal() {
-    //     mProvider.getViewDelegate().onDetachedFromWindow();
-    //     super.onDetachedFromWindowInternal();
-    // }
-
     /** @hide */
     public void onMovedToDisplay(int displayId, Configuration config) {
         mProvider.getViewDelegate().onMovedToDisplay(displayId, config);
@@ -1133,40 +1127,6 @@ public class WebView extends AbsoluteLayout
     public boolean isVisibleToUserForAutofill(int virtualId) {
         return mProvider.getViewDelegate().isVisibleToUserForAutofill(virtualId);
     }
-
-    // @Nullable
-    // public void onCreateVirtualViewTranslationRequests(@NonNull long[] virtualIds,
-    //         @NonNull int[] supportedFormats,
-    //         @NonNull Consumer<ViewTranslationRequest> requestsCollector) {
-    //     mProvider.getViewDelegate().onCreateVirtualViewTranslationRequests(virtualIds,
-    //             supportedFormats, requestsCollector);
-    // }
-
-    // public void dispatchCreateViewTranslationRequest(@NonNull Map<AutofillId, long[]> viewIds,
-    //         @NonNull int[] supportedFormats,
-    //         @Nullable TranslationCapability capability,
-    //         @NonNull List<ViewTranslationRequest> requests) {
-    //     super.dispatchCreateViewTranslationRequest(viewIds, supportedFormats, capability, requests);
-    //     mProvider.getViewDelegate().dispatchCreateViewTranslationRequest(viewIds, supportedFormats,
-    //             capability, requests);
-    // }
-
-    // public void onVirtualViewTranslationResponses(
-    //         @NonNull LongSparseArray<ViewTranslationResponse> response) {
-    //     mProvider.getViewDelegate().onVirtualViewTranslationResponses(response);
-    // }
-
-    // /** @hide */
-    // public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-    //     super.onInitializeAccessibilityNodeInfoInternal(info);
-    //     mProvider.getViewDelegate().onInitializeAccessibilityNodeInfo(info);
-    // }
-
-    // /** @hide */
-    // public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-    //     super.onInitializeAccessibilityEventInternal(event);
-    //     mProvider.getViewDelegate().onInitializeAccessibilityEvent(event);
-    // }
 
     /** @hide */
     public boolean performAccessibilityActionInternal(int action, Bundle arguments) {
@@ -1325,19 +1285,6 @@ public class WebView extends AbsoluteLayout
     public boolean onCheckIsTextEditor() {
         return mProvider.getViewDelegate().onCheckIsTextEditor();
     }
-
-    // /** @hide */
-    // protected void encodeProperties(@NonNull ViewHierarchyEncoder encoder) {
-    //     super.encodeProperties(encoder);
-
-    //     checkThread();
-    //     encoder.addProperty("webview:contentHeight", mProvider.getContentHeight());
-    //     encoder.addProperty("webview:contentWidth", mProvider.getContentWidth());
-    //     encoder.addProperty("webview:scale", mProvider.getScale());
-    //     encoder.addProperty("webview:title", mProvider.getTitle());
-    //     encoder.addProperty("webview:url", mProvider.getUrl());
-    //     encoder.addProperty("webview:originalUrl", mProvider.getOriginalUrl());
-    // }
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {

@@ -234,8 +234,6 @@ public class Paint {
         setFlags(flags | HIDDEN_DEFAULT_PAINT_FLAGS);
         // TODO: Turning off hinting has undesirable side effects, we need to
         //       revisit hinting once we add support for subpixel positioning
-        // setHinting(DisplayMetrics.DENSITY_DEVICE >= DisplayMetrics.DENSITY_TV
-        //        ? HINTING_OFF : HINTING_ON);
         mCompatScaling = mInvCompatScaling = 1;
         mColor = Color.pack(Color.BLACK);
     }
@@ -250,8 +248,6 @@ public class Paint {
 
         // TODO: Turning off hinting has undesirable side effects, we need to
         //       revisit hinting once we add support for subpixel positioning
-        // setHinting(DisplayMetrics.DENSITY_DEVICE >= DisplayMetrics.DENSITY_TV
-        //        ? HINTING_OFF : HINTING_ON);
 
         mColor = Color.pack(Color.BLACK);
         mColorFilter = null;
@@ -1001,8 +997,6 @@ public class Paint {
             final float oldSize = getTextSize();
             setTextSize(oldSize * mCompatScaling);
             throw new RuntimeException("Stub!");
-            // setTextSize(oldSize);
-            // return (float) Math.ceil(w * mInvCompatScaling);
         } finally {
             setFlags(oldFlag);
         }
@@ -1028,8 +1022,6 @@ public class Paint {
             final float oldSize = getTextSize();
             setTextSize(oldSize * mCompatScaling);
             throw new RuntimeException("Stub!");
-            // setTextSize(oldSize);
-            // return (float) Math.ceil(w * mInvCompatScaling);
         } finally {
             setFlags(oldFlag);
         }
@@ -1087,9 +1079,6 @@ public class Paint {
         final float oldSize = getTextSize();
         setTextSize(oldSize * mCompatScaling);
         throw new RuntimeException("Stub!");
-        // setTextSize(oldSize);
-        // if (measuredWidth != null) measuredWidth[0] *= mInvCompatScaling;
-        // return res;
     }
 
     public int breakText(CharSequence text, int start, int end,
@@ -1141,9 +1130,6 @@ public class Paint {
         final float oldSize = getTextSize();
         setTextSize(oldSize*mCompatScaling);
         throw new RuntimeException("Stub!");
-        // setTextSize(oldSize);
-        // if (measuredWidth != null) measuredWidth[0] *= mInvCompatScaling;
-        // return res;
     }
 
     public int getTextWidths(char[] text, int index, int count,
@@ -1170,11 +1156,6 @@ public class Paint {
             final float oldSize = getTextSize();
             setTextSize(oldSize * mCompatScaling);
             throw new RuntimeException("Stub!");
-            // setTextSize(oldSize);
-            // for (int i = 0; i < count; i++) {
-            //     widths[i] *= mInvCompatScaling;
-            // }
-            // return count;
         } finally {
             setFlags(oldFlag);
         }
@@ -1235,11 +1216,6 @@ public class Paint {
             final float oldSize = getTextSize();
             setTextSize(oldSize * mCompatScaling);
             throw new RuntimeException("Stub!");
-            // setTextSize(oldSize);
-            // for (int i = 0; i < end - start; i++) {
-            //     widths[i] *= mInvCompatScaling;
-            // }
-            // return end - start;
         } finally {
             setFlags(oldFlag);
         }
@@ -1276,14 +1252,7 @@ public class Paint {
         setTextSize(oldSize * mCompatScaling);
         float res = 0.0f;
         throw new RuntimeException("Stub!");
-        // setTextSize(oldSize);
 
-        // if (advances != null) {
-        //     for (int i = advancesIndex, e = i + count; i < e; i++) {
-        //         advances[i] *= mInvCompatScaling;
-        //     }
-        // }
-        // return res * mInvCompatScaling; // assume errors are not significant
     }
 
     public int getTextRunCursor(@NonNull char[] text, @IntRange(from = 0) int contextStart,

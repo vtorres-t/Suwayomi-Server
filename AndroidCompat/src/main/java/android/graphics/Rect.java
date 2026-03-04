@@ -58,11 +58,11 @@ public final class Rect {
         this.bottom = r.bottom;
     }
 
-    public final int getWidth() {
+    public int getWidth() {
         return right - left;
     }
 
-    public final int getHeight() {
+    public int getHeight() {
         return bottom - top;
     }
 

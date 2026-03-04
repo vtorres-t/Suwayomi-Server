@@ -888,8 +888,7 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
      */
     public CharSequence loadDescription(PackageManager pm) {
         if (descriptionRes != 0) {
-            CharSequence label = pm.getText(packageName, descriptionRes, this);
-            return label;
+            return pm.getText(packageName, descriptionRes, this);
         }
         return null;
     }

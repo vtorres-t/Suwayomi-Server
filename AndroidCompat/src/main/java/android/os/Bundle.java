@@ -1139,12 +1139,6 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         throw new NotImplementedError();
-//        final boolean oldAllowFds = parcel.pushAllowFds((mFlags & FLAG_ALLOW_FDS) != 0);
-//        try {
-//            super.writeToParcelInner(parcel, flags);
-//        } finally {
-//            parcel.restoreAllowFds(oldAllowFds);
-//        }
     }
     /**
      * Reads the Parcel contents into this Bundle, typically in order for
@@ -1154,8 +1148,6 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
     public void readFromParcel(Parcel parcel) {
         super.readFromParcelInner(parcel);
         throw new NotImplementedError();
-//        mFlags = FLAG_ALLOW_FDS;
-//        maybePrefillHasFds();
     }
     @Override
     public synchronized String toString() {

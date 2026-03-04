@@ -83,14 +83,14 @@ class AnilistApi(
     suspend fun updateLibManga(track: Track): Track =
         withIOContext {
             val query =
-                """
+                $$"""
             |mutation UpdateManga(
-                |${'$'}listId: Int, ${'$'}progress: Int, ${'$'}status: MediaListStatus, ${'$'}private: Boolean,
-                |${'$'}score: Int, ${'$'}startedAt: FuzzyDateInput, ${'$'}completedAt: FuzzyDateInput
+                |$listId: Int, $progress: Int, $status: MediaListStatus, $private: Boolean,
+                |$score: Int, $startedAt: FuzzyDateInput, $completedAt: FuzzyDateInput
             |) {
                 |SaveMediaListEntry(
-                    |id: ${'$'}listId, progress: ${'$'}progress, status: ${'$'}status, private: ${'$'}private,
-                    |scoreRaw: ${'$'}score, startedAt: ${'$'}startedAt, completedAt: ${'$'}completedAt
+                    |id: $listId, progress: $progress, status: $status, private: $private,
+                    |scoreRaw: $score, startedAt: $startedAt, completedAt: $completedAt
                 |) {
                     |id
                     |status
@@ -121,9 +121,9 @@ class AnilistApi(
     suspend fun deleteLibManga(track: Track) {
         withIOContext {
             val query =
-                """
-            |mutation DeleteManga(${'$'}listId: Int) {
-                |DeleteMediaListEntry(id: ${'$'}listId) {
+                $$"""
+            |mutation DeleteManga($listId: Int) {
+                |DeleteMediaListEntry(id: $listId) {
                     |deleted
                 |}
             |}
@@ -145,10 +145,10 @@ class AnilistApi(
     suspend fun search(search: String): List<TrackSearch> =
         withIOContext {
             val query =
-                """
-            |query Search(${'$'}query: String) {
+                $$"""
+            |query Search($query: String) {
                 |Page (perPage: 50) {
-                    |media(search: ${'$'}query, type: MANGA, format_not_in: [NOVEL]) {
+                    |media(search: $query, type: MANGA, format_not_in: [NOVEL]) {
                         |id
                         |staff {
                             |edges {
@@ -211,10 +211,10 @@ class AnilistApi(
     ): Track? =
         withIOContext {
             val query =
-                """
-            |query (${'$'}id: Int!, ${'$'}manga_id: Int!) {
+                $$"""
+            |query ($id: Int!, $manga_id: Int!) {
                 |Page {
-                    |mediaList(userId: ${'$'}id, type: MANGA, mediaId: ${'$'}manga_id) {
+                    |mediaList(userId: $id, type: MANGA, mediaId: $manga_id) {
                         |id
                         |status
                         |scoreRaw: score(format: POINT_100)

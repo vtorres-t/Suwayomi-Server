@@ -942,21 +942,7 @@ public class Handler {
 
     final IMessenger getIMessenger() {
         throw new RuntimeException("Stub!");
-        // synchronized (mQueue) {
-        //     if (mMessenger != null) {
-        //         return mMessenger;
-        //     }
-        //     mMessenger = new MessengerImpl();
-        //     return mMessenger;
-        // }
     }
-
-    // private final class MessengerImpl extends IMessenger.Stub {
-    //     public void send(Message msg) {
-    //         msg.sendingUid = Binder.getCallingUid();
-    //         Handler.this.sendMessage(msg);
-    //     }
-    // }
 
     private static Message getPostMessage(Runnable r) {
         Message m = Message.obtain();

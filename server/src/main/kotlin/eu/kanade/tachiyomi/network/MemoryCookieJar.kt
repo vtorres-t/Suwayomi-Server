@@ -39,7 +39,7 @@ class MemoryCookieJar : CookieJar {
     ) {
         val cookiesToAdd = cookies.map { WrappedCookie.wrap(it) }
 
-        cache.removeAll(cookiesToAdd)
+        cache.removeAll(cookiesToAdd.toSet())
         cache.addAll(cookiesToAdd)
     }
 
