@@ -8,7 +8,6 @@ package suwayomi.tachidesk.manga.model.table
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 import org.jetbrains.exposed.dao.id.IntIdTable
-import suwayomi.tachidesk.manga.model.table.ChapterMetaTable.ref
 
 /**
  * Metadata storage for clients, about Source with id == [ref].

@@ -77,7 +77,7 @@ class DownloadType(
         when (downloadChapter.state) {
             OtherDownloadState.Queued -> DownloadState.QUEUED
             OtherDownloadState.Downloading -> DownloadState.DOWNLOADING
-            OtherDownloadState.Finished -> DownloadState.FINISHED
+            OtherDownloadState.Finished -> FINISHED
             OtherDownloadState.Error -> DownloadState.ERROR
         },
         downloadChapter.progress,

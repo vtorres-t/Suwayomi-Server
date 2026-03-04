@@ -81,7 +81,7 @@ private val logger = KotlinLogging.logger {}
 
 class ApplicationDirs(
     val dataRoot: String = ApplicationRootDir,
-    val tempRoot: String = "${System.getProperty("java.io.tmpdir")}/Tachidesk",
+    tempRoot: String = "${System.getProperty("java.io.tmpdir")}/Tachidesk",
 ) {
     val extensionsRoot = "$dataRoot/extensions"
     val downloadsRoot

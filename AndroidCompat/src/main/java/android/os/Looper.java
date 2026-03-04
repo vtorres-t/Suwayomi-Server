@@ -216,7 +216,6 @@ public final class Looper {
         final boolean logSlowDispatch = (slowDispatchThresholdMs > 0 || hasOverride);
 
         final boolean needStartTime = logSlowDelivery || logSlowDispatch;
-        final boolean needEndTime = logSlowDispatch;
 
         final long dispatchStart = needStartTime ? SystemClock.uptimeMillis() : 0;
         final long dispatchEnd;
@@ -237,7 +236,7 @@ public final class Looper {
             Log.e(TAG, "Loop handler threw", exception);
             // throw exception;
         } finally {
-            dispatchEnd = needEndTime ? SystemClock.uptimeMillis() : 0;
+            dispatchEnd = logSlowDispatch ? SystemClock.uptimeMillis() : 0;
             ThreadLocalWorkSource.restore(origWorkSource);
         }
         if (logSlowDelivery) {
@@ -268,14 +267,6 @@ public final class Looper {
 
         // Make sure that during the course of dispatching the
         // identity of the thread wasn't corrupted.
-        // final long newIdent = Binder.clearCallingIdentity();
-        // if (ident != newIdent) {
-        //     Log.wtf(TAG, "Thread identity changed from 0x"
-        //             + Long.toHexString(ident) + " to 0x"
-        //             + Long.toHexString(newIdent) + " while dispatching to "
-        //             + msg.target.getClass().getName() + " "
-        //             + msg.callback + " what=" + msg.what);
-        // }
 
         msg.recycleUnchecked();
 
@@ -303,8 +294,6 @@ public final class Looper {
 
         // Make sure the identity of this thread is that of the local process,
         // and keep track of what that identity token actually is.
-        // Binder.clearCallingIdentity();
-        // final long ident = Binder.clearCallingIdentity();
         final long ident = 0;
 
         // Allow overriding a threshold with a system prop. e.g.
@@ -322,27 +311,7 @@ public final class Looper {
 
     private static int getThresholdOverride() {
         return -1;
-        // // Allow overriding the threshold for all processes' main looper with a system prop.
-        // // e.g. adb shell 'setprop log.looper.any.main.slow 1 && stop && start'
-        // if (myLooper() == getMainLooper()) {
-        //     final int globalOverride = SystemProperties.getInt("log.looper.any.main.slow", -1);
-        //     if (globalOverride >= 0) {
-        //         return globalOverride;
-        //     }
-        // }
 
-        // // Allow overriding the threshold for all threads within a process with a system prop.
-        // // e.g. adb shell 'setprop log.looper.1000.any.slow 1 && stop && start'
-        // final int processOverride = SystemProperties.getInt("log.looper."
-        //         + Process.myUid() + ".any.slow", -1);
-        // if (processOverride >= 0) {
-        //     return processOverride;
-        // }
-
-        // return SystemProperties.getInt("log.looper."
-        //         + Process.myUid() + "."
-        //         + Thread.currentThread().getName()
-        //         + ".slow", -1);
     }
 
     private static int getThresholdOverride$ravenwood() {

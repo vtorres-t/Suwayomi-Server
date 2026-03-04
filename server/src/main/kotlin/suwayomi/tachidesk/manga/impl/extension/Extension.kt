@@ -51,7 +51,6 @@ import java.util.zip.ZipOutputStream
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.outputStream
-import kotlin.io.path.relativeTo
 
 object Extension {
     private val logger = KotlinLogging.logger {}

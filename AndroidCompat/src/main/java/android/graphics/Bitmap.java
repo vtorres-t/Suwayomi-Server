@@ -358,7 +358,7 @@ public final class Bitmap {
     }
 
     @Nullable
-    public final Config getConfig() {
+    public Config getConfig() {
         int type = image.getType();
         return bufferedImageTypeToConfig(type);
     }

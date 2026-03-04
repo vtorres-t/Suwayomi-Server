@@ -206,60 +206,7 @@ public class BaseBundle {
             }
         }
     }
-    /*private void initializeFromParcelLocked(@NonNull Parcel parcelledData, boolean recycleParcel) {
-        if (LOG_DEFUSABLE && sShouldDefuse && (mFlags & FLAG_DEFUSABLE) == 0) {
-//            Slog.wtf(TAG, "Attempting to unparcel a Bundle while in transit; this may "
-//                    + "clobber all data inside!", new Throwable());
-        }
-        if (isEmptyParcel(parcelledData)) {
-            if (DEBUG) {
-                Log.d(TAG, "unparcel "
-                        + Integer.toHexString(System.identityHashCode(this)) + ": empty");
-            }
-            if (mMap == null) {
-                mMap = new ArrayMap<>(1);
-            } else {
-                mMap.erase();
-            }
-            mParcelledData = null;
-            return;
-        }
-        final int count = parcelledData.readInt();
-        if (DEBUG) {
-            Log.d(TAG, "unparcel " + Integer.toHexString(System.identityHashCode(this))
-                    + ": reading " + count + " maps");
-        }
-        if (count < 0) {
-            return;
-        }
-        ArrayMap<String, Object> map = mMap;
-        if (map == null) {
-            map = new ArrayMap<>(count);
-        } else {
-            map.erase();
-            map.ensureCapacity(count);
-        }
-        try {
-            parcelledData.readArrayMapInternal(map, count, mClassLoader);
-        } catch (BadParcelableException e) {
-            if (sShouldDefuse) {
-                Log.w(TAG, "Failed to parse Bundle, but defusing quietly", e);
-                map.erase();
-            } else {
-                throw e;
-            }
-        } finally {
-            mMap = map;
-            if (recycleParcel) {
-                recycleParcel(parcelledData);
-            }
-            mParcelledData = null;
-        }
-        if (DEBUG) {
-            Log.d(TAG, "unparcel " + Integer.toHexString(System.identityHashCode(this))
-                    + " final map: " + mMap);
-        }
-    }*/
+
     /**
      * @hide
      */

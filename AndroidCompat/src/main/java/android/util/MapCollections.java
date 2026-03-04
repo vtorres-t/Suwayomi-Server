@@ -112,7 +112,7 @@ abstract class MapCollections<K, V> {
             return colSetValue(mIndex, object);
         }
         @Override
-        public final boolean equals(Object o) {
+        public boolean equals(Object o) {
             if (!mEntryValid) {
                 throw new IllegalStateException(
                         "This container does not support retaining Map.Entry objects");
@@ -125,7 +125,7 @@ abstract class MapCollections<K, V> {
                     && Objects.equals(e.getValue(), colGetEntry(mIndex, 1));
         }
         @Override
-        public final int hashCode() {
+        public int hashCode() {
             if (!mEntryValid) {
                 throw new IllegalStateException(
                         "This container does not support retaining Map.Entry objects");
@@ -136,7 +136,7 @@ abstract class MapCollections<K, V> {
                     (value == null ? 0 : value.hashCode());
         }
         @Override
-        public final String toString() {
+        public String toString() {
             return getKey() + "=" + getValue();
         }
     }

@@ -18,7 +18,7 @@ enum class IncludeOrExclude(
     ;
 
     companion object {
-        fun fromValue(value: Int) = IncludeOrExclude.values().find { it.value == value } ?: UNSET
+        fun fromValue(value: Int) = entries.find { it.value == value } ?: UNSET
     }
 }
 

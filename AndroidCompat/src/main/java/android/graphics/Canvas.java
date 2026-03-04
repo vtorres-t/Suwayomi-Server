@@ -106,7 +106,7 @@ public final class Canvas {
         canvas.scale(sx, sy);
     }
 
-    public final void scale(float sx, float sy, float px, float py) {
+    public void scale(float sx, float sy, float px, float py) {
         if (sx == 1.0f && sy == 1.0f) return;
         translate(px, py);
         scale(sx, sy);
@@ -118,7 +118,7 @@ public final class Canvas {
         canvas.rotate(degrees);
     }
 
-    public final void rotate(float degrees, float px, float py) {
+    public void rotate(float degrees, float px, float py) {
         if (degrees == 0.0f) return;
         canvas.rotate(degrees, px, py);
     }

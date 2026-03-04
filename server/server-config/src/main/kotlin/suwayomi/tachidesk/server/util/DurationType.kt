@@ -15,8 +15,7 @@ class DurationType : CustomType {
     ): Any? {
         val clazz = ClassContainer(String::class)
         val reader = SelectReader.getReader(clazz)
-        val path = name
-        val result = reader(config, path) as String
+        val result = reader(config, name) as String
         return Duration.parse(result)
     }
 

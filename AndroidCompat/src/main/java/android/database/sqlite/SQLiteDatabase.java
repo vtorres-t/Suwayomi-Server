@@ -1650,7 +1650,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
      *
      * @return The path to the database file.
      */
-    public final String getPath() {
+    public String getPath() {
         synchronized (mLock) {
             return mConfigurationLocked.path;
         }
