@@ -200,8 +200,8 @@ jobs:
         run: |
           for file in $(find ./release -name "*.jar"); do
             filename=$(basename "$file" .jar)
-            part1=$(echo "$filename" | cut -d'-' -f1)
-            echo "TAG=$part1" >> $GITHUB_ENV
+            part3=$(echo "$filename" | cut -d'-' -f3)
+            echo "TAG=$part3" >> $GITHUB_ENV
           done
         shell: bash
 
