@@ -740,10 +740,6 @@ public final class MessageQueue {
         mNextPollTimeoutMillis = 0;
         int pendingIdleHandlerCount = -1; // -1 only during first iteration
         while (true) {
-            if (mNextPollTimeoutMillis != 0) {
-                // Binder.flushPendingCommands();
-            }
-
             mMessageDirectlyQueued = false;
             ShadowPausedMessageQueue.nativePollOnce(ptr, mNextPollTimeoutMillis);
 

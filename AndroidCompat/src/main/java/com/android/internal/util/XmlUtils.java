@@ -37,15 +37,6 @@ import java.util.*;
 /** {@hide} */
 public class XmlUtils {
     private static final String STRING_ARRAY_SEPARATOR = ":";
-    public static void skipCurrentTag(XmlPullParser parser)
-            throws XmlPullParserException, IOException {
-        int outerDepth = parser.getDepth();
-        int type;
-        while ((type=parser.next()) != XmlPullParser.END_DOCUMENT
-               && (type != XmlPullParser.END_TAG
-                       || parser.getDepth() > outerDepth)) {
-        }
-    }
     public static final int
     convertValueToList(CharSequence value, String[] options, int defaultValue)
     {
@@ -1302,8 +1293,6 @@ public class XmlUtils {
             }
             throw new XmlPullParserException(
                 "Unexpected end of document in <string>");
-        } else if ((res = readThisPrimitiveValueXml(parser, tagName)) != null) {
-            // all work already done by readThisPrimitiveValueXml
         } else if (tagName.equals("byte-array")) {
             res = readThisByteArrayXml(parser, "byte-array", name);
             name[0] = valueName;
@@ -1405,29 +1394,6 @@ public class XmlUtils {
         } catch (NumberFormatException e) {
             throw new XmlPullParserException(
                     "Not a number in value attribute in <" + tagName + ">");
-        }
-    }
-    public static final void beginDocument(XmlPullParser parser, String firstElementName) throws XmlPullParserException, IOException
-    {
-        int type;
-        while ((type=parser.next()) != parser.START_TAG
-                   && type != parser.END_DOCUMENT) {
-            ;
-        }
-        if (type != parser.START_TAG) {
-            throw new XmlPullParserException("No start tag found");
-        }
-        if (!parser.getName().equals(firstElementName)) {
-            throw new XmlPullParserException("Unexpected start tag: found " + parser.getName() +
-                    ", expected " + firstElementName);
-        }
-    }
-    public static final void nextElement(XmlPullParser parser) throws XmlPullParserException, IOException
-    {
-        int type;
-        while ((type=parser.next()) != parser.START_TAG
-                   && type != parser.END_DOCUMENT) {
-            ;
         }
     }
     public static boolean nextElementWithin(XmlPullParser parser, int outerDepth)

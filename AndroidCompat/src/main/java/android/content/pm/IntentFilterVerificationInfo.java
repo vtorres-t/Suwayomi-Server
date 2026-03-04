@@ -153,7 +153,6 @@ public final class IntentFilterVerificationInfo implements Parcelable {
             } else {
                 Log.w(TAG, "Unknown tag parsing IntentFilter: " + tagName);
             }
-            XmlUtils.skipCurrentTag(parser);
         }
     }
     /** @hide */
