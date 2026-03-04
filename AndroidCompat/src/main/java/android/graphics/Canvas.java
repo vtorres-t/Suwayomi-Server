@@ -19,7 +19,7 @@ import java.util.List;
 public final class Canvas {
     private BufferedImage canvasImage;
     private Graphics2D canvas;
-    private List<AffineTransform> transformStack = new ArrayList<AffineTransform>();
+    private List<AffineTransform> transformStack = new ArrayList<>();
 
     private static final String TAG = "Canvas";
 

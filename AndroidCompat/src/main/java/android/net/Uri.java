@@ -1303,7 +1303,7 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         if (query == null) {
             return Collections.emptySet();
         }
-        Set<String> names = new LinkedHashSet<String>();
+        Set<String> names = new LinkedHashSet<>();
         int start = 0;
         do {
             int next = query.indexOf('&', start);
@@ -1345,7 +1345,7 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         } catch (UnsupportedEncodingException e) {
             throw new AssertionError(e);
         }
-        ArrayList<String> values = new ArrayList<String>();
+        ArrayList<String> values = new ArrayList<>();
         int start = 0;
         do {
             int nextAmpersand = query.indexOf('&', start);
@@ -1472,18 +1472,22 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
      * Reads Uris from Parcels.
      */
     public static final Parcelable.Creator<Uri> CREATOR
-            = new Parcelable.Creator<Uri>() {
+            = new Parcelable.Creator<>() {
         public Uri createFromParcel(Parcel in) {
             int type = in.readInt();
             switch (type) {
-                case NULL_TYPE_ID: return null;
-                case StringUri.TYPE_ID: return StringUri.readFrom(in);
-                case OpaqueUri.TYPE_ID: return OpaqueUri.readFrom(in);
+                case NULL_TYPE_ID:
+                    return null;
+                case StringUri.TYPE_ID:
+                    return StringUri.readFrom(in);
+                case OpaqueUri.TYPE_ID:
+                    return OpaqueUri.readFrom(in);
                 case HierarchicalUri.TYPE_ID:
                     return HierarchicalUri.readFrom(in);
             }
             throw new IllegalArgumentException("Unknown URI type: " + type);
         }
+
         public Uri[] newArray(int size) {
             return new Uri[size];
         }

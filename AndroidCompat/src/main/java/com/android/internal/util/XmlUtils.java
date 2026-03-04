@@ -729,7 +729,7 @@ public class XmlUtils {
             String[] name, ReadMapCallback callback)
             throws XmlPullParserException, java.io.IOException
     {
-        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> map = new HashMap<>();
         int eventType = parser.getEventType();
         do {
             if (eventType == parser.START_TAG) {

@@ -113,7 +113,7 @@ public final class Rect {
         out.writeInt(bottom);
     }
 
-    public static final Parcelable.Creator<Rect> CREATOR = new Parcelable.Creator<Rect>() {
+    public static final Parcelable.Creator<Rect> CREATOR = new Parcelable.Creator<>() {
         @Override
         public Rect createFromParcel(Parcel in) {
             Rect r = new Rect();

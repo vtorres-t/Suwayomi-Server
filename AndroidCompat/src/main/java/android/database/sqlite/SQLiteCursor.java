@@ -158,7 +158,7 @@ public class SQLiteCursor extends AbstractWindowedCursor {
         if (mColumnNameMap == null) {
             String[] columns = mColumns;
             int columnCount = columns.length;
-            HashMap<String, Integer> map = new HashMap<String, Integer>(columnCount, 1);
+            HashMap<String, Integer> map = new HashMap<>(columnCount, 1);
             for (int i = 0; i < columnCount; i++) {
                 map.put(columns[i], i);
             }

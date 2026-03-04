@@ -1109,16 +1109,17 @@ public final class Bundle extends BaseBundle implements Cloneable, Parcelable {
         }
     }
     public static final Parcelable.Creator<Bundle> CREATOR =
-        new Parcelable.Creator<Bundle>() {
-        @Override
-        public Bundle createFromParcel(Parcel in) {
-            return in.readBundle();
-        }
-        @Override
-        public Bundle[] newArray(int size) {
-            return new Bundle[size];
-        }
-    };
+            new Parcelable.Creator<>() {
+                @Override
+                public Bundle createFromParcel(Parcel in) {
+                    return in.readBundle();
+                }
+
+                @Override
+                public Bundle[] newArray(int size) {
+                    return new Bundle[size];
+                }
+            };
     /**
      * Report the nature of this Parcelable's contents
      */

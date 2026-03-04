@@ -212,10 +212,11 @@ public final class IntentFilterVerificationInfo implements Parcelable {
         dest.writeStringList(new ArrayList<>(mDomains));
     }
     public static final Creator<IntentFilterVerificationInfo> CREATOR =
-            new Creator<IntentFilterVerificationInfo>() {
+            new Creator<>() {
                 public IntentFilterVerificationInfo createFromParcel(Parcel source) {
                     return new IntentFilterVerificationInfo(source);
                 }
+
                 public IntentFilterVerificationInfo[] newArray(int size) {
                     return new IntentFilterVerificationInfo[size];
                 }

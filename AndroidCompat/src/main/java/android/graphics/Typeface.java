@@ -135,7 +135,7 @@ public class Typeface {
             Log.v(TAG, "Font loaded from " + path.toURI());
             mPath = null;
             mStyle = 0;
-            mAttributes = new HashMap<TextAttribute, Object>();
+            mAttributes = new HashMap<>();
         }
 
         public Builder(@NonNull FileDescriptor fd) {
@@ -146,7 +146,7 @@ public class Typeface {
             mFont = loadFont(new File(path));
             mPath = path;
             mStyle = 0;
-            mAttributes = new HashMap<TextAttribute, Object>();
+            mAttributes = new HashMap<>();
         }
 
         public Builder(@NonNull AssetManager assetManager, @NonNull String path) {

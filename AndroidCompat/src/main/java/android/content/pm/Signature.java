@@ -113,7 +113,7 @@ public class Signature implements Parcelable {
             return str;
         }
         str = new String(toChars());
-        mStringRef = new SoftReference<String>(str);
+        mStringRef = new SoftReference<>(str);
         return str;
     }
     /**
@@ -164,10 +164,11 @@ public class Signature implements Parcelable {
         dest.writeByteArray(mSignature);
     }
     public static final Parcelable.Creator<Signature> CREATOR
-            = new Parcelable.Creator<Signature>() {
+            = new Parcelable.Creator<>() {
         public Signature createFromParcel(Parcel source) {
             return new Signature(source);
         }
+
         public Signature[] newArray(int size) {
             return new Signature[size];
         }

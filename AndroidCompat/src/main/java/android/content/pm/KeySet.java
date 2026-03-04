@@ -55,7 +55,7 @@ public class KeySet implements Parcelable {
      * @hide
      */
     public static final Parcelable.Creator<KeySet> CREATOR
-            = new Parcelable.Creator<KeySet>() {
+            = new Parcelable.Creator<>() {
         /**
          * Create a KeySet from a Parcel
          *
@@ -64,6 +64,7 @@ public class KeySet implements Parcelable {
         public KeySet createFromParcel(Parcel source) {
             return readFromParcel(source);
         }
+
         /**
          * Create an array of null KeySets
          */

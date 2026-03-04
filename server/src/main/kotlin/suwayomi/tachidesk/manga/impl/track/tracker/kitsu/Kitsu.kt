@@ -1,10 +1,10 @@
 package suwayomi.tachidesk.manga.impl.track.tracker.kitsu
 
 import android.annotation.StringRes
-import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuOAuth
 import kotlinx.serialization.json.Json
 import suwayomi.tachidesk.manga.impl.track.tracker.DeletableTracker
 import suwayomi.tachidesk.manga.impl.track.tracker.Tracker
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuOAuth
 import suwayomi.tachidesk.manga.impl.track.tracker.model.Track
 import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackSearch
 import uy.kohesive.injekt.injectLazy

@@ -76,7 +76,7 @@ public final class Looper {
     }
 
     // sThreadLocal.get() will return null unless you've called prepare().
-    static final ThreadLocal<Looper> sThreadLocal = new ThreadLocal<Looper>();
+    static final ThreadLocal<Looper> sThreadLocal = new ThreadLocal<>();
     private static Looper sMainLooper;  // guarded by Looper.class
     private static Observer sObserver;
 

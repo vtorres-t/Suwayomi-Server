@@ -74,11 +74,12 @@ public final class VersionedPackage implements Parcelable {
         parcel.writeString(mPackageName);
         parcel.writeInt(mVersionCode);
     }
-    public static final Creator<VersionedPackage> CREATOR = new Creator<VersionedPackage>() {
+    public static final Creator<VersionedPackage> CREATOR = new Creator<>() {
         @Override
         public VersionedPackage createFromParcel(Parcel source) {
             return new VersionedPackage(source);
         }
+
         @Override
         public VersionedPackage[] newArray(int size) {
             return new VersionedPackage[size];

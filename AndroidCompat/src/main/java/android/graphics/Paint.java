@@ -348,7 +348,7 @@ public class Paint {
     public void setFlags(@PaintFlag int flags) {
         mFlags = flags;
 
-        Map<TextAttribute, Object> fontAttributes = new HashMap<TextAttribute, Object>();
+        Map<TextAttribute, Object> fontAttributes = new HashMap<>();
         if ((flags & UNDERLINE_TEXT_FLAG) != 0) {
             fontAttributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         } else {
@@ -606,7 +606,7 @@ public class Paint {
     }
 
     public Typeface setTypeface(Typeface typeface) {
-        Map<TextAttribute, Object> fontAttributes = new HashMap<TextAttribute, Object>();
+        Map<TextAttribute, Object> fontAttributes = new HashMap<>();
         fontAttributes.put(TextAttribute.WEIGHT, typeface.getJavaWeight());
         mTypeface = typeface
             .deriveFont(mTypeface.getFont().getStyle(), mTypeface.getFont().getSize())

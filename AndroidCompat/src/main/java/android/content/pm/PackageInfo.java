@@ -290,11 +290,12 @@ public class PackageInfo implements Parcelable {
         dest.writeString(overlayTarget);
     }
     public static final Parcelable.Creator<PackageInfo> CREATOR
-            = new Parcelable.Creator<PackageInfo>() {
+            = new Parcelable.Creator<>() {
         @Override
         public PackageInfo createFromParcel(Parcel source) {
             return new PackageInfo(source);
         }
+
         @Override
         public PackageInfo[] newArray(int size) {
             return new PackageInfo[size];

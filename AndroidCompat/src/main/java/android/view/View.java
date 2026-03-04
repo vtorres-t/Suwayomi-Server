@@ -5355,7 +5355,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         }
 
         public static final @android.annotation.NonNull Parcelable.Creator<BaseSavedState> CREATOR
-                = new Parcelable.ClassLoaderCreator<BaseSavedState>() {
+                = new Parcelable.ClassLoaderCreator<>() {
             @Override
             public BaseSavedState createFromParcel(Parcel in) {
                 return new BaseSavedState(in);

@@ -825,10 +825,11 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         dest.writeInt(networkSecurityConfigRes);
     }
     public static final Parcelable.Creator<ApplicationInfo> CREATOR
-            = new Parcelable.Creator<ApplicationInfo>() {
+            = new Parcelable.Creator<>() {
         public ApplicationInfo createFromParcel(Parcel source) {
             return new ApplicationInfo(source);
         }
+
         public ApplicationInfo[] newArray(int size) {
             return new ApplicationInfo[size];
         }

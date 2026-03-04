@@ -1,10 +1,10 @@
 package suwayomi.tachidesk.manga.impl.track.tracker.kitsu
 
-import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuOAuth
-import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.isExpired
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.Response
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuOAuth
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.isExpired
 import suwayomi.tachidesk.server.generated.BuildConfig
 import uy.kohesive.injekt.injectLazy
 

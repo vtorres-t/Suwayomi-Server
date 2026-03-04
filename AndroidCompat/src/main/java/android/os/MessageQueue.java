@@ -194,9 +194,9 @@ public final class MessageQueue {
 
     private volatile StackNode mStateValue = sStackStateParked;
     private final ConcurrentSkipListSet<MessageNode> mPriorityQueue =
-            new ConcurrentSkipListSet<MessageNode>();
+            new ConcurrentSkipListSet<>();
     private final ConcurrentSkipListSet<MessageNode> mAsyncPriorityQueue =
-            new ConcurrentSkipListSet<MessageNode>();
+            new ConcurrentSkipListSet<>();
 
     /*
      * This helps us ensure that messages with the same timestamp are inserted in FIFO order.
@@ -313,7 +313,7 @@ public final class MessageQueue {
     private final MessageCounts mMessageCounts = new MessageCounts();
 
     private final Object mIdleHandlersLock = new Object();
-    private final ArrayList<IdleHandler> mIdleHandlers = new ArrayList<IdleHandler>();
+    private final ArrayList<IdleHandler> mIdleHandlers = new ArrayList<>();
     private IdleHandler[] mPendingIdleHandlers;
 
     private final Object mFileDescriptorRecordsLock = new Object();
