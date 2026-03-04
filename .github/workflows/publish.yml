@@ -199,9 +199,9 @@ jobs:
       - name: Get tag from Jar
         run: |
           for file in $(find ./release -name "*.jar"); do
-            filename=$(basename "$file" .jar)           # Quita la extensión
-            part1=$(echo "$filename" | cut -d'-' -f1)   # Divide por '-' y toma la parte 1
-            echo "TAG=$(part1)" >> $GITHUB_ENV
+            filename=$(basename "$file" .jar)
+            part1=$(echo "$filename" | cut -d'-' -f1)
+            echo "TAG=$part1" >> $GITHUB_ENV
           done
         shell: bash
 
