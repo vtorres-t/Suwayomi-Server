@@ -11,7 +11,9 @@ import eu.kanade.tachiyomi.source.local.LocalSource
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.online.HttpSource
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 import libcore.net.MimeUtils
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
@@ -193,7 +195,9 @@ object Page {
             )
         val conversions = serverConfig.downloadConversions.value
         if (conversions.isEmpty() || !downloadCacheFolder.exists()) {
-            inputStream.close()
+            withContext(Dispatchers.IO) {
+                inputStream.close()
+            }
             return
         }
         val defaultConversion = conversions["default"]
@@ -201,7 +205,9 @@ object Page {
             conversions[mime]
                 ?: defaultConversion
         if (conversion == null) {
-            inputStream.close()
+            withContext(Dispatchers.IO) {
+                inputStream.close()
+            }
             return
         }
 
@@ -216,7 +222,9 @@ object Page {
                 } catch (e: Exception) {
                     throw e
                 } finally {
-                    inputStream.close()
+                    withContext(Dispatchers.IO) {
+                        inputStream.close()
+                    }
                 }
 
             if (converted != null) {

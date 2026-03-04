@@ -43,7 +43,7 @@ public final class URLUtil {
         String retVal = inUrl;
         WebAddress webAddress;
         if (TRACE) Log.v(LOGTAG, "guessURL before queueRequest: " + inUrl);
-        if (inUrl.length() == 0) return inUrl;
+        if (inUrl.isEmpty()) return inUrl;
         if (inUrl.startsWith("about:")) return inUrl;
         // Do not try to interpret data scheme URLs
         if (inUrl.startsWith("data:")) return inUrl;
@@ -52,7 +52,7 @@ public final class URLUtil {
         // Do not try to interpret javascript scheme URLs
         if (inUrl.startsWith("javascript:")) return inUrl;
         // bug 762454: strip period off end of url
-        if (inUrl.endsWith(".") == true) {
+        if (inUrl.endsWith(".")) {
             inUrl = inUrl.substring(0, inUrl.length() - 1);
         }
         try {
@@ -258,7 +258,7 @@ public final class URLUtil {
      *
      * @return suggested filename
      */
-    public static final String guessFileName(
+    public static String guessFileName(
             String url,
             String contentDisposition,
             String mimeType) {

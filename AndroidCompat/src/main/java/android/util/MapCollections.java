@@ -226,7 +226,8 @@ abstract class MapCollections<K, V> {
             }
             return result;
         }
-    };
+    }
+
     final class KeySet implements Set<K> {
         @Override
         public boolean add(K object) {
@@ -298,7 +299,8 @@ abstract class MapCollections<K, V> {
             }
             return result;
         }
-    };
+    }
+
     final class ValuesCollection implements Collection<V> {
         @Override
         public boolean add(V object) {
@@ -385,7 +387,8 @@ abstract class MapCollections<K, V> {
         public <T> T[] toArray(T[] array) {
             return toArrayHelper(array, 1);
         }
-    };
+    }
+
     public static <K, V> boolean containsAllHelper(Map<K, V> map, Collection<?> collection) {
         Iterator<?> it = collection.iterator();
         while (it.hasNext()) {

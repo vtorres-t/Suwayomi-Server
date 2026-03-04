@@ -7193,8 +7193,7 @@ public class Intent implements Parcelable, Cloneable {
         if (!Objects.equals(this.mType, other.mType)) return false;
         if (!Objects.equals(this.mPackage, other.mPackage)) return false;
         if (!Objects.equals(this.mComponent, other.mComponent)) return false;
-        if (!Objects.equals(this.mCategories, other.mCategories)) return false;
-        return true;
+        return Objects.equals(this.mCategories, other.mCategories);
     }
     /**
      * Generate hash code that matches semantics of filterEquals().

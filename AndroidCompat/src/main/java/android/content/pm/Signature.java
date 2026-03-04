@@ -38,7 +38,7 @@ public class Signature implements Parcelable {
     public Signature(byte[] signature) {
         mSignature = signature.clone();
     }
-    private static final int parseHexDigit(int nibble) {
+    private static int parseHexDigit(int nibble) {
         if ('0' <= nibble && nibble <= '9') {
             return nibble - '0';
         } else if ('a' <= nibble && nibble <= 'f') {

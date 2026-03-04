@@ -202,10 +202,6 @@ public class JSONObject {
      */
     @NonNull
     public static String numberToString(@NonNull Number number) throws JSONException {
-        if (number == null) {
-            throw new JSONException("Number must be non-null");
-        }
-
         double doubleValue = number.doubleValue();
         JSON.checkDouble(doubleValue);
 

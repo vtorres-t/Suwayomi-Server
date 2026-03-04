@@ -279,7 +279,6 @@ public class Handler {
      */
     @NonNull
     public static Handler createAsync(@NonNull Looper looper) {
-        if (looper == null) throw new NullPointerException("looper must not be null");
         return new Handler(looper, null, true);
     }
 
@@ -297,8 +296,6 @@ public class Handler {
      */
     @NonNull
     public static Handler createAsync(@NonNull Looper looper, @NonNull Callback callback) {
-        if (looper == null) throw new NullPointerException("looper must not be null");
-        if (callback == null) throw new NullPointerException("callback must not be null");
         return new Handler(looper, callback, true);
     }
 
@@ -595,9 +592,6 @@ public class Handler {
      * less funny like runUnsafe().
      */
     public final boolean runWithScissors(@NonNull Runnable r, long timeout) {
-        if (r == null) {
-            throw new IllegalArgumentException("runnable must not be null");
-        }
         if (timeout < 0) {
             throw new IllegalArgumentException("timeout must be non-negative");
         }

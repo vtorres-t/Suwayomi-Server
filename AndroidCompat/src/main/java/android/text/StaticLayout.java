@@ -226,9 +226,8 @@ public class StaticLayout extends Layout {
 
         @NonNull
         public StaticLayout build() {
-            StaticLayout result = new StaticLayout(this, mIncludePad, mEllipsize != null
+            return new StaticLayout(this, mIncludePad, mEllipsize != null
                     ? COLUMNS_ELLIPSIZE : COLUMNS_NORMAL);
-            return result;
         }
 
         private CharSequence mText;

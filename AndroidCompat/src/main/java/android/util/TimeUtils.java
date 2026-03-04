@@ -338,15 +338,11 @@ public class TimeUtils {
                                         @NonNull LocalTime start,
                                         @NonNull LocalTime end) {
         //    ////////E----+-----S////////
-        if ((reference.isBefore(start) && reference.isAfter(end)
+        return (!reference.isBefore(start) || !reference.isAfter(end))
                 //    -----+----S//////////E------
-                || (reference.isBefore(end) && reference.isBefore(start) && start.isBefore(end))
+                && (!reference.isBefore(end) || !reference.isBefore(start) || !start.isBefore(end))
                 //    ---------S//////////E---+---
-                || (reference.isAfter(end) && reference.isAfter(start)) && start.isBefore(end))) {
-            return false;
-        } else {
-            return true;
-        }
+                && ((!reference.isAfter(end) || !reference.isAfter(start)) || !start.isBefore(end));
     }
 
     /**

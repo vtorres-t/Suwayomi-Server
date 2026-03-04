@@ -275,10 +275,8 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
             }
             callbacks = mAssistCallbacks.toArray();
         }
-        if (callbacks != null) {
-            for (int i=0; i<callbacks.length; i++) {
-                ((OnProvideAssistDataListener)callbacks[i]).onProvideAssistData(activity, data);
-            }
+        for (Object callback : callbacks) {
+            ((OnProvideAssistDataListener) callback).onProvideAssistData(activity, data);
         }
     }
 }

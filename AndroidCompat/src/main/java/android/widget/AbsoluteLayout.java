@@ -99,7 +99,7 @@ public class AbsoluteLayout extends ViewGroup {
 
         public String debug(String output) {
             return output + "Absolute.LayoutParams={width="
-                    + String.valueOf(width) + ", height=" + String.valueOf(height)
+                    + width + ", height=" + height
                     + " x=" + x + " y=" + y + "}";
         }
     }
