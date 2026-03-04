@@ -383,7 +383,7 @@ public class ArrayUtils {
         }
     }
     public static <T> boolean contains(@Nullable ArraySet<T> cur, T val) {
-        return (cur != null) ? cur.contains(val) : false;
+        return cur != null && cur.contains(val);
     }
     public static @NonNull <T> ArrayList<T> add(@Nullable ArrayList<T> cur, T val) {
         if (cur == null) {
@@ -404,7 +404,7 @@ public class ArrayUtils {
         }
     }
     public static <T> boolean contains(@Nullable Collection<T> cur, T val) {
-        return (cur != null) ? cur.contains(val) : false;
+        return cur != null && cur.contains(val);
     }
     public static @Nullable <T> T[] trimToSize(@Nullable T[] array, int size) {
         if (array == null || size == 0) {

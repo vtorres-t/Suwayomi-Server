@@ -129,13 +129,12 @@ public class FastXmlSerializer implements XmlSerializer {
     private void escapeAndAppendString(final String string) throws IOException {
         final int N = string.length();
         final char NE = (char)ESCAPE_TABLE.length;
-        final String[] escapes = ESCAPE_TABLE;
         int lastPos = 0;
         int pos;
         for (pos=0; pos<N; pos++) {
             char c = string.charAt(pos);
             if (c >= NE) continue;
-            String escape = escapes[c];
+            String escape = ESCAPE_TABLE[c];
             if (escape == null) continue;
             if (lastPos < pos) append(string, lastPos, pos-lastPos);
             lastPos = pos + 1;
@@ -145,14 +144,13 @@ public class FastXmlSerializer implements XmlSerializer {
     }
     private void escapeAndAppendString(char[] buf, int start, int len) throws IOException {
         final char NE = (char)ESCAPE_TABLE.length;
-        final String[] escapes = ESCAPE_TABLE;
         int end = start+len;
         int lastPos = start;
         int pos;
         for (pos=start; pos<end; pos++) {
             char c = buf[pos];
             if (c >= NE) continue;
-            String escape = escapes[c];
+            String escape = ESCAPE_TABLE[c];
             if (escape == null) continue;
             if (lastPos < pos) append(buf, lastPos, pos-lastPos);
             lastPos = pos + 1;

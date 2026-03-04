@@ -127,8 +127,7 @@ public class DatabaseUtils {
             prog.bindDouble(index, ((Number)value).doubleValue());
         } else if (value instanceof Number) {
             prog.bindLong(index, ((Number)value).longValue());
-        } else if (value instanceof Boolean) {
-            Boolean bool = (Boolean)value;
+        } else if (value instanceof Boolean bool) {
             if (bool) {
                 prog.bindLong(index, 1);
             } else {
@@ -283,8 +282,7 @@ public class DatabaseUtils {
     public static void appendValueToSql(StringBuilder sql, Object value) {
         if (value == null) {
             sql.append("NULL");
-        } else if (value instanceof Boolean) {
-            Boolean bool = (Boolean)value;
+        } else if (value instanceof Boolean bool) {
             if (bool) {
                 sql.append('1');
             } else {
@@ -437,7 +435,7 @@ public class DatabaseUtils {
      */
     public static void dumpCurrentRow(Cursor cursor, PrintStream stream) {
         String[] cols = cursor.getColumnNames();
-        stream.println("" + cursor.getPosition() + " {");
+        stream.println(cursor.getPosition() + " {");
         int length = cols.length;
         for (int i = 0; i< length; i++) {
             String value;

@@ -902,11 +902,7 @@ public class Process {
     public static boolean isThreadInProcess(int tid, int pid) {
         StrictMode.ThreadPolicy oldPolicy = StrictMode.allowThreadDiskReads();
         try {
-            if (Os.access("/proc/" + tid + "/task/" + pid, OsConstants.F_OK)) {
-                return true;
-            } else {
-                return false;
-            }
+            return Os.access("/proc/" + tid + "/task/" + pid, OsConstants.F_OK);
         } catch (Exception e) {
             return false;
         } finally {

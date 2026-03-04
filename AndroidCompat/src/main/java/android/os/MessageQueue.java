@@ -151,9 +151,8 @@ public final class MessageQueue {
 
         @Override
         public int compareTo(@NonNull MessageNode messageNode) {
-            Message other = messageNode.mMessage;
 
-            int compared = Long.compare(mMessage.when, other.when);
+            int compared = Long.compare(mMessage.when, messageNode.mMessage.when);
             if (compared == 0) {
                 compared = Long.compare(mInsertSeq, messageNode.mInsertSeq);
             }
@@ -371,10 +370,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object,
                 Runnable r, long when) {
             final Message m = n.mMessage;
-            if (m.when <= when) {
-                return true;
-            }
-            return false;
+            return m.when <= when;
         }
     }
     private final MatchDeliverableMessages mMatchDeliverableMessages =
@@ -408,12 +404,8 @@ public final class MessageQueue {
             } catch (NoSuchElementException e) { }
         }
 
-        if ((msgNode != null && msgNode.getWhen() <= now)
-                || (asyncMsgNode != null && asyncMsgNode.getWhen() <= now)) {
-            return false;
-        }
-
-        return true;
+        return (msgNode == null || msgNode.getWhen() > now)
+                && (asyncMsgNode == null || asyncMsgNode.getWhen() > now);
     }
 
     /* Protects mNextIsDrainingStack */
@@ -981,10 +973,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object,
                 Runnable r, long when) {
             final Message m = n.mMessage;
-            if (m.target == null && m.arg1 == mBarrierToken) {
-                return true;
-            }
-            return false;
+            return m.target == null && m.arg1 == mBarrierToken;
         }
     }
 
@@ -1087,9 +1076,7 @@ public final class MessageQueue {
             while (queueNode.isBarrier()) {
                 queueNode = iterateNext(queueIter);
             }
-            if (queueNode != null && now >= queueNode.getWhen()) {
-                return true;
-            }
+            return queueNode != null && now >= queueNode.getWhen();
         }
 
         // TODO: Suwayomi moved this outside if, there was no return?
@@ -1227,10 +1214,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object,
                 Runnable r, long when) {
             final Message m = n.mMessage;
-            if (m.target == h && m.what == what && (object == null || m.obj == object)) {
-                return true;
-            }
-            return false;
+            return m.target == h && m.what == what && (object == null || m.obj == object);
         }
     }
     private final MatchHandlerWhatAndObject mMatchHandlerWhatAndObject =
@@ -1248,10 +1232,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object, Runnable r,
                 long when) {
             final Message m = n.mMessage;
-            if (m.target == h && m.what == what && (object == null || object.equals(m.obj))) {
-                return true;
-            }
-            return false;
+            return m.target == h && m.what == what && (object == null || object.equals(m.obj));
         }
     }
     private final MatchHandlerWhatAndObjectEquals mMatchHandlerWhatAndObjectEquals =
@@ -1270,10 +1251,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object,
                 Runnable r, long when) {
             final Message m = n.mMessage;
-            if (m.target == h && m.callback == r && (object == null || m.obj == object)) {
-                return true;
-            }
-            return false;
+            return m.target == h && m.callback == r && (object == null || m.obj == object);
         }
     }
     private final MatchHandlerRunnableAndObject mMatchHandlerRunnableAndObject =
@@ -1292,10 +1270,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object,
                 Runnable r, long when) {
             final Message m = n.mMessage;
-            if (m.target == h) {
-                return true;
-            }
-            return false;
+            return m.target == h;
         }
     }
     private final MatchHandler mMatchHandler = new MatchHandler();
@@ -1332,10 +1307,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object,
                 Runnable r, long when) {
             final Message m = n.mMessage;
-            if (m.target == h && m.callback == r && (object == null || object.equals(m.obj))) {
-                return true;
-            }
-            return false;
+            return m.target == h && m.callback == r && (object == null || object.equals(m.obj));
         }
     }
     private final MatchHandlerRunnableAndObjectEquals mMatchHandlerRunnableAndObjectEquals =
@@ -1352,10 +1324,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object,
                 Runnable r, long when) {
             final Message m = n.mMessage;
-            if (m.target == h && (object == null || m.obj == object)) {
-                return true;
-            }
-            return false;
+            return m.target == h && (object == null || m.obj == object);
         }
     }
     private final MatchHandlerAndObject mMatchHandlerAndObject = new MatchHandlerAndObject();
@@ -1371,10 +1340,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object,
                 Runnable r, long when) {
             final Message m = n.mMessage;
-            if (m.target == h && (object == null || object.equals(m.obj))) {
-                return true;
-            }
-            return false;
+            return m.target == h && (object == null || object.equals(m.obj));
         }
     }
     private final MatchHandlerAndObjectEquals mMatchHandlerAndObjectEquals =
@@ -1403,10 +1369,7 @@ public final class MessageQueue {
         public boolean compareMessage(MessageNode n, Handler h, int what, Object object,
                 Runnable r, long when) {
             final Message m = n.mMessage;
-            if (m.when > when) {
-                return true;
-            }
-            return false;
+            return m.when > when;
         }
     }
     private final MatchAllFutureMessages mMatchAllFutureMessages = new MatchAllFutureMessages();

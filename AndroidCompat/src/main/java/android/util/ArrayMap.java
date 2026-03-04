@@ -530,7 +530,7 @@ public final class ArrayMap<K, V> implements Map<K, V> {
                 if (cur == prev) {
                     throw new IllegalArgumentException("Duplicate key in ArrayMap: " + cur);
                 }
-                if (cur != null && prev != null && cur.equals(prev)) {
+                if (cur != null && cur.equals(prev)) {
                     throw new IllegalArgumentException("Duplicate key in ArrayMap: " + cur);
                 }
             }

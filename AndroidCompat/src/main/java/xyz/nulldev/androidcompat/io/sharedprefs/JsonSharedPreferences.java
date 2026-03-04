@@ -37,10 +37,10 @@ public class JsonSharedPreferences implements SharedPreferences {
     private static final String KEY_VALUE = "v";
 
     private Map<String, Object> prefs = new HashMap<>(); //In-memory preference values
-    private List<OnSharedPreferenceChangeListener> listeners = new ArrayList<>(); //Change listeners
+    private final List<OnSharedPreferenceChangeListener> listeners = new ArrayList<>(); //Change listeners
     private File file; //Where the values should be stored
 
-    private Logger logger = LoggerFactory.getLogger(JsonSharedPreferences.class);
+    private final Logger logger = LoggerFactory.getLogger(JsonSharedPreferences.class);
 
     /**
      * Create a SharedPreference instance from a file

@@ -125,7 +125,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     }
     @Override
     public boolean requery() {
-        if (mSelfObserver != null && mSelfObserverRegistered == false) {
+        if (mSelfObserver != null && !mSelfObserverRegistered) {
             mContentResolver.registerContentObserver(mNotifyUri, true, mSelfObserver);
             mSelfObserverRegistered = true;
         }
@@ -199,7 +199,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
             return true;
         }
         boolean result = onMove(mPos, position);
-        if (result == false) {
+        if (!result) {
             mPos = -1;
         } else {
             mPos = position;
@@ -383,7 +383,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     }
     @Override
     protected void finalize() {
-        if (mSelfObserver != null && mSelfObserverRegistered == true) {
+        if (mSelfObserver != null && mSelfObserverRegistered) {
             mContentResolver.unregisterContentObserver(mSelfObserver);
         }
         try {

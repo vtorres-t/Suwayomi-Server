@@ -1202,13 +1202,7 @@ public class ConnectivityManager {
 
     private static final SparseIntArray sLegacyTypeToTransport = null;
 
-    static {
-    }
-
     private static final SparseIntArray sLegacyTypeToCapability = null;
-
-    static {
-    }
 
     /**
      * Given a legacy type (TYPE_WIFI, ...) returns a NetworkCapabilities
