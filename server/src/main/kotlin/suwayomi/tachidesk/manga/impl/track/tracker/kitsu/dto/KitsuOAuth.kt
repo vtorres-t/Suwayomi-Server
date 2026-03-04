@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.data.track.kitsu.dto
+package suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

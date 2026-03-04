@@ -45,9 +45,9 @@ class AnilistApi(
     suspend fun addLibManga(track: Track): Track =
         withIOContext {
             val query =
-                """
-            |mutation AddManga(${'$'}mangaId: Int, ${'$'}progress: Int, ${'$'}status: MediaListStatus, ${'$'}private: Boolean) {
-                |SaveMediaListEntry (mediaId: ${'$'}mangaId, progress: ${'$'}progress, status: ${'$'}status, private: ${'$'}private) {
+                $$"""
+            |mutation AddManga($mangaId: Int, $progress: Int, $status: MediaListStatus, $private: Boolean) {
+                |SaveMediaListEntry (mediaId: $mangaId, progress: $progress, status: $status, private: $private) {
                 |   id
                 |   status
                 |}

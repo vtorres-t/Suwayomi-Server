@@ -1,7 +1,7 @@
 package suwayomi.tachidesk.manga.impl.track.tracker.kitsu
 
 import androidx.core.net.toUri
-import eu.kanade.tachiyomi.data.track.kitsu.dto.KitsuOAuth
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuOAuth
 import eu.kanade.tachiyomi.network.DELETE
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.POST
