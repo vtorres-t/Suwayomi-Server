@@ -196,8 +196,14 @@ jobs:
       - name: Generate checksums
         run: cd release && sha256sum * > Checksums.sha256
 
-      - name: set env
-        run: echo "NOW=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+      - name: Get tag from Jar
+        run: |
+          for file in $(find ./release -name "*.jar"); do
+            filename=$(basename "$file" .jar)           # Quita la extensión
+            part1=$(echo "$filename" | cut -d'-' -f1)   # Divide por '-' y toma la parte 1
+            echo "TAG=$(part1)" >> $GITHUB_ENV
+          done
+        shell: bash
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -206,4 +212,4 @@ jobs:
           files: release/*
           prerelease: false
           draft: false
-          tag_name: ${{ env.NOW }}
+          tag_name: ${{ env.TAG }}
