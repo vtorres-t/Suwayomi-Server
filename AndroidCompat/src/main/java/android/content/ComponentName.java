@@ -18,7 +18,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import java.io.PrintWriter;
-import java.lang.Comparable;
+
 /**
  * Identifier for a specific application component
  * ({@link android.app.Activity}, {@link android.app.Service},

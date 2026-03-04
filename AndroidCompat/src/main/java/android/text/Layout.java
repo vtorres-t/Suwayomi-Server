@@ -34,7 +34,6 @@ import android.text.style.AlignmentSpan;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.LeadingMarginSpan.LeadingMarginSpan2;
 import android.text.style.ParagraphStyle;
-import android.util.Log;
 import com.android.internal.util.ArrayUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

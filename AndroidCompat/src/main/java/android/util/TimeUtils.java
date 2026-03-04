@@ -17,20 +17,15 @@
 package android.util;
 
 import android.annotation.NonNull;
-import android.annotation.Nullable;
 import android.annotation.TestApi;
-import android.os.Build;
 import android.os.SystemClock;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 /**
  * A class containing utility methods related to time zones.

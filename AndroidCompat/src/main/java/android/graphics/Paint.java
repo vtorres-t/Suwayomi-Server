@@ -18,24 +18,18 @@ package android.graphics;
 
 import android.annotation.ColorInt;
 import android.annotation.ColorLong;
-import android.annotation.IntDef;
 import android.annotation.IntRange;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.Size;
-import android.os.Build;
 import android.os.LocaleList;
 import android.text.SpannableString;
 import android.text.SpannedString;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.awt.Font;
 import java.awt.font.TextAttribute;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;

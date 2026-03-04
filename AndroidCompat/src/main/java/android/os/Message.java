@@ -18,7 +18,6 @@ package android.os;
 
 import android.annotation.Nullable;
 import android.util.TimeUtils;
-import android.util.proto.ProtoOutputStream;
 
 /**
  *

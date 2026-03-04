@@ -18,8 +18,6 @@ package android.util;
 
 import android.annotation.NonNull;
 import android.annotation.Nullable;
-import android.annotation.SystemApi;
-import android.os.Build;
 
 /**
  * API for sending log output to the {@link Log#LOG_ID_SYSTEM} buffer.
