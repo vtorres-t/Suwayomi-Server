@@ -528,8 +528,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
                     // Opaque URI.
                     return null;
                 }
-            } else {
-                // All relative URIs are hierarchical.
             }
             return parsePath(uriString, ssi);
         }
@@ -1568,8 +1566,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             if (nextToEncode > current) {
                 // Append allowed characters leading up to this point.
                 encoded.append(s, current, nextToEncode);
-            } else {
-                // assert nextToEncode == current
             }
             // Switch to "encoding" mode.
             // Find the next allowed character.
@@ -1960,17 +1956,6 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             return Uri.fromFile(new File(canonicalPath));
         } else {
             return this;
-        }
-    }
-    /**
-     * If this is a {@code file://} Uri, it will be reported to
-     * {@link StrictMode}.
-     *
-     * @hide
-     */
-    public void checkFileUriExposed(String location) {
-        if ("file".equals(getScheme())) {
-            //StrictMode.onFileUriExposed(location);
         }
     }
     /**
