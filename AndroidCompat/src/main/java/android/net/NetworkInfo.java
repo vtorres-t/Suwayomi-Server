@@ -90,7 +90,7 @@ public class NetworkInfo implements Parcelable {
      * of <code>DetailedState</code>.
      */
     private static final EnumMap<DetailedState, State> stateMap =
-        new EnumMap<DetailedState, State>(DetailedState.class);
+            new EnumMap<>(DetailedState.class);
     static {
         stateMap.put(DetailedState.IDLE, State.DISCONNECTED);
         stateMap.put(DetailedState.SCANNING, State.DISCONNECTED);
@@ -471,7 +471,7 @@ public class NetworkInfo implements Parcelable {
             dest.writeString(mExtraInfo);
         }
     }
-    public static final Creator<NetworkInfo> CREATOR = new Creator<NetworkInfo>() {
+    public static final Creator<NetworkInfo> CREATOR = new Creator<>() {
         @Override
         public NetworkInfo createFromParcel(Parcel in) {
             int netType = in.readInt();
@@ -488,6 +488,7 @@ public class NetworkInfo implements Parcelable {
             netInfo.mExtraInfo = in.readString();
             return netInfo;
         }
+
         @Override
         public NetworkInfo[] newArray(int size) {
             return new NetworkInfo[size];

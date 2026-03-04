@@ -397,7 +397,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         WeakReference<AbstractCursor> mCursor;
         public SelfContentObserver(AbstractCursor cursor) {
             super(null);
-            mCursor = new WeakReference<AbstractCursor>(cursor);
+            mCursor = new WeakReference<>(cursor);
         }
         @Override
         public boolean deliverSelfNotifications() {

@@ -16,7 +16,7 @@ public class NativeObjRegistry<T> {
 
   private final String name;
   private final boolean debug;
-  private final HashMap<Long, T> nativeObjToIdMap = new HashMap<Long, T>();
+  private final HashMap<Long, T> nativeObjToIdMap = new HashMap<>();
   private final Map<Long, DebugInfo> idToDebugInfoMap;
 
   private long nextId = INITIAL_ID;

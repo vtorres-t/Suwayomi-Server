@@ -90,7 +90,7 @@ public class BaseBundle {
      */
     BaseBundle(@Nullable ClassLoader loader, int capacity) {
         mMap = capacity > 0 ?
-                new ArrayMap<String, Object>(capacity) : new ArrayMap<String, Object>();
+                new ArrayMap<>(capacity) : new ArrayMap<>();
         mClassLoader = loader == null ? getClass().getClassLoader() : loader;
     }
     /**

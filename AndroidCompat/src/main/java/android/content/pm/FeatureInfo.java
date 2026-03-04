@@ -102,11 +102,12 @@ public class FeatureInfo implements Parcelable {
         dest.writeInt(reqGlEsVersion);
         dest.writeInt(flags);
     }
-    public static final Creator<FeatureInfo> CREATOR = new Creator<FeatureInfo>() {
+    public static final Creator<FeatureInfo> CREATOR = new Creator<>() {
         @Override
         public FeatureInfo createFromParcel(Parcel source) {
             return new FeatureInfo(source);
         }
+
         @Override
         public FeatureInfo[] newArray(int size) {
             return new FeatureInfo[size];

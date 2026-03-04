@@ -254,7 +254,7 @@ abstract class MapCollections<K, V> {
         }
         @Override
         public Iterator<K> iterator() {
-            return new ArrayIterator<K>(0);
+            return new ArrayIterator<>(0);
         }
         @Override
         public boolean remove(Object object) {
@@ -332,7 +332,7 @@ abstract class MapCollections<K, V> {
         }
         @Override
         public Iterator<V> iterator() {
-            return new ArrayIterator<V>(1);
+            return new ArrayIterator<>(1);
         }
         @Override
         public boolean remove(Object object) {

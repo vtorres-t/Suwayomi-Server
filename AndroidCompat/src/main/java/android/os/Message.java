@@ -570,7 +570,7 @@ public final class Message implements Parcelable {
     }
 
     public static final @android.annotation.NonNull Parcelable.Creator<Message> CREATOR
-            = new Parcelable.Creator<Message>() {
+            = new Parcelable.Creator<>() {
         public Message createFromParcel(Parcel source) {
             Message msg = Message.obtain();
             msg.readFromParcel(source);

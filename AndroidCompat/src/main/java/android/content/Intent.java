@@ -767,17 +767,18 @@ public class Intent implements Parcelable, Cloneable {
          * Used to read a ShortcutIconResource from a Parcel.
          */
         public static final Parcelable.Creator<ShortcutIconResource> CREATOR =
-            new Parcelable.Creator<ShortcutIconResource>() {
-                public ShortcutIconResource createFromParcel(Parcel source) {
-                    ShortcutIconResource icon = new ShortcutIconResource();
-                    icon.packageName = source.readString();
-                    icon.resourceName = source.readString();
-                    return icon;
-                }
-                public ShortcutIconResource[] newArray(int size) {
-                    return new ShortcutIconResource[size];
-                }
-            };
+                new Parcelable.Creator<>() {
+                    public ShortcutIconResource createFromParcel(Parcel source) {
+                        ShortcutIconResource icon = new ShortcutIconResource();
+                        icon.packageName = source.readString();
+                        icon.resourceName = source.readString();
+                        return icon;
+                    }
+
+                    public ShortcutIconResource[] newArray(int size) {
+                        return new ShortcutIconResource[size];
+                    }
+                };
         /**
          * No special parcel contents.
          */
@@ -4503,7 +4504,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mComponent = o.mComponent;
         this.mFlags = o.mFlags;
         if (o.mCategories != null) {
-            this.mCategories = new ArraySet<String>(o.mCategories);
+            this.mCategories = new ArraySet<>(o.mCategories);
         }
         if (o.mExtras != null) {
             this.mExtras = new Bundle(o.mExtras);
@@ -4529,7 +4530,7 @@ public class Intent implements Parcelable, Cloneable {
         this.mPackage = o.mPackage;
         this.mComponent = o.mComponent;
         if (o.mCategories != null) {
-            this.mCategories = new ArraySet<String>(o.mCategories);
+            this.mCategories = new ArraySet<>(o.mCategories);
         }
     }
     /**
@@ -6120,7 +6121,7 @@ public class Intent implements Parcelable, Cloneable {
      */
     public Intent addCategory(String category) {
         if (mCategories == null) {
-            mCategories = new ArraySet<String>();
+            mCategories = new ArraySet<>();
         }
         mCategories.add(category.intern());
         return this;
@@ -7543,10 +7544,11 @@ public class Intent implements Parcelable, Cloneable {
         out.writeBundle(mExtras);
     }
     public static final Parcelable.Creator<Intent> CREATOR
-            = new Parcelable.Creator<Intent>() {
+            = new Parcelable.Creator<>() {
         public Intent createFromParcel(Parcel in) {
             return new Intent(in);
         }
+
         public Intent[] newArray(int size) {
             return new Intent[size];
         }
@@ -7567,7 +7569,7 @@ public class Intent implements Parcelable, Cloneable {
         }
         int N = in.readInt();
         if (N > 0) {
-            mCategories = new ArraySet<String>();
+            mCategories = new ArraySet<>();
             int i;
             for (i=0; i<N; i++) {
                 mCategories.add(in.readString().intern());

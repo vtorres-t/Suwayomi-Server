@@ -362,7 +362,7 @@ public class ArrayUtils {
         return (array != null) ? array.clone() : null;
     }
     public static @Nullable <T> ArraySet<T> cloneOrNull(@Nullable ArraySet<T> array) {
-        return (array != null) ? new ArraySet<T>(array) : null;
+        return (array != null) ? new ArraySet<>(array) : null;
     }
     public static @NonNull <T> ArraySet<T> add(@Nullable ArraySet<T> cur, T val) {
         if (cur == null) {

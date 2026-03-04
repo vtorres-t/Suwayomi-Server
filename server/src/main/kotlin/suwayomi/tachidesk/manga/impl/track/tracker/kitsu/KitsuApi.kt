@@ -1,7 +1,6 @@
 package suwayomi.tachidesk.manga.impl.track.tracker.kitsu
 
 import androidx.core.net.toUri
-import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuOAuth
 import eu.kanade.tachiyomi.network.DELETE
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.POST
@@ -24,6 +23,7 @@ import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuAddMangaResult
 import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuAlgoliaSearchResult
 import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuCurrentUserResult
 import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuListSearchResult
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuOAuth
 import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuSearchResult
 import suwayomi.tachidesk.manga.impl.track.tracker.model.Track
 import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackSearch

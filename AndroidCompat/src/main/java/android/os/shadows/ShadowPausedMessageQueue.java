@@ -12,7 +12,7 @@ public class ShadowPausedMessageQueue {
 
   // just use this class as the native object
   private static NativeObjRegistry<ShadowPausedMessageQueue> nativeQueueRegistry =
-      new NativeObjRegistry<ShadowPausedMessageQueue>(ShadowPausedMessageQueue.class);
+          new NativeObjRegistry<>(ShadowPausedMessageQueue.class);
   private boolean isPolling = false;
   private Exception uncaughtException = null;
 

@@ -907,7 +907,7 @@ public class DatabaseUtils {
             Cursor cur = null;
             try {
                 cur = mDb.rawQuery("PRAGMA table_info(" + mTableName + ")", null);
-                mColumns = new HashMap<String, Integer>(cur.getCount());
+                mColumns = new HashMap<>(cur.getCount());
                 while (cur.moveToNext()) {
                     String columnName = cur.getString(TABLE_INFO_PRAGMA_COLUMNNAME_INDEX);
                     String defaultValue = cur.getString(TABLE_INFO_PRAGMA_DEFAULT_INDEX);
