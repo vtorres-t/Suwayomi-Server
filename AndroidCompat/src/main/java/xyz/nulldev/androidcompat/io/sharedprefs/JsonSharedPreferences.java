@@ -312,9 +312,7 @@ public class JsonSharedPreferences implements SharedPreferences {
                 prefs = prefsClone;
                 if(file != null) {
                     //Delete old on-disk copy of preferences
-                    if(file.exists()) {
-                        file.delete();
-                    }
+                    if(file.exists()) file.delete();
                     //Save new preferences to disk
                     String string = saveToString();
                     try (PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)))) {
