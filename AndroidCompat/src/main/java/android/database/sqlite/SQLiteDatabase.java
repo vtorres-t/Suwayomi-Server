@@ -243,7 +243,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
         try {
             dispose(true);
         } finally {
-            super.finalize();
+            super.close();
         }
     }
 

@@ -28,6 +28,7 @@ import android.provider.DocumentsContract;
 import android.provider.DocumentsProvider;
 import android.provider.OpenableColumns;
 import android.util.ArraySet;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -901,17 +902,7 @@ public class Intent implements Parcelable, Cloneable {
                 | FLAG_GRANT_WRITE_URI_PERMISSION | FLAG_GRANT_PERSISTABLE_URI_PERMISSION
                 | FLAG_GRANT_PREFIX_URI_PERMISSION);
         if (permFlags != 0) {
-            ClipData targetClipData = target.getClipData();
-            if (targetClipData == null && target.getData() != null) {
-                ClipData.Item item = new ClipData.Item(target.getData());
-                String[] mimeTypes;
-                if (target.getType() != null) {
-                    mimeTypes = new String[] { target.getType() };
-                } else {
-                    mimeTypes = new String[] { };
-                }
-                targetClipData = new ClipData(null, mimeTypes, item);
-            }
+            ClipData targetClipData = getClipData(target);
             if (targetClipData != null) {
                 intent.setClipData(targetClipData);
                 intent.addFlags(permFlags);
@@ -919,6 +910,22 @@ public class Intent implements Parcelable, Cloneable {
         }
         return intent;
     }
+
+    private static @Nullable ClipData getClipData(Intent target) {
+        ClipData targetClipData = target.getClipData();
+        if (targetClipData == null && target.getData() != null) {
+            ClipData.Item item = new ClipData.Item(target.getData());
+            String[] mimeTypes;
+            if (target.getType() != null) {
+                mimeTypes = new String[] { target.getType() };
+            } else {
+                mimeTypes = new String[] { };
+            }
+            targetClipData = new ClipData(null, mimeTypes, item);
+        }
+        return targetClipData;
+    }
+
     /**
      * Activity Action: Allow the user to select a particular kind of data and
      * return it.  This is different than {@link #ACTION_PICK} in that here we
