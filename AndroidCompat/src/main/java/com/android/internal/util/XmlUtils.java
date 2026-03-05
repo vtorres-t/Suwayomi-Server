@@ -33,7 +33,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ProtocolException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Map;
+import java.util.List;
+import java.util.Set;
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.HashSet;
+
 /** {@hide} */
 public class XmlUtils {
     private static final String STRING_ARRAY_SEPARATOR = ":";

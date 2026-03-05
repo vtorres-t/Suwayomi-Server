@@ -20,7 +20,6 @@ package android.net;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.StrictMode;
 import android.util.Log;
 import libcore.net.UriCodec;
 
@@ -29,7 +28,15 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.List;
+import java.util.Collections;
+import java.util.AbstractList;
+import java.util.RandomAccess;
+import java.util.Set;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Immutable URI reference. A URI reference includes a URI and a fragment, the

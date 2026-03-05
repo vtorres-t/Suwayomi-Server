@@ -17,7 +17,12 @@ package com.android.internal.util;
 import android.annotation.Nullable;
 import android.util.ArraySet;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Collections;
 import libcore.util.EmptyArray;
 import android.annotation.NonNull;
 
