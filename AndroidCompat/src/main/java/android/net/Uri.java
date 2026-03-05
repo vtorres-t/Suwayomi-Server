@@ -23,6 +23,7 @@ import android.os.Parcelable;
 import android.os.StrictMode;
 import android.util.Log;
 import libcore.net.UriCodec;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -317,19 +318,7 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             if (scheme.equalsIgnoreCase("tel") || scheme.equalsIgnoreCase("sip")
                     || scheme.equalsIgnoreCase("sms") || scheme.equalsIgnoreCase("smsto")
                     || scheme.equalsIgnoreCase("mailto")) {
-                StringBuilder builder = new StringBuilder(64);
-                builder.append(scheme);
-                builder.append(':');
-                if (ssp != null) {
-                    for (int i=0; i<ssp.length(); i++) {
-                        char c = ssp.charAt(i);
-                        if (c == '-' || c == '@' || c == '.') {
-                            builder.append(c);
-                        } else {
-                            builder.append('x');
-                        }
-                    }
-                }
+                StringBuilder builder = getStringBuilder(scheme, ssp);
                 return builder.toString();
             } else if (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https")
                     || scheme.equalsIgnoreCase("ftp")) {
@@ -351,6 +340,24 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         }
         return builder.toString();
     }
+
+    private static @NotNull StringBuilder getStringBuilder(String scheme, String ssp) {
+        StringBuilder builder = new StringBuilder(64);
+        builder.append(scheme);
+        builder.append(':');
+        if (ssp != null) {
+            for (int i = 0; i< ssp.length(); i++) {
+                char c = ssp.charAt(i);
+                if (c == '-' || c == '@' || c == '.') {
+                    builder.append(c);
+                } else {
+                    builder.append('x');
+                }
+            }
+        }
+        return builder;
+    }
+
     /**
      * Constructs a new builder, copying the attributes from this Uri.
      */

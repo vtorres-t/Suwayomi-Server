@@ -9,7 +9,7 @@ import graphql.schema.GraphQLScalarType
 import io.javalin.http.UploadedFile
 import java.util.Locale
 
-val GraphQLUpload =
+val GraphQLUpload: GraphQLScalarType? =
     GraphQLScalarType
         .newScalar()
         .name("Upload")

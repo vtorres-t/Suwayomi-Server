@@ -110,8 +110,8 @@ class KcefWebViewProvider(
 
     companion object {
         const val TAG = "KcefWebViewProvider"
-        const val QUERY_FN = "__\$_suwayomiQuery"
-        const val QUERY_CANCEL_FN = "__\$_suwayomiQueryCancel"
+        const val QUERY_FN = $$"__$_suwayomiQuery"
+        const val QUERY_CANCEL_FN = $$"__$_suwayomiQueryCancel"
 
         private val initHandler: InitBrowserHandler by KoinPlatformTools.defaultContext().get().inject()
     }
