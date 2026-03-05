@@ -19,7 +19,13 @@ package org.json;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.ArrayList;
 
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 

@@ -15,7 +15,12 @@
  */
 package android.util;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * Helper for writing standard Java collection interfaces to a data
