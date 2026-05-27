@@ -71,6 +71,7 @@ server.autoDownloadNewChapters = false
 server.excludeEntryWithUnreadChapters = true
 server.autoDownloadNewChaptersLimit = 0
 server.autoDownloadIgnoreReUploads = false
+server.maxDownloadsInParallel = 3
 server.downloadConversions = {}
 ```
 - `server.downloadAsCbz = true` configures Suwayomi to automatically compress chapters into CBZ.
@@ -80,7 +81,6 @@ server.downloadConversions = {}
 - `server.autoDownloadNewChaptersLimit = 0` sets how many chapters should be downloaded at most, `0` to disable the limit; if the limit is reached, new chapters will not be downloaded (requires `server.autoDownloadNewChapters`).
 - `server.autoDownloadIgnoreReUploads = false` controls if Suwayomi will re-download re-uploads on update (requires `server.autoDownloadNewChapters`).
 - `server.downloadConversions = {}` configures optional image conversions for all downloads. This is an [JSON object](https://en.wikipedia.org/wiki/JSON#Syntax), with the source image [mime type](https://en.wikipedia.org/wiki/Media_type) as the key and an object with the target mime type or url and options as value.  
-- `server.maxSimultaneousDownloads = 3` Max simultaneous downloads.  
   The following options are all valid:
   ```
   server.downloadConversions = { "image/webp" : { target : "image/jpeg", compressionLevel = 0.8 }}
