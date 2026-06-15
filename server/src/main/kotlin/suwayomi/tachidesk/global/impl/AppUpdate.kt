@@ -6,7 +6,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import suwayomi.tachidesk.graphql.types.RepoType
-import suwayomi.tachidesk.graphql.types.WebUIFlavor
 import suwayomi.tachidesk.manga.impl.util.network.await
 import suwayomi.tachidesk.server.serverConfig
 import uy.kohesive.injekt.injectLazy
@@ -28,15 +27,24 @@ object AppUpdate {
     private val network: NetworkHelper by injectLazy()
 
     suspend fun checkServerUpdate(): List<UpdateDataClass> =
-        checkUpdate(serverConfig.repoServerType.value, serverConfig.repoServerUrl.value)
+        checkUpdate(
+            serverConfig.repoServerType.value,
+            serverConfig.repoServerUrl.value,
+            serverConfig.repoServerToken.value,
+        )
 
-    suspend fun checkWebUIUpdate(repoUrl: String): List<UpdateDataClass> = checkUpdate(serverConfig.repoWebUiType.value, repoUrl)
+    suspend fun checkWebUIUpdate(repoUrl: String): List<UpdateDataClass> =
+        checkUpdate(
+            serverConfig.repoWebUiType.value,
+            repoUrl,
+            serverConfig.repoWebUiToken.value,
+        )
 
     suspend fun checkUpdate(
         repoType: RepoType,
         repoUrl: String,
+        repoToken: String,
     ): List<UpdateDataClass> {
-        val repoType = serverConfig.repoServerType.value
         val cleanUrl = repoUrl.removeSuffix("/")
 
         val apiUrl =
@@ -54,10 +62,14 @@ object AppUpdate {
                     "$baseUrl/api/v1/repos/$path/releases/latest"
                 }
             }
+        val requestBuilder = GET(apiUrl).newBuilder()
 
+        if (!repoToken.isNullOrBlank()) {
+            requestBuilder.addHeader("Authorization", "Bearer $repoToken")
+        }
         val response =
             network.client
-                .newCall(GET(apiUrl))
+                .newCall(requestBuilder.build())
                 .await()
                 .body
                 .string()
