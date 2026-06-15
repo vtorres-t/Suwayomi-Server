@@ -31,6 +31,7 @@ import java.net.CookieHandler
 import java.net.CookieManager
 import java.net.CookiePolicy
 import java.nio.file.Files
+import java.nio.file.Path
 import java.util.concurrent.TimeUnit
 import kotlin.getValue
 
@@ -48,8 +49,17 @@ class NetworkHelper(
     // Tachidesk -->
 
     private val networkCacheFile: java.io.File by lazy {
-        val baseTempPath = java.nio.file.Path.of(applicationDirs.tempRoot)
-        Files.createTempDirectory(baseTempPath, "tachidesk_network_cache_").toFile()
+        val rawPath =
+            applicationDirs
+                .tempRoot
+        val baseTempPath =
+            Path
+                .of(rawPath.toString())
+        Files
+            .createTempDirectory(
+                baseTempPath,
+                "tachidesk_network_cache_",
+            ).toFile()
     }
     private val cacheSize = 500L * 1024 * 1024 // 500 MiB
     val cookieStore = PersistentCookieStore(context)
