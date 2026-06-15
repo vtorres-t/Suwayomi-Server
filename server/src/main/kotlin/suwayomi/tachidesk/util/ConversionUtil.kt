@@ -60,29 +60,41 @@ object ConversionUtil {
         try {
             logger.debug { "Sending ${imageFile.name} to HTTP converter: ${conversion.target}" }
 
-            val requestBody = MultipartBody.Builder()
-                .setType(MultipartBody.FORM)
-                .addFormDataPart(
-                    "image",
-                    imageFile.name,
-                    imageFile.asRequestBody(mimeType.toMediaType()),
-                ).build()
+            val requestBody =
+                MultipartBody
+                    .Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart(
+                        "image",
+                        imageFile.name,
+                        imageFile.asRequestBody(mimeType.toMediaType()),
+                    ).build()
 
-            val client = if (conversion.callTimeout != null || conversion.connectTimeout != null) {
-                networkService.client.newBuilder().apply {
-                    conversion.callTimeout?.let { callTimeout(it) }
-                    conversion.connectTimeout?.let { connectTimeout(it) }
-                }.build()
-            } else {
-                networkService.client
-            }
+            val client =
+                if (conversion.callTimeout != null || conversion.connectTimeout != null) {
+                    networkService
+                        .client
+                        .newBuilder()
+                        .apply {
+                            conversion.callTimeout?.let { callTimeout(it) }
+                            conversion.connectTimeout?.let { connectTimeout(it) }
+                        }.build()
+                } else {
+                    networkService.client
+                }
 
             val headersBuilder = Headers.Builder()
             conversion.headers?.forEach { headersBuilder.set(it.key, it.value) }
 
-            val response = client.newCall(
-                POST(conversion.target, headers = headersBuilder.build(), body = requestBody)
-            ).await()
+            val response =
+                client
+                    .newCall(
+                        POST(
+                            conversion.target,
+                            headers = headersBuilder.build(),
+                            body = requestBody,
+                        ),
+                    ).await()
 
             logger.debug { "HTTP conversion successful for ${imageFile.name}" }
             response.body.byteStream()
@@ -101,8 +113,9 @@ object ConversionUtil {
     ): InputStream? {
         var tempFile: File? = null
         return try {
-            val extension = MimeUtils.guessExtensionFromMimeType(mimeType)
-                ?: mimeType.substringAfter('/')
+            val extension =
+                MimeUtils.guessExtensionFromMimeType(mimeType)
+                    ?: mimeType.substringAfter('/')
 
             tempFile = Files.createTempFile("conversion", ".$extension").toFile()
             tempFile.outputStream().use { output ->
