@@ -1,6 +1,7 @@
 package suwayomi.tachidesk.manga.model.dataclass
 
 import com.fasterxml.jackson.annotation.JsonValue
+import suwayomi.tachidesk.manga.impl.Category
 
 /*
  * Copyright (C) Contributors to the Suwayomi project
@@ -27,11 +28,19 @@ data class CategoryDataClass(
     val order: Int,
     val name: String,
     val default: Boolean,
-    val size: Int,
     val includeInUpdate: IncludeOrExclude,
     val includeInDownload: IncludeOrExclude,
     val version: Long,
     val uid: Long,
     val lastModifiedAt: Long,
-    val meta: Map<String, String> = emptyMap(),
-)
+) {
+    @Deprecated("Remove with V1 Api")
+    val size: Int by lazy {
+        Category.getCategorySize(id)
+    }
+
+    @Deprecated("Remove with V1 Api")
+    val meta: Map<String, String> by lazy {
+        Category.getCategoryMetaMap(id)
+    }
+}
