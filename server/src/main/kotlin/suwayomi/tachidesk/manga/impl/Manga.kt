@@ -15,7 +15,6 @@ import eu.kanade.tachiyomi.source.local.LocalSource
 import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.model.UpdateStrategy
 import eu.kanade.tachiyomi.source.online.HttpSource
-import io.github.oshai.kotlinlogging.KLogger
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.javalin.http.HttpStatus
 import okhttp3.CacheControl
@@ -94,7 +93,6 @@ object Manga {
                 inLibrary = mangaEntry[MangaTable.inLibrary],
                 inLibraryAt = mangaEntry[MangaTable.inLibraryAt],
                 source = getSource(mangaEntry[MangaTable.sourceReference]),
-                meta = getMangaMetaMap(mangaId),
                 realUrl = mangaEntry[MangaTable.realUrl],
                 lastFetchedAt = mangaEntry[MangaTable.lastFetchedAt],
                 chaptersLastFetchedAt = mangaEntry[MangaTable.chaptersLastFetchedAt],
@@ -233,7 +231,6 @@ object Manga {
         inLibrary = mangaEntry[MangaTable.inLibrary],
         inLibraryAt = mangaEntry[MangaTable.inLibraryAt],
         source = getSource(mangaEntry[MangaTable.sourceReference]),
-        meta = getMangaMetaMap(mangaId),
         realUrl = mangaEntry[MangaTable.realUrl],
         lastFetchedAt = mangaEntry[MangaTable.lastFetchedAt],
         chaptersLastFetchedAt = mangaEntry[MangaTable.chaptersLastFetchedAt],
@@ -434,7 +431,7 @@ object Manga {
             }
         }
 
-        return fetchMangaThumbnail(mangaId, mangaEntry)
+        return fetchMangaThumbnail(mangaId)
     }
 
     fun clearThumbnail(mangaId: Int) {

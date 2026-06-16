@@ -35,8 +35,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import net.lingala.zip4j.ZipFile
 import suwayomi.tachidesk.global.impl.AppUpdate
 import suwayomi.tachidesk.graphql.types.AboutWebUI
@@ -132,7 +130,7 @@ object WebInterfaceManager {
     fun getAboutInfo(): AboutWebUI {
         val currentVersion = getLocalVersion()
 
-        val failedToGetVersion = currentVersion === "r-1"
+        val failedToGetVersion = currentVersion == "r-1"
         if (failedToGetVersion) {
             throw Exception("Failed to get current version")
         }
