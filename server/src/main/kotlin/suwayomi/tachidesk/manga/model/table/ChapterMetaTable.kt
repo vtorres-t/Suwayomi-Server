@@ -29,4 +29,8 @@ object ChapterMetaTable : IntIdTable() {
     val key = varchar("meta_key", 256)
     val value = varchar("value", 4096)
     val ref = reference("chapter_ref", ChapterTable, ReferenceOption.CASCADE)
+
+    init {
+        index(customIndexName = "idx_chaptermeta_key", isUnique = false, key)
+    }
 }

@@ -48,6 +48,12 @@ object MangaTable : IntIdTable() {
     val lastModifiedAt = long("last_modified_at").default(0)
     val version = long("version").default(0)
     val isSyncing = bool("is_syncing").default(false)
+
+    init {
+        index(customIndexName = "idx_manga_library_title", isUnique = false, inLibrary, title)
+        index(customIndexName = "idx_manga_library_added", isUnique = false, inLibrary, inLibraryAt)
+        index(customIndexName = "idx_manga_source", isUnique = false, sourceReference)
+    }
 }
 
 fun MangaTable.toDataClass(mangaEntry: ResultRow) =

@@ -194,6 +194,8 @@ object Manga {
         onlineFetch: Boolean = false,
     ): MangaDataClass {
         val mangaDataClass = getManga(mangaId, onlineFetch)
+        val downloadDirPath = getMangaDownloadDir(mangaId)
+        val prettySize = storageScanner.getFolderSizePretty(downloadDirPath)
 
         return transaction {
             val chapters = ChapterTable.selectAll().where { ChapterTable.manga eq mangaId }.toList()
@@ -202,7 +204,7 @@ object Manga {
                 chapterCount = chapters.size.toLong(),
                 unreadCount = chapters.count { !it[ChapterTable.isRead] }.toLong(),
                 downloadCount = chapters.count { it[ChapterTable.isDownloaded] }.toLong(),
-                donwloadSize = storageScanner.getFolderSizePretty(getMangaDownloadDir(mangaId)),
+                donwloadSize = prettySize,
                 lastChapterRead =
                     chapters
                         .filter { it[ChapterTable.isRead] }
