@@ -198,7 +198,7 @@ object Manga {
         return transaction {
             val chapters = ChapterTable.selectAll().where { ChapterTable.manga eq mangaId }.toList()
 
-            mangaDataClass.copy (
+            mangaDataClass.copy(
                 chapterCount = chapters.size.toLong(),
                 unreadCount = chapters.count { !it[ChapterTable.isRead] }.toLong(),
                 downloadCount = chapters.count { it[ChapterTable.isDownloaded] }.toLong(),
