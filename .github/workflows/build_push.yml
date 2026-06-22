@@ -1,7 +1,15 @@
-name: CI Pull Request
+name: CI Push
 
 on:
-  pull_request:
+  push:
+    branches:
+      - main
+    paths:
+      - '**'
+      - '!**.md'
+      - '!.github/**'
+      - '.github/workflows/build_push.yml'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
