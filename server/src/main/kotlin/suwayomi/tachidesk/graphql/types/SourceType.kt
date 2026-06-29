@@ -7,9 +7,10 @@
 
 package suwayomi.tachidesk.graphql.types
 
+import com.expediagroup.graphql.generator.annotations.GraphQLDeprecated
 import com.expediagroup.graphql.server.extensions.getValueFromDataLoader
-import eu.kanade.tachiyomi.source.CatalogueSource
 import eu.kanade.tachiyomi.source.ConfigurableSource
+import eu.kanade.tachiyomi.source.Source
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.online.HttpSource
 import graphql.schema.DataFetchingEnvironment
@@ -23,9 +24,9 @@ import suwayomi.tachidesk.graphql.server.primitives.NodeList
 import suwayomi.tachidesk.graphql.server.primitives.PageInfo
 import suwayomi.tachidesk.manga.impl.Source.getSourcePreferencesRaw
 import suwayomi.tachidesk.manga.impl.extension.Extension
-import suwayomi.tachidesk.manga.impl.util.source.GetCatalogueSource
-import suwayomi.tachidesk.manga.impl.util.source.GetCatalogueSource.getCatalogueSourceOrStub
-import suwayomi.tachidesk.manga.model.dataclass.SourceDataClass
+import suwayomi.tachidesk.manga.impl.util.source.GetSource
+import suwayomi.tachidesk.manga.impl.util.source.GetSource.getSourceOrStub
+import suwayomi.tachidesk.manga.model.dataclass.ContentWarning
 import suwayomi.tachidesk.manga.model.table.ExtensionTable
 import suwayomi.tachidesk.manga.model.table.SourceTable
 import java.util.concurrent.CompletableFuture
@@ -41,35 +42,29 @@ class SourceType(
     val id: Long,
     val name: String,
     val lang: String,
+    val contentWarning: ContentWarning,
     val iconUrl: String,
     val supportsLatest: Boolean,
     val isConfigurable: Boolean,
+    @GraphQLDeprecated("", ReplaceWith("contentWarning"))
     val isNsfw: Boolean,
     val displayName: String,
+    val homeUrl: String?,
+    @GraphQLDeprecated("", ReplaceWith("homeUrl"))
     val baseUrl: String?,
 ) : Node {
-    constructor(source: SourceDataClass) : this(
-        id = source.id.toLong(),
-        name = source.name,
-        lang = source.lang,
-        iconUrl = source.iconUrl,
-        supportsLatest = source.supportsLatest,
-        isConfigurable = source.isConfigurable,
-        isNsfw = source.isNsfw,
-        displayName = source.displayName,
-        baseUrl = source.baseUrl,
-    )
-
-    constructor(row: ResultRow, sourceExtension: ResultRow, catalogueSource: CatalogueSource) : this(
+    constructor(row: ResultRow, sourceExtension: ResultRow, source: Source) : this(
         id = row[SourceTable.id].value,
         name = row[SourceTable.name],
         lang = row[SourceTable.lang],
-        iconUrl = Extension.getExtensionIconUrl(sourceExtension[ExtensionTable.apkName]),
-        supportsLatest = catalogueSource.supportsLatest,
-        isConfigurable = catalogueSource is ConfigurableSource,
-        isNsfw = row[SourceTable.isNsfw],
-        displayName = catalogueSource.toString(),
-        baseUrl = catalogueSource.runCatching { (catalogueSource as? HttpSource)?.baseUrl }.getOrNull(),
+        contentWarning = ContentWarning.valueOf(row[SourceTable.contentWarning]),
+        iconUrl = Extension.proxyExtensionIconUrl(sourceExtension[ExtensionTable.pkgName]),
+        supportsLatest = source.supportsLatest,
+        isConfigurable = source is ConfigurableSource,
+        isNsfw = row[SourceTable.contentWarning] >= ContentWarning.MIXED.ordinal,
+        displayName = source.toString(),
+        homeUrl = runCatching { (source as? HttpSource)?.getHomeUrl() }.getOrNull(),
+        baseUrl = runCatching { (source as? HttpSource)?.baseUrl }.getOrNull(),
     )
 
     fun manga(dataFetchingEnvironment: DataFetchingEnvironment): CompletableFuture<MangaNodeList> =
@@ -80,7 +75,7 @@ class SourceType(
 
     fun preferences(): List<Preference> = getSourcePreferencesRaw(id).map { preferenceOf(it) }
 
-    fun filters(): List<Filter> = getCatalogueSourceOrStub(id).getFilterList().map { filterOf(it) }
+    fun filters(): List<Filter> = getSourceOrStub(id).getFilterList().map { filterOf(it) }
 
     fun meta(dataFetchingEnvironment: DataFetchingEnvironment): CompletableFuture<List<SourceMetaType>> =
         dataFetchingEnvironment.getValueFromDataLoader<Long, List<SourceMetaType>>("SourceMetaDataLoader", id)
@@ -89,8 +84,8 @@ class SourceType(
 @Suppress("ktlint:standard:function-naming")
 fun SourceType(row: ResultRow): SourceType? {
     val catalogueSource =
-        GetCatalogueSource
-            .getCatalogueSourceOrNull(row[SourceTable.id].value)
+        GetSource
+            .getSourceOrNull(row[SourceTable.id].value)
             ?: return null
     val sourceExtension =
         if (row.hasValue(ExtensionTable.id)) {
@@ -301,7 +296,7 @@ data class FilterChange(
 )
 
 fun updateFilterList(
-    source: CatalogueSource,
+    source: Source,
     changes: List<FilterChange>?,
 ): FilterList {
     val filterList = source.getFilterList()

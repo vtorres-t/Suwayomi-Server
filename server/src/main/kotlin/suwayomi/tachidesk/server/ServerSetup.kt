@@ -38,6 +38,7 @@ import suwayomi.tachidesk.graphql.types.DatabaseType
 import suwayomi.tachidesk.i18n.LocalizationHelper
 import suwayomi.tachidesk.manga.impl.backup.proto.ProtoBackupExport
 import suwayomi.tachidesk.manga.impl.download.DownloadManager
+import suwayomi.tachidesk.manga.impl.extension.ExtensionStoreService
 import suwayomi.tachidesk.manga.impl.update.IUpdater
 import suwayomi.tachidesk.manga.impl.update.Updater
 import suwayomi.tachidesk.manga.impl.util.lang.renameTo
@@ -482,4 +483,12 @@ fun applicationSetup() {
     DownloadManager.restoreAndResumeDownloads()
 
     SyncManager.scheduleSyncTask()
+
+    serverConfig.subscribeTo(
+        serverConfig.extensionStores,
+        { _ ->
+            ExtensionStoreService.syncPrefsToDb()
+        },
+        ignoreInitialValue = false,
+    )
 }
