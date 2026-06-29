@@ -18,15 +18,14 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import rx.Observable
 import suwayomi.tachidesk.manga.impl.Search.FilterChange
 import suwayomi.tachidesk.manga.impl.Search.FilterObject
 import suwayomi.tachidesk.manga.impl.Search.SerializableGroup
 import suwayomi.tachidesk.manga.impl.Search.getFilterList
 import suwayomi.tachidesk.manga.impl.Search.setFilter
 import suwayomi.tachidesk.manga.impl.Search.sourceSearch
-import suwayomi.tachidesk.manga.impl.util.source.GetCatalogueSource.registerCatalogueSource
-import suwayomi.tachidesk.manga.impl.util.source.GetCatalogueSource.unregisterCatalogueSource
+import suwayomi.tachidesk.manga.impl.util.source.GetSource.registerSource
+import suwayomi.tachidesk.manga.impl.util.source.GetSource.unregisterSource
 import suwayomi.tachidesk.manga.impl.util.source.StubSource
 import suwayomi.tachidesk.test.ApplicationTest
 import suwayomi.tachidesk.test.createSMangas
@@ -41,12 +40,11 @@ class SearchTest : ApplicationTest() {
     ) : StubSource(id) {
         var mangas: List<SManga> = emptyList()
 
-        @Deprecated("Use the non-RxJava API instead", replaceWith = ReplaceWith("getSearchManga"))
-        override fun fetchSearchManga(
+        override suspend fun getSearchManga(
             page: Int,
             query: String,
             filters: FilterList,
-        ): Observable<MangasPage> = Observable.just(MangasPage(mangas, false))
+        ): MangasPage = MangasPage(mangas, false)
     }
 
     private val sourceId = 1L
@@ -55,7 +53,7 @@ class SearchTest : ApplicationTest() {
 
     @BeforeAll
     fun setup() {
-        registerCatalogueSource(sourceId to source)
+        registerSource(sourceId to source)
 
         this.source.mangas = createSMangas(mangasCount)
     }
@@ -72,7 +70,7 @@ class SearchTest : ApplicationTest() {
 
     @AfterAll
     fun teardown() {
-        unregisterCatalogueSource(this.sourceId)
+        unregisterSource(this.sourceId)
     }
 }
 
@@ -349,7 +347,7 @@ class FilterListTest : ApplicationTest() {
         private fun registerSource(sourceClass: KClass<*>): EmptyFilterListSource =
             synchronized(sourceClass) {
                 val source = sourceClass.primaryConstructor!!.call(sourceCount) as EmptyFilterListSource
-                registerCatalogueSource(sourceCount to source)
+                registerSource(sourceCount to source)
                 sourceCount++
                 source
             }
@@ -357,7 +355,7 @@ class FilterListTest : ApplicationTest() {
         @AfterAll
         @JvmStatic
         fun teardown() {
-            (0 until sourceCount).forEach { unregisterCatalogueSource(it) }
+            (0 until sourceCount).forEach { unregisterSource(it) }
         }
     }
 }

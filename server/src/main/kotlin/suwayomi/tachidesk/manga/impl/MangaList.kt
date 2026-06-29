@@ -9,6 +9,7 @@ package suwayomi.tachidesk.manga.impl
 
 import eu.kanade.tachiyomi.source.local.LocalSource
 import eu.kanade.tachiyomi.source.model.MangasPage
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
@@ -18,7 +19,7 @@ import org.jetbrains.exposed.v1.jdbc.batchInsert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.statements.toExecutable
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import suwayomi.tachidesk.manga.impl.util.source.GetCatalogueSource.getCatalogueSourceOrStub
+import suwayomi.tachidesk.manga.impl.util.source.GetSource.getSourceOrStub
 import suwayomi.tachidesk.manga.model.dataclass.PagedMangaListDataClass
 import suwayomi.tachidesk.manga.model.table.MangaTable
 import suwayomi.tachidesk.manga.model.table.toDataClass
@@ -35,7 +36,7 @@ object MangaList {
         require(pageNum > 0) {
             "pageNum = $pageNum is not in valid range"
         }
-        val source = getCatalogueSourceOrStub(sourceId)
+        val source = getSourceOrStub(sourceId)
         val mangasPage =
             if (popular) {
                 source.getPopularManga(pageNum)
@@ -75,6 +76,7 @@ object MangaList {
                         this[MangaTable.status] = it.status
                         this[MangaTable.thumbnail_url] = it.thumbnail_url
                         this[MangaTable.updateStrategy] = it.update_strategy.name
+                        this[MangaTable.memo] = Json.encodeToString(it.memo)
 
                         this[MangaTable.sourceReference] = sourceId
                     }.associate { Pair(it[MangaTable.url], it[MangaTable.id].value) }
@@ -103,6 +105,7 @@ object MangaList {
                             this[MangaTable.status] = sManga.status
                             this[MangaTable.thumbnail_url] = sManga.thumbnail_url ?: manga[MangaTable.thumbnail_url]
                             this[MangaTable.updateStrategy] = sManga.update_strategy.name
+                            this[MangaTable.memo] = Json.encodeToString(sManga.memo)
                             if (!sManga.thumbnail_url.isNullOrEmpty() && manga[MangaTable.thumbnail_url] != sManga.thumbnail_url) {
                                 this[MangaTable.thumbnailUrlLastFetched] = Instant.now().epochSecond
                                 Manga.clearThumbnail(manga[MangaTable.id].value)
