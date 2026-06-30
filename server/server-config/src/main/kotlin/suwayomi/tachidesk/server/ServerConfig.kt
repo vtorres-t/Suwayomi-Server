@@ -39,7 +39,6 @@ import suwayomi.tachidesk.graphql.types.WebUIInterface
 import suwayomi.tachidesk.manga.impl.backup.BackupFlags
 import suwayomi.tachidesk.manga.impl.backup.proto.models.BackupSettingsDownloadConversionHeaderType
 import suwayomi.tachidesk.manga.impl.backup.proto.models.BackupSettingsDownloadConversionType
-import suwayomi.tachidesk.manga.impl.extension.repoMatchRegex
 import suwayomi.tachidesk.server.settings.BooleanSetting
 import suwayomi.tachidesk.server.settings.DisableableDoubleSetting
 import suwayomi.tachidesk.server.settings.DisableableIntSetting
@@ -265,40 +264,6 @@ class ServerConfig(
         privacySafe = true,
         defaultValue = false,
         description = "Ignore re-uploaded chapters from auto-download",
-    )
-
-    @Deprecated("Will get removed", replaceWith = ReplaceWith("extensionStores"))
-    val extensionRepos: MutableStateFlow<List<String>> by MigratedConfigValue(
-        protoNumber = 22,
-        group = SettingGroup.EXTENSION,
-        privacySafe = false,
-        defaultValue = emptyList(),
-        deprecated =
-            SettingsRegistry.SettingDeprecated(
-                message = "Replaced with addExtensionStore and removeExtensionStore mutations",
-                migrateConfigValue = {
-                    @Suppress("UNCHECKED_CAST")
-                    (it.unwrapped() as? List<String>)
-                        ?.map {
-                            if (it.contains("github.com")) {
-                                it.replace(repoMatchRegex) {
-                                    "https://raw.githubusercontent.com/${it.groupValues[2]}/${it.groupValues[3]}/" +
-                                        (it.groupValues.getOrNull(4)?.ifBlank { null } ?: "repo") +
-                                        "/" +
-                                        (it.groupValues.getOrNull(5)?.ifBlank { null } ?: "index.min.json")
-                                }
-                            } else {
-                                it
-                            }
-                        }
-                },
-            ),
-        readMigrated = { extensionStores.value },
-        setMigrated = { extensionStores.value = it.distinct() },
-        typeInfo =
-            SettingsRegistry.PartialTypeInfo(
-                specificType = "List<String>",
-            ),
     )
 
     val maxSourcesInParallel: MutableStateFlow<Int> by IntSetting(
@@ -1164,7 +1129,7 @@ class ServerConfig(
         group = SettingGroup.EXTENSION,
         privacySafe = true,
         defaultValue = emptyList(),
-        requiresRestart = true,
+        requiresRestart = false,
         itemValidator = { url ->
             if (url.isNotEmpty()) {
                 null
