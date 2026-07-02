@@ -15,6 +15,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - .
 
+## [v2.3.2230] - 2026-07-01
+
+### Fixed
+- (**Extension/API**) Fix GQL handling of extensions without an extension store
+- (**Build/Bundler**) Fix build continuing if errors happen
+- (**Build/Bundler**) Remove jogamp from build script
+- (**Build/Bundler**) Fix chmod attempts on Windows Java
+
 ## [v2.3.2223] + [WebUI: v20260509.01] - 2026-06-30
 
 ### Major Changes
@@ -484,8 +492,9 @@ Huge thanks to @martinek who pulled the most of the weight this release!
 
 <!-- SERVER LINKS -->
 
-[unreleased]: https://github.com/suwayomi/suwayomi-server/compare/v2.3.2223...HEAD
-[v2.3.2223]: https://github.com/suwayomi/suwayomi-server/compare/v2.1.2100...v2.3.2223
+[unreleased]: https://github.com/suwayomi/suwayomi-server/compare/v2.3.2230...HEAD
+[v2.3.2230]: https://github.com/suwayomi/suwayomi-server/compare/v2.3.2223...v2.3.2230
+[v2.3.2223]: https://github.com/suwayomi/suwayomi-server/compare/v2.2.2100...v2.3.2223
 [v2.2.2100]: https://github.com/suwayomi/suwayomi-server/compare/v2.1.1867...v2.2.2100
 [v2.1.1867]: https://github.com/suwayomi/suwayomi-server/compare/v2.0.1727...v2.1.1867
 [v2.0.1727]: https://github.com/suwayomi/suwayomi-server/compare/v1.1.1...v2.0.1727
