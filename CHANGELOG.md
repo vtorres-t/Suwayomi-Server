@@ -15,6 +15,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Fixed
 - .
 
+## [v2.3.2238] - 2026-07-05
+
+### Changed
+- (**Extension**) Support fully qualified extension class names
+- (**Manga/API**) Return partial responses for Manga And Chapters query
+
+### Fixed
+- (**Database/H2**) Use temporary file for H2 migration tools download
+
 ## [v2.3.2232] - 2026-07-03
 
 ### Fixed
@@ -497,7 +506,9 @@ Huge thanks to @martinek who pulled the most of the weight this release!
 
 <!-- SERVER LINKS -->
 
-[unreleased]: https://github.com/suwayomi/suwayomi-server/compare/v2.3.2230...HEAD
+[unreleased]: https://github.com/suwayomi/suwayomi-server/compare/v2.3.2238...HEAD
+[v2.3.2238]: https://github.com/suwayomi/suwayomi-server/compare/v2.3.2232...v2.3.2238
+[v2.3.2232]: https://github.com/suwayomi/suwayomi-server/compare/v2.3.2230...v2.3.2232
 [v2.3.2230]: https://github.com/suwayomi/suwayomi-server/compare/v2.3.2223...v2.3.2230
 [v2.3.2223]: https://github.com/suwayomi/suwayomi-server/compare/v2.2.2100...v2.3.2223
 [v2.2.2100]: https://github.com/suwayomi/suwayomi-server/compare/v2.1.1867...v2.2.2100
