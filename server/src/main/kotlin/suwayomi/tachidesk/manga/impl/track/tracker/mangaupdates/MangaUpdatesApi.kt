@@ -195,32 +195,35 @@ class MangaUpdatesApi(
 
     suspend fun getMangaRelated(remoteId: Long): TrackRelatedResult =
         withIOContext {
-            val seriesResponse = runCatching {
-                with(json) {
-                    client
-                        .newCall(GET("$BASE_URL/v1/series/$remoteId"))
-                        .awaitSuccess()
-                        .parseAs<MUSeriesResponse>()
-                }
-            }.getOrNull()
+            val seriesResponse =
+                runCatching {
+                    with(json) {
+                        client
+                            .newCall(GET("$BASE_URL/v1/series/$remoteId"))
+                            .awaitSuccess()
+                            .parseAs<MUSeriesResponse>()
+                    }
+                }.getOrNull()
 
             if (seriesResponse == null) return@withIOContext TrackRelatedResult()
 
-            val relationsList = seriesResponse.relatedSeries?.map { related ->
-                TrackRelated(
-                    remoteId = related.relatedSeriesId,
-                    title = related.title ?: "Related Manga ID: ${related.relatedSeriesId}",
-                    coverUrl = "",
-                    trackingUrl = "https://mangaupdates.com{related.relatedSeriesId}",
-                    relationType = related.relationType ?: "Other"
-                )
-            }.orEmpty()
+            val relationsList =
+                seriesResponse.relatedSeries
+                    ?.map { related ->
+                        TrackRelated(
+                            remoteId = related.relatedSeriesId,
+                            title = related.title ?: "Related Manga ID: ${related.relatedSeriesId}",
+                            coverUrl = "",
+                            trackingUrl = "https://mangaupdates.com{related.relatedSeriesId}",
+                            relationType = related.relationType ?: "Other",
+                        )
+                    }.orEmpty()
 
             val recommendationsList = emptyList<TrackRelated>()
 
             TrackRelatedResult(
                 relations = relationsList,
-                recommendations = recommendationsList
+                recommendations = recommendationsList,
             )
         }
 

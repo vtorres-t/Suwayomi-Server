@@ -68,7 +68,6 @@ class MangaUpdates(
 
     suspend fun getRelated(remoteId: Long): TrackRelatedResult = api.getMangaRelated(remoteId)
 
-
     override fun getScoreList(): List<String> = SCORE_LIST
 
     override fun indexToScore(index: Int): Double = if (index == 0) 0.0 else SCORE_LIST[index].toDouble()

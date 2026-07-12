@@ -566,66 +566,74 @@ class TrackQuery {
 
             val trackRecordsMap: Map<Int, Long> = getRemotes(input.mangaId)
 
-            val anilistDeferred = async {
-                val anilist = TrackerManager.aniList
-                val remoteId: Long? = trackRecordsMap[TrackerManager.ANILIST]
-                    ?: title?.takeIf { anilist.isLoggedIn }?.let {
-                        findRemoteIdByTitle(anilist, it)?.toString()?.toLongOrNull()
-                    }
+            val anilistDeferred =
+                async {
+                    val anilist = TrackerManager.aniList
+                    val remoteId: Long? =
+                        trackRecordsMap[TrackerManager.ANILIST]
+                            ?: title?.takeIf { anilist.isLoggedIn }?.let {
+                                findRemoteIdByTitle(anilist, it)?.toString()?.toLongOrNull()
+                            }
 
-                if (remoteId == null) return@async TrackRelatedResult()
+                    if (remoteId == null) return@async TrackRelatedResult()
 
-                runCatching {
-                    anilist.getRelated(remoteId)
-                }.onFailure { logger.warn(it) { "Failed to load AniList related manga for $input" } }
-                    .getOrNull() ?: TrackRelatedResult()
-            }
+                    runCatching {
+                        anilist.getRelated(remoteId)
+                    }.onFailure { logger.warn(it) { "Failed to load AniList related manga for $input" } }
+                        .getOrNull() ?: TrackRelatedResult()
+                }
 
-            val malDeferred = async {
-                val mal = TrackerManager.myAnimeList
-                val remoteId: Long? = trackRecordsMap[TrackerManager.MYANIMELIST]
-                    ?: title?.takeIf { mal.isLoggedIn }?.let {
-                        findRemoteIdByTitle(mal, it)?.toString()?.toLongOrNull()
-                    }
+            val malDeferred =
+                async {
+                    val mal = TrackerManager.myAnimeList
+                    val remoteId: Long? =
+                        trackRecordsMap[TrackerManager.MYANIMELIST]
+                            ?: title?.takeIf { mal.isLoggedIn }?.let {
+                                findRemoteIdByTitle(mal, it)?.toString()?.toLongOrNull()
+                            }
 
-                if (remoteId == null) return@async TrackRelatedResult()
+                    if (remoteId == null) return@async TrackRelatedResult()
 
-                runCatching {
-                    mal.getRelated(remoteId)
-                }.onFailure { logger.warn(it) { "Failed to load MyAnimeList related manga for $input" } }
-                    .getOrNull() ?: TrackRelatedResult()
-            }
+                    runCatching {
+                        mal.getRelated(remoteId)
+                    }.onFailure { logger.warn(it) { "Failed to load MyAnimeList related manga for $input" } }
+                        .getOrNull() ?: TrackRelatedResult()
+                }
 
-            val kitsuDeferred = async {
-                val kitsu = TrackerManager.kitsu
-                val remoteId: Long? = trackRecordsMap[TrackerManager.KITSU]
-                    ?: title?.takeIf { kitsu.isLoggedIn }?.let {
-                        findRemoteIdByTitle(kitsu, it)?.toString()?.toLongOrNull()
-                    }
+            val kitsuDeferred =
+                async {
+                    val kitsu = TrackerManager.kitsu
+                    val remoteId: Long? =
+                        trackRecordsMap[TrackerManager.KITSU]
+                            ?: title?.takeIf { kitsu.isLoggedIn }?.let {
+                                findRemoteIdByTitle(kitsu, it)?.toString()?.toLongOrNull()
+                            }
 
-                if (remoteId == null) return@async TrackRelatedResult()
+                    if (remoteId == null) return@async TrackRelatedResult()
 
-                runCatching {
-                    kitsu.getRelated(remoteId)
-                }.onFailure { logger.warn(it) { "Failed to load KITSU related manga for $input" } }
-                    .getOrNull() ?: TrackRelatedResult()
-            }
+                    runCatching {
+                        kitsu.getRelated(remoteId)
+                    }.onFailure { logger.warn(it) { "Failed to load KITSU related manga for $input" } }
+                        .getOrNull() ?: TrackRelatedResult()
+                }
 
-            val mangaUpdatesDeferred = async {
-                val mangaUpdates = TrackerManager.mangaUpdates
-                val remoteId: Long? = trackRecordsMap[TrackerManager.MANGA_UPDATES]
-                    ?: title?.takeIf { mangaUpdates.isLoggedIn }?.let {
-                        val idStr = findRemoteIdByTitle(mangaUpdates, it)?.toString() ?: ""
-                        idStr.toLongOrNull()
-                    }
+            val mangaUpdatesDeferred =
+                async {
+                    val mangaUpdates = TrackerManager.mangaUpdates
+                    val remoteId: Long? =
+                        trackRecordsMap[TrackerManager.MANGA_UPDATES]
+                            ?: title?.takeIf { mangaUpdates.isLoggedIn }?.let {
+                                val idStr = findRemoteIdByTitle(mangaUpdates, it)?.toString() ?: ""
+                                idStr.toLongOrNull()
+                            }
 
-                if (remoteId == null) return@async TrackRelatedResult()
+                    if (remoteId == null) return@async TrackRelatedResult()
 
-                runCatching {
-                    mangaUpdates.getRelated(remoteId)
-                }.onFailure { logger.warn(it) { "Failed to load MANGA_UPDATES related manga for $input" } }
-                    .getOrNull() ?: TrackRelatedResult()
-            }
+                    runCatching {
+                        mangaUpdates.getRelated(remoteId)
+                    }.onFailure { logger.warn(it) { "Failed to load MANGA_UPDATES related manga for $input" } }
+                        .getOrNull() ?: TrackRelatedResult()
+                }
 
             val anilistResult = anilistDeferred.await()
             val malResult = malDeferred.await()
@@ -641,7 +649,7 @@ class TrackQuery {
                         trackerId = TrackerManager.ANILIST,
                         relations = anilistResult.relations.map { TrackRelatedMangaType(it) },
                         recommendations = anilistResult.recommendations.map { TrackRelatedMangaType(it) },
-                    )
+                    ),
                 )
             }
 
@@ -651,7 +659,7 @@ class TrackQuery {
                         trackerId = TrackerManager.MYANIMELIST,
                         relations = malResult.relations.map { TrackRelatedMangaType(it) },
                         recommendations = malResult.recommendations.map { TrackRelatedMangaType(it) },
-                    )
+                    ),
                 )
             }
 
@@ -660,8 +668,8 @@ class TrackQuery {
                     MangaTrackerRelated(
                         trackerId = TrackerManager.KITSU,
                         relations = kitsuResult.relations.map { TrackRelatedMangaType(it) },
-                        recommendations = kitsuResult.recommendations.map { TrackRelatedMangaType(it) }
-                    )
+                        recommendations = kitsuResult.recommendations.map { TrackRelatedMangaType(it) },
+                    ),
                 )
             }
 
@@ -670,8 +678,8 @@ class TrackQuery {
                     MangaTrackerRelated(
                         trackerId = TrackerManager.MANGA_UPDATES,
                         relations = mangaUpdatesResult.relations.map { TrackRelatedMangaType(it) },
-                        recommendations = mangaUpdatesResult.recommendations.map { TrackRelatedMangaType(it) }
-                    )
+                        recommendations = mangaUpdatesResult.recommendations.map { TrackRelatedMangaType(it) },
+                    ),
                 )
             }
 

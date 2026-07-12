@@ -274,30 +274,41 @@ class KitsuApi(
     suspend fun getRelated(remoteId: Long): TrackRelatedResult =
         withIOContext {
             with(json) {
-                val relationsResponse = runCatching {
-                    client.newCall(GET("${BASE_URL}manga/$remoteId/media-relationships?include=destination"))
-                        .awaitSuccess().parseAs<KitsuRelatedResult>()
-                }.getOrNull()
+                val relationsResponse =
+                    runCatching {
+                        client
+                            .newCall(GET("${BASE_URL}manga/$remoteId/media-relationships?include=destination"))
+                            .awaitSuccess()
+                            .parseAs<KitsuRelatedResult>()
+                    }.getOrNull()
 
-                val recsResponse = runCatching {
-                    client.newCall(GET("${BASE_URL}recommendations?filter[mangaId]=$remoteId&include=item"))
-                        .awaitSuccess().parseAs<KitsuRecommendationsResult>()
-                }.getOrNull()
+                val recsResponse =
+                    runCatching {
+                        client
+                            .newCall(GET("${BASE_URL}recommendations?filter[mangaId]=$remoteId&include=item"))
+                            .awaitSuccess()
+                            .parseAs<KitsuRecommendationsResult>()
+                    }.getOrNull()
 
-                val mediaMap = (relationsResponse?.included.orEmpty() + recsResponse?.included.orEmpty())
-                    .associateBy { it.id }
+                val mediaMap =
+                    (relationsResponse?.included.orEmpty() + recsResponse?.included.orEmpty())
+                        .associateBy { it.id }
 
-                val relationsList = relationsResponse?.data.orEmpty().mapNotNull { rel ->
-                    val destinationId = rel.relationships.destination.data.id
-                    mediaMap[destinationId]?.takeIf { it.type == "manga" }
-                        ?.toTrackRelated(formatRelationType(rel.attributes.role))
-                }
+                val relationsList =
+                    relationsResponse?.data.orEmpty().mapNotNull { rel ->
+                        val destinationId = rel.relationships.destination.data.id
+                        mediaMap[destinationId]
+                            ?.takeIf { it.type == "manga" }
+                            ?.toTrackRelated(formatRelationType(rel.attributes.role))
+                    }
 
-                val recommendationsList = recsResponse?.data.orEmpty().mapNotNull { rec ->
-                    val itemId = rec.relationships.item.data.id
-                    mediaMap[itemId]?.takeIf { it.type == "manga" }
-                        ?.toTrackRelated(null)
-                }
+                val recommendationsList =
+                    recsResponse?.data.orEmpty().mapNotNull { rec ->
+                        val itemId = rec.relationships.item.data.id
+                        mediaMap[itemId]
+                            ?.takeIf { it.type == "manga" }
+                            ?.toTrackRelated(null)
+                    }
 
                 TrackRelatedResult(relationsList, recommendationsList)
             }
@@ -310,46 +321,45 @@ class KitsuApi(
             title = this.attributes.canonicalTitle,
             coverUrl = this.attributes.posterImage?.large ?: this.attributes.posterImage?.original ?: "",
             trackingUrl = "https://kitsu.io",
-            relationType = relationType
+            relationType = relationType,
         )
     }
 
     private fun formatRelationType(relationType: String?): String? =
         relationType?.split("_")?.joinToString(" ") { it.lowercase().replaceFirstChar { c -> c.uppercase() } }
 
+    companion object {
+        private const val CLIENT_ID = "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd"
+        private const val CLIENT_SECRET = "54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151"
 
-companion object {
-    private const val CLIENT_ID = "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd"
-    private const val CLIENT_SECRET = "54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151"
+        private const val BASE_URL = "https://kitsu.app/api/edge/"
+        private const val LOGIN_URL = "https://kitsu.app/api/oauth/token"
+        private const val BASE_MANGA_URL = "https://kitsu.app/manga/"
+        private const val ALGOLIA_KEY_URL = "https://kitsu.app/api/edge/algolia-keys/media/"
 
-    private const val BASE_URL = "https://kitsu.app/api/edge/"
-    private const val LOGIN_URL = "https://kitsu.app/api/oauth/token"
-    private const val BASE_MANGA_URL = "https://kitsu.app/manga/"
-    private const val ALGOLIA_KEY_URL = "https://kitsu.app/api/edge/algolia-keys/media/"
+        private const val ALGOLIA_APP_ID = "AWQO5J657S"
+        private const val ALGOLIA_URL = "https://$ALGOLIA_APP_ID-dsn.algolia.net/1/indexes/production_media/query/"
+        private const val ALGOLIA_FILTER =
+            "&facetFilters=%5B%22kind%3Amanga%22%5D&attributesToRetrieve=" +
+                "%5B%22synopsis%22%2C%22averageRating%22%2C%22canonicalTitle%22%2C%22chapterCount%22%2C%22" +
+                "posterImage%22%2C%22startDate%22%2C%22subtype%22%2C%22endDate%22%2C%20%22id%22%5D"
 
-    private const val ALGOLIA_APP_ID = "AWQO5J657S"
-    private const val ALGOLIA_URL = "https://$ALGOLIA_APP_ID-dsn.algolia.net/1/indexes/production_media/query/"
-    private const val ALGOLIA_FILTER =
-        "&facetFilters=%5B%22kind%3Amanga%22%5D&attributesToRetrieve=" +
-            "%5B%22synopsis%22%2C%22averageRating%22%2C%22canonicalTitle%22%2C%22chapterCount%22%2C%22" +
-            "posterImage%22%2C%22startDate%22%2C%22subtype%22%2C%22endDate%22%2C%20%22id%22%5D"
+        private const val VND_API_JSON = "application/vnd.api+json"
+        private val VND_JSON_MEDIA_TYPE = VND_API_JSON.toMediaType()
 
-    private const val VND_API_JSON = "application/vnd.api+json"
-    private val VND_JSON_MEDIA_TYPE = VND_API_JSON.toMediaType()
+        fun mangaUrl(remoteId: Long): String = BASE_MANGA_URL + remoteId
 
-    fun mangaUrl(remoteId: Long): String = BASE_MANGA_URL + remoteId
-
-    fun refreshTokenRequest(token: String) =
-        POST(
-            LOGIN_URL,
-            body =
-                FormBody
-                    .Builder()
-                    .add("grant_type", "refresh_token")
-                    .add("refresh_token", token)
-                    .add("client_id", CLIENT_ID)
-                    .add("client_secret", CLIENT_SECRET)
-                    .build(),
-        )
-}
+        fun refreshTokenRequest(token: String) =
+            POST(
+                LOGIN_URL,
+                body =
+                    FormBody
+                        .Builder()
+                        .add("grant_type", "refresh_token")
+                        .add("refresh_token", token)
+                        .add("client_id", CLIENT_ID)
+                        .add("client_secret", CLIENT_SECRET)
+                        .build(),
+            )
+    }
 }
