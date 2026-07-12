@@ -586,7 +586,9 @@ class TrackQuery {
                     runCatching {
                         anilist.getRelated(remoteId)
                     }.onSuccess { res ->
-                        logger.debug { "[AniList] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}" }
+                        logger.debug {
+                            "[AniList] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}"
+                        }
                     }.onFailure { logger.warn(it) { "Failed to load AniList related manga for $input" } }
                         .getOrNull() ?: TrackRelatedResult()
                 }
@@ -609,7 +611,9 @@ class TrackQuery {
                     runCatching {
                         mal.getRelated(remoteId)
                     }.onSuccess { res ->
-                        logger.debug { "[MyAnimeList] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}" }
+                        logger.debug {
+                            "[MyAnimeList] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}"
+                        }
                     }.onFailure { logger.warn(it) { "Failed to load MyAnimeList related manga for $input" } }
                         .getOrNull() ?: TrackRelatedResult()
                 }
@@ -632,7 +636,9 @@ class TrackQuery {
                     runCatching {
                         kitsu.getRelated(remoteId)
                     }.onSuccess { res ->
-                        logger.debug { "[KITSU] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}" }
+                        logger.debug {
+                            "[KITSU] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}"
+                        }
                     }.onFailure { logger.warn(it) { "Failed to load KITSU related manga for $input" } }
                         .getOrNull() ?: TrackRelatedResult()
                 }
@@ -656,7 +662,9 @@ class TrackQuery {
                     runCatching {
                         mangaUpdates.getRelated(remoteId)
                     }.onSuccess { res ->
-                        logger.debug { "[MANGA_UPDATES] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}" }
+                        logger.debug {
+                            "[MANGA_UPDATES] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}"
+                        }
                     }.onFailure { logger.warn(it) { "Failed to load MANGA_UPDATES related manga for $input" } }
                         .getOrNull() ?: TrackRelatedResult()
                 }
