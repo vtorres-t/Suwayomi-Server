@@ -7,20 +7,31 @@ import kotlinx.serialization.Serializable
 data class MUSeriesResponse(
     @SerialName("title") val title: String? = null,
     @SerialName("related_series") val relatedSeries: List<MURelatedSeries>? = null,
+    @SerialName("category_recommendations") val recommendationSeries: List<MURecommendationSeries>? = null,
 )
 
 @Serializable
 data class MURelatedSeries(
     @SerialName("related_series_id") val relatedSeriesId: Long,
     @SerialName("relation_type") val relationType: String? = null,
-    @SerialName("title") val title: String? = null,
+    @SerialName("related_series_name") val relatedSeriesName: String? = null,
+    @SerialName("related_series_url") val relatedSeriesUrl: String? = null,
 )
 
 @Serializable
-data class KitsuMediaConnection(
-    val id: String,
-    val type: String, // "manga" o "anime"
-    val role: String, // "adaptation", "sequel", "prequel", "recommendation", etc.
-    val titles: Map<String, String>?, // Mapa de idiomas y títulos (ej: "en" to "Title")
-    val posterImage: String?, // URL de la portada del tomo/anime (si está disponible)
+data class MURecommendationSeries(
+    @SerialName("series_id") val seriesId: Long,
+    @SerialName("series_name") val seriesName: String? = null,
+    @SerialName("series_url") val seriesUrl: String? = null,
+    @SerialName("series_image") val seriesImage: MURecommendationSeriesImage? = null,
+)
+
+@Serializable
+data class MURecommendationSeriesImage(
+    @SerialName("url") val url: MURecommendationSeriesImageUrl? = null,
+)
+
+@Serializable
+data class MURecommendationSeriesImageUrl(
+    @SerialName("thumb") val thumb: String? = null,
 )

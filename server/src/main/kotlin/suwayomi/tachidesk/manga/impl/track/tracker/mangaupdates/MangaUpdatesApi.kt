@@ -212,14 +212,23 @@ class MangaUpdatesApi(
                     ?.map { related ->
                         TrackRelated(
                             remoteId = related.relatedSeriesId,
-                            title = related.title ?: "Related Manga ID: ${related.relatedSeriesId}",
+                            title = related.relatedSeriesName ?: "",
                             coverUrl = "",
-                            trackingUrl = "https://mangaupdates.com{related.relatedSeriesId}",
+                            trackingUrl = related.relatedSeriesUrl ?: "",
                             relationType = related.relationType ?: "Other",
                         )
                     }.orEmpty()
 
-            val recommendationsList = emptyList<TrackRelated>()
+            val recommendationsList =
+                seriesResponse.recommendationSeries
+                    ?.map { recommendation ->
+                        TrackRelated(
+                            remoteId = recommendation.seriesId,
+                            title = recommendation.seriesName ?: "",
+                            coverUrl = recommendation.seriesImage?.url?.thumb ?: "",
+                            trackingUrl = recommendation.seriesUrl ?: "",
+                        )
+                    }.orEmpty()
 
             TrackRelatedResult(
                 relations = relationsList,

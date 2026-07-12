@@ -40,6 +40,12 @@ data class KitsuIncludedMedia(
     val id: String,
     val type: String,
     val attributes: KitsuMediaAttributes,
+    val links: KitsuLinks,
+)
+
+@Serializable
+data class KitsuLinks(
+    val self: String? = null,
 )
 
 @Serializable

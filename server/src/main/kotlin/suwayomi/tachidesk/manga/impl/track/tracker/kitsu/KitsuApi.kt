@@ -320,7 +320,7 @@ class KitsuApi(
             remoteId = mangaId.toLong(),
             title = this.attributes.canonicalTitle,
             coverUrl = this.attributes.posterImage?.large ?: this.attributes.posterImage?.original ?: "",
-            trackingUrl = "https://kitsu.io",
+            trackingUrl = "https://kitsu.app/manga/$mangaId",
             relationType = relationType,
         )
     }
