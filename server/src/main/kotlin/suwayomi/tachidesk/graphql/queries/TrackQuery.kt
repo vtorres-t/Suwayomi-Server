@@ -54,6 +54,8 @@ import java.util.concurrent.CompletableFuture
 import kotlin.collections.associate
 
 class TrackQuery {
+    private val log = KotlinLogging.logger {}
+
     @RequireAuth
     fun tracker(
         dataFetchingEnvironment: DataFetchingEnvironment,
@@ -575,10 +577,16 @@ class TrackQuery {
                                 findRemoteIdByTitle(anilist, it)?.toString()?.toLongOrNull()
                             }
 
-                    if (remoteId == null) return@async TrackRelatedResult()
+                    if (remoteId == null) {
+                        logger.debug { "[AniList] Could not resolve remoteId for the manga." }
+                        return@async TrackRelatedResult()
+                    }
 
+                    logger.debug { "[AniList] Fetching related manga for remoteId: $remoteId" }
                     runCatching {
                         anilist.getRelated(remoteId)
+                    }.onSuccess { res ->
+                        logger.debug { "[AniList] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}" }
                     }.onFailure { logger.warn(it) { "Failed to load AniList related manga for $input" } }
                         .getOrNull() ?: TrackRelatedResult()
                 }
@@ -592,10 +600,16 @@ class TrackQuery {
                                 findRemoteIdByTitle(mal, it)?.toString()?.toLongOrNull()
                             }
 
-                    if (remoteId == null) return@async TrackRelatedResult()
+                    if (remoteId == null) {
+                        logger.debug { "[MyAnimeList] Could not resolve remoteId for the manga." }
+                        return@async TrackRelatedResult()
+                    }
 
+                    logger.debug { "[MyAnimeList] Fetching related manga for remoteId: $remoteId" }
                     runCatching {
                         mal.getRelated(remoteId)
+                    }.onSuccess { res ->
+                        logger.debug { "[MyAnimeList] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}" }
                     }.onFailure { logger.warn(it) { "Failed to load MyAnimeList related manga for $input" } }
                         .getOrNull() ?: TrackRelatedResult()
                 }
@@ -609,10 +623,16 @@ class TrackQuery {
                                 findRemoteIdByTitle(kitsu, it)?.toString()?.toLongOrNull()
                             }
 
-                    if (remoteId == null) return@async TrackRelatedResult()
+                    if (remoteId == null) {
+                        logger.debug { "[KITSU] Could not resolve remoteId for the manga." }
+                        return@async TrackRelatedResult()
+                    }
 
+                    logger.debug { "[KITSU] Fetching related manga for remoteId: $remoteId" }
                     runCatching {
                         kitsu.getRelated(remoteId)
+                    }.onSuccess { res ->
+                        logger.debug { "[KITSU] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}" }
                     }.onFailure { logger.warn(it) { "Failed to load KITSU related manga for $input" } }
                         .getOrNull() ?: TrackRelatedResult()
                 }
@@ -627,10 +647,16 @@ class TrackQuery {
                                 idStr.toLongOrNull()
                             }
 
-                    if (remoteId == null) return@async TrackRelatedResult()
+                    if (remoteId == null) {
+                        logger.debug { "[MANGA_UPDATES] Could not resolve remoteId for the manga." }
+                        return@async TrackRelatedResult()
+                    }
 
+                    logger.debug { "[MANGA_UPDATES] Fetching related manga for remoteId: $remoteId" }
                     runCatching {
                         mangaUpdates.getRelated(remoteId)
+                    }.onSuccess { res ->
+                        logger.debug { "[MANGA_UPDATES] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}" }
                     }.onFailure { logger.warn(it) { "Failed to load MANGA_UPDATES related manga for $input" } }
                         .getOrNull() ?: TrackRelatedResult()
                 }
@@ -640,7 +666,6 @@ class TrackQuery {
             val kitsuResult = kitsuDeferred.await()
             val mangaUpdatesResult = mangaUpdatesDeferred.await()
 
-            // 4. Filtrar y empaquetar únicamente los trackers que retornaron contenido real
             val activeTrackersList = mutableListOf<MangaTrackerRelated>()
 
             if (anilistResult.relations.isNotEmpty() || anilistResult.recommendations.isNotEmpty()) {
@@ -683,6 +708,7 @@ class TrackQuery {
                 )
             }
 
+            logger.debug { "mangaRelated finished. Active trackers with content: ${activeTrackersList.map { it.trackerId }}" }
             MangaRelatedPayload(mangaTrackerRelated = activeTrackersList)
         }
 
