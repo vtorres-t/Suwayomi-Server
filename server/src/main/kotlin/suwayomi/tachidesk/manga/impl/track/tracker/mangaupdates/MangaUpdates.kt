@@ -7,6 +7,7 @@ import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.MURating
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.copyTo
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.toTrackSearch
 import suwayomi.tachidesk.manga.impl.track.tracker.model.Track
+import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelatedResult
 import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackSearch
 
 class MangaUpdates(
@@ -64,6 +65,9 @@ class MangaUpdates(
     override fun getRereadingStatus(): Int = -1
 
     override fun getCompletionStatus(): Int = COMPLETE_LIST
+
+    suspend fun getRelated(remoteId: Long): TrackRelatedResult = api.getMangaRelated(remoteId)
+
 
     override fun getScoreList(): List<String> = SCORE_LIST
 

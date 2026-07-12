@@ -6,6 +6,7 @@ import eu.kanade.tachiyomi.network.POST
 import eu.kanade.tachiyomi.network.PUT
 import eu.kanade.tachiyomi.network.awaitSuccess
 import eu.kanade.tachiyomi.network.parseAs
+import eu.kanade.tachiyomi.util.lang.withIOContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.addJsonObject
@@ -16,6 +17,9 @@ import kotlinx.serialization.json.putJsonObject
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.KitsuApi
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuRecommendationsResult
+import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuRelatedResult
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.MangaUpdates.Companion.READING_LIST
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.MangaUpdates.Companion.WISH_LIST
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.MUContext
@@ -24,8 +28,15 @@ import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.MULoginRespo
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.MURating
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.MURecord
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.MUSearchResult
+import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.MUSeriesResponse
 import suwayomi.tachidesk.manga.impl.track.tracker.model.Track
+import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelated
+import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelatedResult
 import uy.kohesive.injekt.injectLazy
+import kotlin.collections.associateBy
+import kotlin.collections.mapNotNull
+import kotlin.collections.orEmpty
+import kotlin.collections.plus
 
 class MangaUpdatesApi(
     interceptor: MangaUpdatesInterceptor,
@@ -181,6 +192,37 @@ class MangaUpdatesApi(
                 .map { it.record }
         }
     }
+
+    suspend fun getMangaRelated(remoteId: Long): TrackRelatedResult =
+        withIOContext {
+            val seriesResponse = runCatching {
+                with(json) {
+                    client
+                        .newCall(GET("$BASE_URL/v1/series/$remoteId"))
+                        .awaitSuccess()
+                        .parseAs<MUSeriesResponse>()
+                }
+            }.getOrNull()
+
+            if (seriesResponse == null) return@withIOContext TrackRelatedResult()
+
+            val relationsList = seriesResponse.relatedSeries?.map { related ->
+                TrackRelated(
+                    remoteId = related.relatedSeriesId,
+                    title = related.title ?: "Related Manga ID: ${related.relatedSeriesId}",
+                    coverUrl = "",
+                    trackingUrl = "https://mangaupdates.com{related.relatedSeriesId}",
+                    relationType = related.relationType ?: "Other"
+                )
+            }.orEmpty()
+
+            val recommendationsList = emptyList<TrackRelated>()
+
+            TrackRelatedResult(
+                relations = relationsList,
+                recommendations = recommendationsList
+            )
+        }
 
     suspend fun authenticate(
         username: String,

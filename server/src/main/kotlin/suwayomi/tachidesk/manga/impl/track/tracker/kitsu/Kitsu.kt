@@ -6,6 +6,7 @@ import suwayomi.tachidesk.manga.impl.track.tracker.DeletableTracker
 import suwayomi.tachidesk.manga.impl.track.tracker.Tracker
 import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuOAuth
 import suwayomi.tachidesk.manga.impl.track.tracker.model.Track
+import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelatedResult
 import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackSearch
 import uy.kohesive.injekt.injectLazy
 import java.text.DecimalFormat
@@ -115,6 +116,8 @@ class Kitsu(
     }
 
     override suspend fun search(query: String): List<TrackSearch> = api.search(query)
+
+    suspend fun getRelated(remoteId: Long): TrackRelatedResult = api.getRelated(remoteId)
 
     override suspend fun refresh(track: Track): Track {
         val remoteTrack = api.getLibManga(track)

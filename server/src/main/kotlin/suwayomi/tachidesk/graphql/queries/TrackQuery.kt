@@ -4,6 +4,7 @@ import com.expediagroup.graphql.generator.annotations.GraphQLDeprecated
 import com.expediagroup.graphql.server.extensions.getValueFromDataLoader
 import graphql.schema.DataFetchingEnvironment
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.async
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.SortOrder
@@ -43,12 +44,14 @@ import suwayomi.tachidesk.graphql.types.TrackerNodeList
 import suwayomi.tachidesk.graphql.types.TrackerType
 import suwayomi.tachidesk.manga.impl.track.tracker.Tracker
 import suwayomi.tachidesk.manga.impl.track.tracker.TrackerManager
+import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelated
 import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelatedResult
 import suwayomi.tachidesk.manga.model.table.MangaTable
 import suwayomi.tachidesk.manga.model.table.TrackRecordTable
 import suwayomi.tachidesk.manga.model.table.insertAll
 import suwayomi.tachidesk.server.JavalinSetup.future
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.associate
 
 class TrackQuery {
     @RequireAuth
@@ -539,10 +542,13 @@ class TrackQuery {
     )
 
     data class MangaRelatedPayload(
-        val anilistRelations: List<TrackRelatedMangaType>,
-        val anilistRecommendations: List<TrackRelatedMangaType>,
-        val myanimelistRelations: List<TrackRelatedMangaType>,
-        val myanimelistRecommendations: List<TrackRelatedMangaType>,
+        val mangaTrackerRelated: List<MangaTrackerRelated> = emptyList(),
+    )
+
+    data class MangaTrackerRelated(
+        val trackerId: Int,
+        val relations: List<TrackRelatedMangaType>,
+        val recommendations: List<TrackRelatedMangaType>,
     )
 
     /**
@@ -558,32 +564,118 @@ class TrackQuery {
         future {
             val title = getMangaTitle(input.mangaId)
 
-            val anilist = TrackerManager.aniList
-            val anilistResult =
+            val trackRecordsMap: Map<Int, Long> = getRemotes(input.mangaId)
+
+            val anilistDeferred = async {
+                val anilist = TrackerManager.aniList
+                val remoteId: Long? = trackRecordsMap[TrackerManager.ANILIST]
+                    ?: title?.takeIf { anilist.isLoggedIn }?.let {
+                        findRemoteIdByTitle(anilist, it)?.toString()?.toLongOrNull()
+                    }
+
+                if (remoteId == null) return@async TrackRelatedResult()
+
                 runCatching {
-                    val remoteId =
-                        getRemoteId(input.mangaId, TrackerManager.ANILIST)
-                            ?: title?.takeIf { anilist.isLoggedIn }?.let { findRemoteIdByTitle(anilist, it) }
-                    remoteId?.let { anilist.getRelated(it) }
+                    anilist.getRelated(remoteId)
                 }.onFailure { logger.warn(it) { "Failed to load AniList related manga for $input" } }
                     .getOrNull() ?: TrackRelatedResult()
+            }
 
-            val mal = TrackerManager.myAnimeList
-            val malResult =
+            val malDeferred = async {
+                val mal = TrackerManager.myAnimeList
+                val remoteId: Long? = trackRecordsMap[TrackerManager.MYANIMELIST]
+                    ?: title?.takeIf { mal.isLoggedIn }?.let {
+                        findRemoteIdByTitle(mal, it)?.toString()?.toLongOrNull()
+                    }
+
+                if (remoteId == null) return@async TrackRelatedResult()
+
                 runCatching {
-                    val remoteId =
-                        getRemoteId(input.mangaId, TrackerManager.MYANIMELIST)
-                            ?: title?.takeIf { mal.isLoggedIn }?.let { findRemoteIdByTitle(mal, it) }
-                    remoteId?.let { mal.getRelated(it) }
+                    mal.getRelated(remoteId)
                 }.onFailure { logger.warn(it) { "Failed to load MyAnimeList related manga for $input" } }
                     .getOrNull() ?: TrackRelatedResult()
+            }
 
-            MangaRelatedPayload(
-                anilistRelations = anilistResult.relations.map { TrackRelatedMangaType(it) },
-                anilistRecommendations = anilistResult.recommendations.map { TrackRelatedMangaType(it) },
-                myanimelistRelations = malResult.relations.map { TrackRelatedMangaType(it) },
-                myanimelistRecommendations = malResult.recommendations.map { TrackRelatedMangaType(it) },
-            )
+            val kitsuDeferred = async {
+                val kitsu = TrackerManager.kitsu
+                val remoteId: Long? = trackRecordsMap[TrackerManager.KITSU]
+                    ?: title?.takeIf { kitsu.isLoggedIn }?.let {
+                        findRemoteIdByTitle(kitsu, it)?.toString()?.toLongOrNull()
+                    }
+
+                if (remoteId == null) return@async TrackRelatedResult()
+
+                runCatching {
+                    kitsu.getRelated(remoteId)
+                }.onFailure { logger.warn(it) { "Failed to load KITSU related manga for $input" } }
+                    .getOrNull() ?: TrackRelatedResult()
+            }
+
+            val mangaUpdatesDeferred = async {
+                val mangaUpdates = TrackerManager.mangaUpdates
+                val remoteId: Long? = trackRecordsMap[TrackerManager.MANGA_UPDATES]
+                    ?: title?.takeIf { mangaUpdates.isLoggedIn }?.let {
+                        val idStr = findRemoteIdByTitle(mangaUpdates, it)?.toString() ?: ""
+                        idStr.toLongOrNull()
+                    }
+
+                if (remoteId == null) return@async TrackRelatedResult()
+
+                runCatching {
+                    mangaUpdates.getRelated(remoteId)
+                }.onFailure { logger.warn(it) { "Failed to load MANGA_UPDATES related manga for $input" } }
+                    .getOrNull() ?: TrackRelatedResult()
+            }
+
+            val anilistResult = anilistDeferred.await()
+            val malResult = malDeferred.await()
+            val kitsuResult = kitsuDeferred.await()
+            val mangaUpdatesResult = mangaUpdatesDeferred.await()
+
+            // 4. Filtrar y empaquetar únicamente los trackers que retornaron contenido real
+            val activeTrackersList = mutableListOf<MangaTrackerRelated>()
+
+            if (anilistResult.relations.isNotEmpty() || anilistResult.recommendations.isNotEmpty()) {
+                activeTrackersList.add(
+                    MangaTrackerRelated(
+                        trackerId = TrackerManager.ANILIST,
+                        relations = anilistResult.relations.map { TrackRelatedMangaType(it) },
+                        recommendations = anilistResult.recommendations.map { TrackRelatedMangaType(it) },
+                    )
+                )
+            }
+
+            if (malResult.relations.isNotEmpty() || malResult.recommendations.isNotEmpty()) {
+                activeTrackersList.add(
+                    MangaTrackerRelated(
+                        trackerId = TrackerManager.MYANIMELIST,
+                        relations = malResult.relations.map { TrackRelatedMangaType(it) },
+                        recommendations = malResult.recommendations.map { TrackRelatedMangaType(it) },
+                    )
+                )
+            }
+
+            if (kitsuResult.relations.isNotEmpty() || kitsuResult.recommendations.isNotEmpty()) {
+                activeTrackersList.add(
+                    MangaTrackerRelated(
+                        trackerId = TrackerManager.KITSU,
+                        relations = kitsuResult.relations.map { TrackRelatedMangaType(it) },
+                        recommendations = kitsuResult.recommendations.map { TrackRelatedMangaType(it) }
+                    )
+                )
+            }
+
+            if (mangaUpdatesResult.relations.isNotEmpty() || mangaUpdatesResult.recommendations.isNotEmpty()) {
+                activeTrackersList.add(
+                    MangaTrackerRelated(
+                        trackerId = TrackerManager.MANGA_UPDATES,
+                        relations = mangaUpdatesResult.relations.map { TrackRelatedMangaType(it) },
+                        recommendations = mangaUpdatesResult.recommendations.map { TrackRelatedMangaType(it) }
+                    )
+                )
+            }
+
+            MangaRelatedPayload(mangaTrackerRelated = activeTrackersList)
         }
 
     private fun getMangaTitle(mangaId: Int): String? =
@@ -595,16 +687,16 @@ class TrackQuery {
                 ?.get(MangaTable.title)
         }
 
-    private fun getRemoteId(
-        mangaId: Int,
-        trackerId: Int,
-    ): Long? =
+    private fun getRemotes(mangaId: Int): Map<Int, Long> =
         transaction {
             TrackRecordTable
                 .selectAll()
-                .where { (TrackRecordTable.mangaId eq mangaId) and (TrackRecordTable.trackerId eq trackerId) }
-                .firstOrNull()
-                ?.get(TrackRecordTable.remoteId)
+                .where { TrackRecordTable.mangaId eq mangaId }
+                .associate { row ->
+                    val trackerIdInt: Int = row[TrackRecordTable.trackerId]
+                    val remoteIdLong: Long = row[TrackRecordTable.remoteId]
+                    trackerIdInt to remoteIdLong
+                }
         }
 
     /**
