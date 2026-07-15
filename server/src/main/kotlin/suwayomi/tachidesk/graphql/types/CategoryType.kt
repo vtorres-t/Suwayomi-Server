@@ -3,7 +3,8 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 
 package suwayomi.tachidesk.graphql.types
 
@@ -46,8 +47,29 @@ class CategoryType(
         dataClass.includeInDownload,
     )
 
-    fun mangas(dataFetchingEnvironment: DataFetchingEnvironment): CompletableFuture<MangaNodeList> =
-        dataFetchingEnvironment.getValueFromDataLoader<Int, MangaNodeList>("MangaForCategoryDataLoader", id)
+    fun mangas(
+        dataFetchingEnvironment: DataFetchingEnvironment,
+        inLibrary: Boolean? = null,
+    ): CompletableFuture<MangaNodeList> {
+        val future = dataFetchingEnvironment.getValueFromDataLoader<Int, MangaNodeList>("MangaForCategoryDataLoader", id)
+
+        if (inLibrary == null) {
+            return future
+        }
+
+        return future.thenApply { mangaNodeList ->
+            val filteredNodes = mangaNodeList.nodes.filter { manga ->
+                manga.inLibrary == inLibrary
+            }
+
+            MangaNodeList(
+                nodes = filteredNodes,
+                edges = mangaNodeList.edges.filter { edge -> edge.node.inLibrary == inLibrary },
+                pageInfo = mangaNodeList.pageInfo, // Mantenemos la info de paginación previa
+                totalCount = filteredNodes.size
+            )
+        }
+    }
 
     fun meta(dataFetchingEnvironment: DataFetchingEnvironment): CompletableFuture<List<CategoryMetaType>> =
         dataFetchingEnvironment.getValueFromDataLoader<Int, List<CategoryMetaType>>("CategoryMetaDataLoader", id)

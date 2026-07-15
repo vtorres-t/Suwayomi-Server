@@ -3,7 +3,8 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 
 package suwayomi.tachidesk.graphql.queries
 
@@ -92,6 +93,7 @@ class CategoryQuery {
         val order: Int? = null,
         val name: String? = null,
         val default: Boolean? = null,
+        val inLibrary: Boolean? = null,
     ) : HasGetOp {
         override fun getOp(): Op<Boolean>? {
             val opAnd = OpAnd()
@@ -109,6 +111,7 @@ class CategoryQuery {
         val order: IntFilter? = null,
         val name: StringFilter? = null,
         val default: BooleanFilter? = null,
+        val inLibrary: BooleanFilter? = null,
         override val and: List<CategoryFilter>? = null,
         override val or: List<CategoryFilter>? = null,
         override val not: CategoryFilter? = null,
@@ -202,17 +205,16 @@ class CategoryQuery {
                             getAsCursor(it),
                             it,
                         )
-                    },
+                    }
                 )
             },
-            pageInfo =
-                PageInfo(
-                    hasNextPage = queryResults.lastKey != resultsAsType.lastOrNull()?.id,
-                    hasPreviousPage = queryResults.firstKey != resultsAsType.firstOrNull()?.id,
-                    startCursor = resultsAsType.firstOrNull()?.let { getAsCursor(it) },
-                    endCursor = resultsAsType.lastOrNull()?.let { getAsCursor(it) },
-                ),
-            totalCount = queryResults.total.toInt(),
+            PageInfo(
+                hasNextPage = first != null && resultsAsType.size >= first,
+                hasPreviousPage = offset != null && offset > 0,
+                startCursor = resultsAsType.firstOrNull()?.let { getAsCursor(it) },
+                endCursor = resultsAsType.lastOrNull()?.let { getAsCursor(it) }
+            ),
+            queryResults.total.toInt()
         )
     }
 }
