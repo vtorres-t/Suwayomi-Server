@@ -205,16 +205,16 @@ class CategoryQuery {
                             getAsCursor(it),
                             it,
                         )
-                    }
+                    },
                 )
             },
             PageInfo(
                 hasNextPage = first != null && resultsAsType.size >= first,
                 hasPreviousPage = offset != null && offset > 0,
                 startCursor = resultsAsType.firstOrNull()?.let { getAsCursor(it) },
-                endCursor = resultsAsType.lastOrNull()?.let { getAsCursor(it) }
+                endCursor = resultsAsType.lastOrNull()?.let { getAsCursor(it) },
             ),
-            queryResults.total.toInt()
+            queryResults.total.toInt(),
         )
     }
 }

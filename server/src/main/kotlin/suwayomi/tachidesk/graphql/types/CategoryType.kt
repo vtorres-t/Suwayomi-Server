@@ -58,15 +58,16 @@ class CategoryType(
         }
 
         return future.thenApply { mangaNodeList ->
-            val filteredNodes = mangaNodeList.nodes.filter { manga ->
-                manga.inLibrary == inLibrary
-            }
+            val filteredNodes =
+                mangaNodeList.nodes.filter { manga ->
+                    manga.inLibrary == inLibrary
+                }
 
             MangaNodeList(
                 nodes = filteredNodes,
                 edges = mangaNodeList.edges.filter { edge -> edge.node.inLibrary == inLibrary },
                 pageInfo = mangaNodeList.pageInfo, // Mantenemos la info de paginación previa
-                totalCount = filteredNodes.size
+                totalCount = filteredNodes.size,
             )
         }
     }
