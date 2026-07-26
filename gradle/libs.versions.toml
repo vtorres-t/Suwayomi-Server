@@ -9,10 +9,10 @@ jte = "3.2.4"
 jackson = "3.2.0" # jackson version locked by javalin, ref: `io.javalin.core.util.OptionalDependency`
 exposed = "1.2.0"
 dex2jar = "2.4.37"
-polyglot = "25.0.3"
+polyglot = "25.1.3"
 settings = "1.3.0"
 twelvemonkeys = "3.13.1"
-graphqlkotlin = "10.0.0"
+graphqlkotlin = "10.1.2"
 xmlserialization = "0.91.3"
 ktlint = "1.8.0"
 koin = "4.2.2"
@@ -38,7 +38,7 @@ serialization-xml = { module = "io.github.pdvrieze.xmlutil:serialization-jvm", v
 
 # Logging
 slf4japi = "org.slf4j:slf4j-api:2.0.18"
-logback = "ch.qos.logback:logback-classic:1.5.34"
+logback = "ch.qos.logback:logback-classic:1.6.0"
 kotlinlogging = "io.github.oshai:kotlin-logging-jvm:8.0.4"
 
 # OkHttp
@@ -71,7 +71,7 @@ exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "e
 exposed-javatime = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 exposed-kotlintime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed" }
 exposed-json = { module = "org.jetbrains.exposed:exposed-json ", version.ref = "exposed" }
-postgres = "org.postgresql:postgresql:42.7.11"
+postgres = "org.postgresql:postgresql:42.7.13"
 h2 = "com.h2database:h2:2.4.240"
 hikaricp = "com.zaxxer:HikariCP:7.1.0"
 
@@ -119,7 +119,7 @@ appdirs = "ca.gosyer:kotlin-multiplatform-appdirs:2.0.0"
 cache4k = "io.github.reactivecircus.cache4k:cache4k:0.14.0"
 zip4j = "net.lingala.zip4j:zip4j:2.11.6"
 commonscompress = "org.apache.commons:commons-compress:1.28.0"
-junrar = "com.github.junrar:junrar:7.6.0"
+junrar = "com.github.junrar:junrar:7.6.1"
 
 # AES/CBC/PKCS7Padding Cypher provider
 bouncycastle = "org.bouncycastle:bcprov-jdk18on:1.84"
