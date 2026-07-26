@@ -1,4 +1,4 @@
-name: CI Push
+name: CI build
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Clone repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Validate Gradle Wrapper
         uses: gradle/actions/wrapper-validation@v5
@@ -45,6 +45,8 @@ jobs:
           - 5432:5432
 
     steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v7
       - name: Checkout pull request
         uses: actions/checkout@v6
         with:
