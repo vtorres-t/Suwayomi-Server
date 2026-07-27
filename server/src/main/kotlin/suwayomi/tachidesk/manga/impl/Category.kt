@@ -217,37 +217,32 @@ object Category {
     }
 
     fun modifyCategoriesMetas(metaByCategoryId: Map<Int, Map<String, String>>) {
-        transaction {
-            val categoryIds = metaByCategoryId.keys
-            val metaKeys = metaByCategoryId.flatMap { it.value.keys }
+        val categoryIds: List<Int> = metaByCategoryId.keys.toList()
+        val metaKeys: List<String> = metaByCategoryId.flatMap { it.value.keys }.toList()
 
+        transaction {
             val dbMetaByCategoryId =
                 CategoryMetaTable
                     .selectAll()
                     .where { (CategoryMetaTable.ref inList categoryIds) and (CategoryMetaTable.key inList metaKeys) }
                     .groupBy { it[CategoryMetaTable.ref].value }
 
-            val existingMetaByMetaId =
-                categoryIds.flatMap { categoryId ->
-                    val dbMetaByKey = dbMetaByCategoryId[categoryId].orEmpty().associateBy { it[CategoryMetaTable.key] }
-                    val existingMetas = metaByCategoryId[categoryId].orEmpty().filter { (key) -> key in dbMetaByKey.keys }
+            val existingMetaByMetaId = mutableListOf<Pair<Int, Map.Entry<String, String>>>()
+            val newMetaByCategoryId = mutableListOf<Pair<Int, Map.Entry<String, String>>>()
 
-                    existingMetas.map { entry ->
+            for (categoryId in categoryIds) {
+                val dbMetaByKey = dbMetaByCategoryId[categoryId].orEmpty().associateBy { it[CategoryMetaTable.key] }
+                val categoryMetas = metaByCategoryId[categoryId].orEmpty()
+
+                for (entry in categoryMetas.entries) {
+                    if (entry.key in dbMetaByKey.keys) {
                         val metaId = dbMetaByKey[entry.key]!![CategoryMetaTable.id].value
-
-                        metaId to entry
+                        existingMetaByMetaId.add(metaId to entry)
+                    } else {
+                        newMetaByCategoryId.add(categoryId to entry)
                     }
                 }
-
-            val newMetaByCategoryId =
-                categoryIds.flatMap { categoryID ->
-                    val dbMetaByKey = dbMetaByCategoryId[categoryID].orEmpty().associateBy { it[CategoryMetaTable.key] }
-
-                    metaByCategoryId[categoryID]
-                        .orEmpty()
-                        .filter { entry -> entry.key !in dbMetaByKey.keys }
-                        .map { entry -> categoryID to entry }
-                }
+            }
 
             if (existingMetaByMetaId.isNotEmpty()) {
                 BatchUpdateStatement(CategoryMetaTable)

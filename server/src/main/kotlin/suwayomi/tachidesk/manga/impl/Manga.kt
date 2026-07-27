@@ -254,7 +254,7 @@ object Manga {
         return sManga
     }
 
-    fun getMangaStorageFolderStats(mangaId: Int): String = storageScanner.getFolderSizePretty(getMangaDownloadDir(mangaId))
+    suspend fun getMangaStorageFolderStats(mangaId: Int): String = storageScanner.getFolderSizePretty(getMangaDownloadDir(mangaId))
 
     suspend fun getMangaFull(
         mangaId: Int,

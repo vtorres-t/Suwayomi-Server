@@ -133,7 +133,9 @@ class MangaType(
 
     fun downloadSize(mangaId: Int): CompletableFuture<String> =
         CompletableFuture.supplyAsync {
-            Manga.getMangaStorageFolderStats(mangaId)
+            kotlinx.coroutines.runBlocking {
+                Manga.getMangaStorageFolderStats(mangaId)
+            }
         }
 
     fun unreadCount(dataFetchingEnvironment: DataFetchingEnvironment): CompletableFuture<Int> =
