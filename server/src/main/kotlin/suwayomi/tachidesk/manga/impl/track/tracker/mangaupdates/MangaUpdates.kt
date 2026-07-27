@@ -123,7 +123,7 @@ class MangaUpdates(
             score = rating?.rating ?: 0.0
         }
 
-    override suspend fun login(
+    override suspend fun loginImpl(
         username: String,
         password: String,
     ) {
