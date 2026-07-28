@@ -191,10 +191,17 @@ tasks {
         }
     }
 
+    withType<JavaCompile>().configureEach {
+        options.compilerArgs.addAll(listOf("-g:none", "-Xlint:none"))
+    }
+
     withType<KotlinJvmCompile> {
         compilerOptions {
-            freeCompilerArgs.add(
+            freeCompilerArgs.addAll(
                 "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
+                "-Xno-call-assertions",
+                "-Xno-receiver-assertions",
+                "-Xno-param-assertions"
             )
         }
     }
