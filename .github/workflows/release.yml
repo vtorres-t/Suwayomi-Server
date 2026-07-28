@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v6
+        uses: gradle/actions/wrapper-validation@v5
 
   build:
     name: Build (${{ matrix.flavor }})
@@ -56,18 +56,14 @@ jobs:
           cd master
           mkdir -p ~/.gradle
           cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
-          # Forzar compilación paralela de submódulos internos
           echo "org.gradle.parallel=true" >> ~/.gradle/gradle.properties
-          # Desactivar el daemon de forma nativa a través de propiedades de entorno de Java
           echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
 
-      # Sabor Standard
       - name: Build Standard Jar
         if: matrix.flavor == 'standard'
         working-directory: master
         run: ./gradlew :server:downloadWebUI :server:shadowJar --stacktrace -x ktlintCheck -x test
 
-      # Sabor Musl (Alpine)
       - name: Build Alpine Musl Jar
         if: matrix.flavor == 'musl'
         working-directory: master
@@ -79,7 +75,6 @@ jobs:
       - name: Process and Rename Jar
         working-directory: master
         run: |
-          # Localizar el JAR directamente en la raíz de salida de la compilación
           JAR_FILE=$(find server/build/ -maxdepth 1 -name "*.jar" | head -n 1)
           if [ "${{ matrix.flavor }}" = "musl" ]; then
             mv "$JAR_FILE" "${JAR_FILE%.jar}_musl.jar"
@@ -113,14 +108,13 @@ jobs:
 
       - name: Get tag from Jar
         run: |
-          for file in $(find ./release -name "*_musl.jar"); do
-            filename=$(basename "$file" _musl.jar)
-            part3=$(echo "$filename" | sed -n 's/.*-\(v[0-9.]*\).*/\1/p')
-            if [ -z "$part3" ]; then
-              part3=$(echo "$filename" | awk -F'-' '{print $NF}')
-            fi
-            echo "TAG=$part3" >> $GITHUB_ENV
-          done
+          STANDARD_JAR=$(find ./release -name "*.jar" ! -name "*_musl.jar" | head -n 1)
+          filename=$(basename "$STANDARD_JAR" .jar)
+          extracted_tag=$(echo "$filename" | sed -n 's/Suwayomi-Server-//p')
+          if [ -z "$extracted_tag" ]; then
+            extracted_tag=$(echo "$filename" | awk -F'-' '{print $NF}')
+          fi
+          echo "TAG=$extracted_tag" >> $GITHUB_ENV
         shell: bash
 
       - name: Release
