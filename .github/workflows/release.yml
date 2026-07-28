@@ -25,16 +25,20 @@ jobs:
         uses: gradle/actions/wrapper-validation@v5
 
   build:
-    name: Build Jar
+    name: Build (${{ matrix.flavor }})
     needs: check_wrapper
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [standard, musl]
     steps:
       - name: Checkout ${{ github.ref }}
         uses: actions/checkout@v6
         with:
           ref: ${{ github.ref }}
           path: master
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up JDK
         uses: actions/setup-java@v5
@@ -44,61 +48,61 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/master' }}
+          arguments: --no-daemon
 
       - name: Copy CI gradle.properties
         run: |
           cd master
           mkdir -p ~/.gradle
-          cp .github/runner-files/ci-gradle.properties \
-            ~/.gradle/gradle.properties
+          cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
+          # OPTIMIZACIÓN 3: Forzar a Gradle a compilar tareas internas en paralelo y usar caché de configuración
+          echo "org.gradle.parallel=true" >> ~/.gradle/gradle.properties
+          echo "org.gradle.configuration-cache=true" >> ~/.gradle/gradle.properties
 
-      - name: Build and copy webUI, Build Standard Jar
+      - name: Build Standard Jar
+        if: matrix.flavor == 'standard'
         working-directory: master
-        run: ./gradlew :server:downloadWebUI :server:shadowJar --stacktrace
-
-      - name: Isolate Standard Jar
-        working-directory: master
-        run: |
-          mkdir -p server/build/outputs/
-          # Buscamos el JAR directamente en server/build/ (sin la subcarpeta libs)
-          JAR_FILE=$(find server/build/ -maxdepth 1 -name "*.jar" | head -n 1)
-          cp "$JAR_FILE" server/build/outputs/
-
-      - name: Clean Packaging Tasks
-        working-directory: master
-        run: ./gradlew :server:cleanShadowJar
+        run: ./gradlew :server:downloadWebUI :server:shadowJar --stacktrace -x ktlintCheck -x test
 
       - name: Build Alpine Musl Jar
+        if: matrix.flavor == 'musl'
         working-directory: master
         run: |
-          ./gradlew :server:shadowJar --stacktrace \
+          ./gradlew :server:downloadWebUI :server:shadowJar --stacktrace -x ktlintCheck -x test \
             -Dorg.sqlite.lib.platform=linux_musl64 \
             -Dio.netty.package.libname=netty_transport_native_epoll_x86_64_musl
 
-      - name: Process and Rename Musl Jar
+      - name: Process and Rename Jar
         working-directory: master
         run: |
-          # Encontrar el nuevo JAR musl en server/build/
-          NEW_JAR=$(find server/build/ -maxdepth 1 -name "*.jar" | head -n 1)
-          # Renombrarlo agregándole el sufijo _musl antes de la extensión
-          mv "$NEW_JAR" "${NEW_JAR%.jar}_musl.jar"
-          # Restaurar el JAR estándar a la carpeta original
-          cp server/build/outputs/*.jar server/build/
+          JAR_FILE=$(find server/build/ -maxdepth 1 -name "*.jar" | head -n 1)
+          if [ "${{ matrix.flavor }}" = "musl" ]; then
+            mv "$JAR_FILE" "${JAR_FILE%.jar}_musl.jar"
+          fi
 
-      - name: Upload Jars
+      - name: Upload Jar Artifact
         uses: actions/upload-artifact@v7
         with:
-          name: jar
-          path: master/server/build/libs/*.jar
+          name: jar-${{ matrix.flavor }}
+          path: master/server/build/*.jar
           if-no-files-found: error
 
   release:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v8
+      - name: Download Standard Jar
+        uses: actions/download-artifact@v8
         with:
-          name: jar
+          name: jar-standard
+          path: release
+
+      - name: Download Musl Jar
+        uses: actions/download-artifact@v8
+        with:
+          name: jar-musl
           path: release
 
       - name: Generate checksums
@@ -108,7 +112,10 @@ jobs:
         run: |
           for file in $(find ./release -name "*_musl.jar"); do
             filename=$(basename "$file" _musl.jar)
-            part3=$(echo "$filename" | cut -d'-' -f3)
+            part3=$(echo "$filename" | sed -n 's/.*-\(v[0-9.]*\).*/\1/p')
+            if [ -z "$part3" ]; then
+              part3=$(echo "$filename" | awk -F'-' '{print $NF}')
+            fi
             echo "TAG=$part3" >> $GITHUB_ENV
           done
         shell: bash
