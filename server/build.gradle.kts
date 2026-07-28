@@ -201,7 +201,7 @@ tasks {
                 "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
                 "-Xno-call-assertions",
                 "-Xno-receiver-assertions",
-                "-Xno-param-assertions"
+                "-Xno-param-assertions",
             )
         }
     }
