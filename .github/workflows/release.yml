@@ -60,7 +60,10 @@ jobs:
         working-directory: master
         run: |
           mkdir -p server/build/outputs/
-          cp server/build/libs/Suwayomi-Server-*-all.jar server/build/outputs/
+          # Buscamos cualquier JAR generado en libs y lo movemos temporalmente fuera
+          JAR_FILE=$(find server/build/libs/ -name "*.jar" | head -n 1)
+          echo "FOUND_JAR=$JAR_FILE" >> $GITHUB_ENV
+          cp "$JAR_FILE" server/build/outputs/
 
       - name: Clean Packaging Tasks
         working-directory: master
@@ -76,11 +79,12 @@ jobs:
       - name: Process and Rename Musl Jar
         working-directory: master
         run: |
-          for file in server/build/libs/Suwayomi-Server-*-all.jar; do
-            mv "$file" "${file%.jar}_musl.jar"
-          done
-          # Regresar el JAR estándar a la carpeta de compilación original
-          cp server/build/outputs/Suwayomi-Server-*-all.jar server/build/libs/
+          # Encontrar el nuevo JAR compilado con soporte musl
+          NEW_JAR=$(find server/build/libs/ -name "*.jar" | head -n 1)
+          # Renombrarlo agregándole el sufijo _musl antes de la extensión
+          mv "$NEW_JAR" "${NEW_JAR%.jar}_musl.jar"
+          # Restaurar el JAR estándar guardado en el paso 2 a la carpeta original
+          cp server/build/outputs/*.jar server/build/libs/
 
       - name: Upload Jars
         uses: actions/upload-artifact@v7
