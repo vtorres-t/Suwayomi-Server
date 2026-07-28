@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v5
+        uses: gradle/actions/wrapper-validation@v6
 
   build:
     name: Build (${{ matrix.flavor }})
@@ -50,22 +50,24 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
         with:
           cache-read-only: ${{ github.ref != 'refs/heads/master' }}
-          arguments: --no-daemon
 
       - name: Copy CI gradle.properties
         run: |
           cd master
           mkdir -p ~/.gradle
           cp .github/runner-files/ci-gradle.properties ~/.gradle/gradle.properties
-          # OPTIMIZACIÓN 3: Forzar a Gradle a compilar tareas internas en paralelo y usar caché de configuración
+          # Forzar compilación paralela de submódulos internos
           echo "org.gradle.parallel=true" >> ~/.gradle/gradle.properties
-          echo "org.gradle.configuration-cache=true" >> ~/.gradle/gradle.properties
+          # Desactivar el daemon de forma nativa a través de propiedades de entorno de Java
+          echo "org.gradle.daemon=false" >> ~/.gradle/gradle.properties
 
+      # Sabor Standard
       - name: Build Standard Jar
         if: matrix.flavor == 'standard'
         working-directory: master
         run: ./gradlew :server:downloadWebUI :server:shadowJar --stacktrace -x ktlintCheck -x test
 
+      # Sabor Musl (Alpine)
       - name: Build Alpine Musl Jar
         if: matrix.flavor == 'musl'
         working-directory: master
@@ -77,6 +79,7 @@ jobs:
       - name: Process and Rename Jar
         working-directory: master
         run: |
+          # Localizar el JAR directamente en la raíz de salida de la compilación
           JAR_FILE=$(find server/build/ -maxdepth 1 -name "*.jar" | head -n 1)
           if [ "${{ matrix.flavor }}" = "musl" ]; then
             mv "$JAR_FILE" "${JAR_FILE%.jar}_musl.jar"
