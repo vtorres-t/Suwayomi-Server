@@ -52,15 +52,41 @@ jobs:
           cp .github/runner-files/ci-gradle.properties \
             ~/.gradle/gradle.properties
 
-      - name: Build and copy webUI, Build Jar
+      - name: Build and copy webUI, Build Standard Jar
         working-directory: master
         run: ./gradlew :server:downloadWebUI :server:shadowJar --stacktrace
 
-      - name: Upload Jar
+      - name: Isolate Standard Jar
+        working-directory: master
+        run: |
+          mkdir -p server/build/outputs/
+          cp server/build/libs/Suwayomi-Server-*-all.jar server/build/outputs/
+
+      - name: Clean Packaging Tasks
+        working-directory: master
+        run: ./gradlew :server:cleanShadowJar
+
+      - name: Build Alpine Musl Jar
+        working-directory: master
+        run: |
+          ./gradlew :server:shadowJar --stacktrace \
+            -Dorg.sqlite.lib.platform=linux_musl64 \
+            -Dio.netty.package.libname=netty_transport_native_epoll_x86_64_musl
+
+      - name: Process and Rename Musl Jar
+        working-directory: master
+        run: |
+          for file in server/build/libs/Suwayomi-Server-*-all.jar; do
+            mv "$file" "${file%.jar}_musl.jar"
+          done
+          # Regresar el JAR estándar a la carpeta de compilación original
+          cp server/build/outputs/Suwayomi-Server-*-all.jar server/build/libs/
+
+      - name: Upload Jars
         uses: actions/upload-artifact@v7
         with:
           name: jar
-          path: master/server/build/*.jar
+          path: master/server/build/libs/*.jar
           if-no-files-found: error
 
   release:
@@ -77,8 +103,8 @@ jobs:
 
       - name: Get tag from Jar
         run: |
-          for file in $(find ./release -name "*.jar"); do
-            filename=$(basename "$file" .jar)
+          for file in $(find ./release -name "*_musl.jar"); do
+            filename=$(basename "$file" _musl.jar)
             part3=$(echo "$filename" | cut -d'-' -f3)
             echo "TAG=$part3" >> $GITHUB_ENV
           done
