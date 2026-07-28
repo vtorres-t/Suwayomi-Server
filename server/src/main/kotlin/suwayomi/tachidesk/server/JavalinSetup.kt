@@ -74,8 +74,6 @@ object JavalinSetup {
 
                 WebInterfaceManager.setup(config)
 
-                // config.registerPlugin(OpenApiPlugin(getOpenApiOptions()))
-
                 var connectorAdded = false
                 config.jetty.modifyServer { server ->
                     if (!connectorAdded) {
@@ -158,14 +156,6 @@ object JavalinSetup {
                                     appendLine("  http://$address:$port")
                                 }
                         }.trimEnd()
-                    }
-                    if (serverConfig.initialOpenInBrowserEnabled.value) {
-                        scope.launch {
-                            withTimeoutOrNull(10.seconds) {
-                                WebInterfaceManager.isSetupComplete.first { it }
-                            }
-                            Browser.openInBrowser()
-                        }
                     }
                 }
             }
@@ -314,22 +304,6 @@ object JavalinSetup {
             ctx.result(e.message ?: "Forbidden")
         }
     }
-
-    // private fun getOpenApiOptions(): OpenApiOptions {
-    //     val applicationInfo =
-    //         Info().apply {
-    //             version("1.0")
-    //             description("Suwayomi-Server Api")
-    //         }
-    //     return OpenApiOptions(applicationInfo).apply {
-    //         path("/api/openapi.json")
-    //         swagger(
-    //             SwaggerOptions("/api/swagger-ui").apply {
-    //                 title("Suwayomi-Server Swagger Documentation")
-    //             },
-    //         )
-    //     }
-    // }
 
     sealed class Attribute<T : Any>(
         val name: String,

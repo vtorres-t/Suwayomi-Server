@@ -7,7 +7,6 @@ package suwayomi.tachidesk.server.util
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-import dorkbox.desktop.Desktop
 import io.github.oshai.kotlinlogging.KotlinLogging
 import suwayomi.tachidesk.graphql.types.WebUIInterface
 import suwayomi.tachidesk.server.serverConfig
@@ -32,15 +31,7 @@ object Browser {
                     val electronPath = serverConfig.electronPath.value
                     electronInstances.add(ProcessBuilder(electronPath, appBaseUrl).start())
                 } catch (e: Throwable) {
-                    // cover both java.lang.Exception and java.lang.Error
                     logger.error(e) { "openInBrowser: failed to launch electron due to" }
-                }
-            } else {
-                try {
-                    Desktop.browseURL(appBaseUrl)
-                } catch (e: Throwable) {
-                    // cover both java.lang.Exception and java.lang.Error
-                    logger.error(e) { "openInBrowser: failed to launch browser due to" }
                 }
             }
         }

@@ -166,14 +166,6 @@ class ServerConfig(
         typeInfo = SettingsRegistry.PartialTypeInfo(imports = listOf("suwayomi.tachidesk.graphql.types.WebUIFlavor")),
     )
 
-    val initialOpenInBrowserEnabled: MutableStateFlow<Boolean> by BooleanSetting(
-        protoNumber = 10,
-        group = SettingGroup.WEB_UI,
-        privacySafe = true,
-        defaultValue = false,
-        description = "Open client on startup",
-    )
-
     val webUIInterface: MutableStateFlow<WebUIInterface> by EnumSetting(
         protoNumber = 11,
         group = SettingGroup.WEB_UI,
@@ -387,13 +379,6 @@ class ServerConfig(
             SettingsRegistry.SettingDeprecated(
                 message = "Removed - does not do anything",
             ),
-    )
-
-    val systemTrayEnabled: MutableStateFlow<Boolean> by BooleanSetting(
-        protoNumber = 34,
-        group = SettingGroup.MISC,
-        privacySafe = true,
-        defaultValue = false,
     )
 
     val maxLogFiles: MutableStateFlow<Int> by IntSetting(

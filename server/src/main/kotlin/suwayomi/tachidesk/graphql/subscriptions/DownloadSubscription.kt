@@ -66,7 +66,6 @@ class DownloadSubscription {
                     }
 
                 DownloadUpdates(actualDownloadUpdates, omittedUpdates)
-            }
-            .flowOn(Dispatchers.IO)
+            }.flowOn(Dispatchers.IO)
     }
 }

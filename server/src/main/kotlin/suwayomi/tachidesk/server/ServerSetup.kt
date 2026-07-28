@@ -14,7 +14,6 @@ import com.typesafe.config.ConfigException
 import com.typesafe.config.ConfigRenderOptions
 import com.typesafe.config.ConfigValue
 import com.typesafe.config.parser.ConfigDocument
-import dorkbox.updates.Updates
 import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.createAppModule
 import eu.kanade.tachiyomi.network.NetworkHelper
@@ -49,7 +48,6 @@ import suwayomi.tachidesk.server.settings.SettingsRegistry
 import suwayomi.tachidesk.server.util.AppMutex.handleAppMutex
 import suwayomi.tachidesk.server.util.ConfigTypeRegistration
 import suwayomi.tachidesk.server.util.ExitCode
-import suwayomi.tachidesk.server.util.SystemTray
 import suwayomi.tachidesk.server.util.shutdownApp
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -394,25 +392,6 @@ fun applicationSetup() {
             LocalSource.register()
         },
         ignoreInitialValue = true,
-    )
-
-    // create system tray
-    Updates.ENABLE = false
-    serverConfig.subscribeTo(
-        serverConfig.systemTrayEnabled,
-        { systemTrayEnabled ->
-            try {
-                if (systemTrayEnabled) {
-                    SystemTray.create()
-                } else {
-                    SystemTray.remove()
-                }
-            } catch (e: Throwable) {
-                // cover both java.lang.Exception and java.lang.Error
-                logger.error(e) { "Failed to create/remove SystemTray due to" }
-            }
-        },
-        ignoreInitialValue = false,
     )
 
     setLogLevelFor("org.eclipse.jetty", Level.OFF)

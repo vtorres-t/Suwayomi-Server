@@ -81,11 +81,6 @@ exposed-migrations = "com.github.Suwayomi:exposed-migrations:3.10.1"
 # Dependency Injection
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
-# tray icon
-systemtray-core = "com.dorkbox:SystemTray:4.4"
-systemtray-utils = "com.dorkbox:Utilities:1.46" # version locked by SystemTray
-systemtray-desktop = "com.dorkbox:Desktop:1.1" # version locked by SystemTray
-
 # dependencies of Tachiyomi extensions
 injekt = "com.github.null2264:injekt-koin:ee267b2e27"
 rxjava = "io.reactivex:rxjava:1.3.8"
@@ -242,11 +237,6 @@ exposed = [
     "exposed-javatime",
     "exposed-kotlintime",
     "exposed-json",
-]
-systemtray = [
-    "systemtray-core",
-    "systemtray-utils",
-    "systemtray-desktop"
 ]
 polyglot = [
     "polyglot-core",
