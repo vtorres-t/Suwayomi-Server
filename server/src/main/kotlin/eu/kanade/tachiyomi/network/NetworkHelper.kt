@@ -52,7 +52,7 @@ class NetworkHelper(
                 .tempRoot
         val baseTempPath =
             Path
-                .of(rawPath.toString())
+                .of(rawPath)
         Files
             .createTempDirectory(
                 baseTempPath,

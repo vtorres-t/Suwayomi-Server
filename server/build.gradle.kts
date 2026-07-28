@@ -52,7 +52,7 @@ dependencies {
 
     // Exposed ORM
     implementation(libs.bundles.exposed)
-    implementation(libs.postgres)
+    //implementation(libs.postgres) #No se usa en alpine
     implementation(libs.h2)
     implementation(libs.hikaricp)
 
@@ -60,7 +60,7 @@ dependencies {
     implementation(libs.exposed.migrations)
 
     // tray icon
-    implementation(libs.bundles.systemtray)
+    //implementation(libs.bundles.systemtray) #No se usa en alpine
 
     // dependencies of Mihon (Tachiyomi) extensions, some are duplicate, keeping it here for reference
     implementation(libs.injekt)

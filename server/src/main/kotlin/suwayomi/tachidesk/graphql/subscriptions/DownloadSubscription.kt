@@ -5,6 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
+@file:OptIn(kotlinx.coroutines.FlowPreview::class)
+
 package suwayomi.tachidesk.graphql.subscriptions
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDeprecated
@@ -45,11 +47,8 @@ class DownloadSubscription {
         val maxUpdates = input.maxUpdates ?: 50
 
         return DownloadManager.updates
-            // 1. Agrupa ráfagas masivas de eventos encolados en ventanas de 250ms
             .debounce(250)
-            // 2. Si el servidor se satura, salta estados intermedios y entrega solo el último estado útil
             .conflate()
-            // 3. Ejecuta la lógica pesada de mapeo en un pool de hilos optimizado para entrada/salida (I/O)
             .map { downloadUpdates ->
                 val omittedUpdates = omitUpdates && downloadUpdates.updates.size > maxUpdates
 
@@ -68,7 +67,6 @@ class DownloadSubscription {
 
                 DownloadUpdates(actualDownloadUpdates, omittedUpdates)
             }
-            // 4. Asegura que el flujo libere por completo los hilos del servidor GraphQL nativo de Suwayomi
             .flowOn(Dispatchers.IO)
     }
 }
