@@ -52,7 +52,7 @@ dependencies {
 
     // Exposed ORM
     implementation(libs.bundles.exposed)
-    // implementation(libs.postgres) #No se usa en alpine
+    implementation(libs.postgres)
     implementation(libs.h2)
     implementation(libs.hikaricp)
 
