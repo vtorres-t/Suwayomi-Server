@@ -59,9 +59,6 @@ dependencies {
     // Exposed Migrations
     implementation(libs.exposed.migrations)
 
-    // tray icon
-    // implementation(libs.bundles.systemtray) #No se usa en alpine
-
     // dependencies of Mihon (Tachiyomi) extensions, some are duplicate, keeping it here for reference
     implementation(libs.injekt)
     implementation(libs.okhttp.core)
