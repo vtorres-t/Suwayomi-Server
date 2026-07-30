@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - (**Tracker**) Fix Shikimori
 - (**Extension**) Fix losing installed extension in case the update fails
 - (**Source/API**) Fix graphql browse mutation (`fetchSourceManga`) with filters including nested group changes
+- (**HTML**) Fix HTML being sent with gibberish when using non-latin characters
 - (**OPDS**) Fix OPDS search charset
 
 ## [v2.3.2243] - 2026-07-13
@@ -107,7 +108,6 @@ We now support remote image modification! This will allow you to use an external
 See our [conversion server](https://github.com/Suwayomi/Suwayomi-converter) for an example.
 
 ### Added
-
 - (**Source/API**) Expose "baseUrl" (TYPE "SourceType")
 - (**Extension**) Support author notes
 - (**Extension/Android**) Add Main dispatcher implementation
@@ -132,7 +132,6 @@ See our [conversion server](https://github.com/Suwayomi/Suwayomi-converter) for 
 - (**Image**) Support JXL container format
 
 ### Changed
-
 - (**OPDS**) Overhaule feeds for discovery, filtering and enhance UX
 - (**OPDS**) Align feed generation with RFC5005 and OpenSearch specs
 - (**Downloads**) Improve handling of valid existing downloads
@@ -142,7 +141,6 @@ See our [conversion server](https://github.com/Suwayomi/Suwayomi-converter) for 
 - (**Java**) Update to JDK 25
 
 ### Fixed
-
 - (**General**) Fix logging sensitive config data in cleartext
 - (**Localization**) Fix falling back to the default locale in case no matching locale was found
 - (**Authentication**) Fix serving page icons with set-up authentication
@@ -203,7 +201,6 @@ We now provide a simple image conversion setting that tells Suwayomi-Server to c
 - Add private tracking
 
 ### More Changes!
-
 - Improve cookie handling, share cookies between WebView and Extensions
 - Fix PWA's when auth is enabled
 - Prevent duplicated chapter pages
@@ -270,7 +267,7 @@ This release has been working on the long awaited tracking support! With the las
 
 @schroda, @Syer10, @RatCornu, @FumoVite
 
-## [v1.0.0] + [WebUI: r1409] - 2024-02-23
+## [v1.0.0] + [WebUI: v1.0.0] - 2024-02-23
 
 We've done a lot since our last release over a year ago.
 
@@ -407,14 +404,11 @@ Huge thanks to @martinek who pulled the most of the weight this release!
 ## [v0.4.9] + [WebUI: r769] - 2021-09-03
 
 ### Tachidesk-Server
-
 #### Public API
-
 ##### Non-breaking changes
 - N/A
 
 ##### Breaking changes
-
 - (r857) renamed: SourceDataClass.isNSFW -> SourceDataClass.isNsfw
 
 ##### Bug fixes
@@ -425,7 +419,6 @@ Huge thanks to @martinek who pulled the most of the weight this release!
 - (r861) Bump WebUI version to r769
 
 ##### Non-code changes
-
 - (r851) Add this changelog file and CHANGELOG-TEMPLATE.md
 - (r852-r853) CONTRIBUTING.md: Add a note about this maintaining this file changelog
 - (r855) CONTRIBUTING.md: text cleanup
@@ -446,11 +439,9 @@ Huge thanks to @martinek who pulled the most of the weight this release!
 - N/A
 
 #### Internal changes
-
 - (r767) Remove some duplicate dependency declaration from package.json
 
 ##### Non-code changes
-
 - (r42-r45) Change README.md: some links and stuff
 - (r45-r765) Add all of the commit history from when WebUI was separated from Server, jumping from r45 to r765 (r45 is exactly the same as r765)
 - (r766) Steal .gitattributes from Tachidesk-Server
@@ -459,9 +450,7 @@ Huge thanks to @martinek who pulled the most of the weight this release!
 ## [v0.4.8] + [WebUI: r41] - 2021-08-31
 
 ### Tachidesk-Server
-
 #### Public API
-
 ##### Non-breaking changes
 - Added support for serializing Search Filters
 - SourceDataClass now has a isNsfw key
@@ -474,7 +463,6 @@ Huge thanks to @martinek who pulled the most of the weight this release!
 - Open Site feature now works properly ([Suwayomi/Suwayomi-WebUI#19](https://github.com/Suwayomi/Suwayomi-WebUI/issues/19))
 
 #### Private API
-
 - Added CloudflareInterceptor from TachiWeb-Server
 - Restoring backup for mangas in library(merging manga data) is now supported
 
