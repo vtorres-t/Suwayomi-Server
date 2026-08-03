@@ -45,15 +45,6 @@ object ChapterTable : IntIdTable() {
     val isSyncing = bool("is_syncing").default(false)
 
     val memo = jsonObject("memo")
-
-    init {
-        index(
-            customIndexName = "idx_chapter_manga_source_order",
-            isUnique = false,
-            manga,
-            sourceOrder,
-        )
-    }
 }
 
 fun ChapterTable.toDataClass(chapterEntry: ResultRow) =
