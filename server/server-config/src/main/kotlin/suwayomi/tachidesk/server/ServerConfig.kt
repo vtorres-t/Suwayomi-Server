@@ -130,14 +130,14 @@ class ServerConfig(
     val socksProxyHost: MutableStateFlow<String> by StringSetting(
         protoNumber = 5,
         group = SettingGroup.PROXY,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "",
     )
 
     val socksProxyPort: MutableStateFlow<String> by StringSetting(
         protoNumber = 6,
         group = SettingGroup.PROXY,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "",
     )
 
@@ -178,7 +178,7 @@ class ServerConfig(
     val electronPath: MutableStateFlow<String> by PathSetting(
         protoNumber = 12,
         group = SettingGroup.WEB_UI,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "",
         mustExist = true,
         excludeFromBackup = true,
@@ -204,7 +204,7 @@ class ServerConfig(
     val downloadsPath: MutableStateFlow<String> by PathSetting(
         protoNumber = 16,
         group = SettingGroup.DOWNLOADER,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "",
         mustExist = true,
         excludeFromBackup = true,
@@ -412,7 +412,7 @@ class ServerConfig(
     val backupPath: MutableStateFlow<String> by PathSetting(
         protoNumber = 38,
         group = SettingGroup.BACKUP,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "",
         mustExist = true,
         excludeFromBackup = true,
@@ -448,7 +448,7 @@ class ServerConfig(
     val localSourcePath: MutableStateFlow<String> by PathSetting(
         protoNumber = 42,
         group = SettingGroup.LOCAL_SOURCE,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "",
         mustExist = true,
         excludeFromBackup = true,
@@ -465,7 +465,7 @@ class ServerConfig(
     val flareSolverrUrl: MutableStateFlow<String> by StringSetting(
         protoNumber = 44,
         group = SettingGroup.CLOUDFLARE,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "http://localhost:8191",
     )
 
@@ -481,7 +481,7 @@ class ServerConfig(
     val flareSolverrSessionName: MutableStateFlow<String> by StringSetting(
         protoNumber = 46,
         group = SettingGroup.CLOUDFLARE,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "suwayomi",
     )
 
@@ -662,7 +662,7 @@ class ServerConfig(
     val koreaderSyncServerUrl: MutableStateFlow<String> by MigratedConfigValue(
         protoNumber = 59,
         group = SettingGroup.KOREADER_SYNC,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "https://sync.koreader.rocks/",
         deprecated = SettingsRegistry.SettingDeprecated(
             replaceWith = "MOVE TO PREFERENCES",
@@ -716,7 +716,7 @@ class ServerConfig(
     val koreaderSyncDeviceId: MutableStateFlow<String> by MigratedConfigValue(
         protoNumber = 62,
         group = SettingGroup.KOREADER_SYNC,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "",
         deprecated = SettingsRegistry.SettingDeprecated(
             replaceWith = "MOVE TO PREFERENCES",
@@ -912,7 +912,7 @@ class ServerConfig(
     val databaseUrl: MutableStateFlow<String> by StringSetting(
         protoNumber = 70,
         group = SettingGroup.DATABASE,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = "postgresql://localhost:5432/suwayomi",
         excludeFromBackup = true,
     )
@@ -1049,7 +1049,7 @@ class ServerConfig(
         protoNumber = 88,
         defaultValue = "",
         group = SettingGroup.SYNCYOMI,
-        privacySafe = true,
+        privacySafe = false,
     )
 
     val syncYomiApiKey: MutableStateFlow<String> by StringSetting(
@@ -1112,7 +1112,7 @@ class ServerConfig(
     val extensionStores: MutableStateFlow<List<String>> by ListSetting<String>(
         protoNumber = 97,
         group = SettingGroup.EXTENSION,
-        privacySafe = true,
+        privacySafe = false,
         defaultValue = emptyList(),
         requiresRestart = true,
         itemValidator = { url ->
