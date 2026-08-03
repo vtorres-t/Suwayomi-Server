@@ -9,6 +9,12 @@ on:
       - '!**.md'
       - '!.github/**'
       - '.github/workflows/build_push.yml'
+  pull_request:
+    paths:
+      - '**'
+      - '!.github/**'
+      - '!**.md'
+      - '.github/workflows/release.yml'
   workflow_dispatch:
 
 concurrency:
