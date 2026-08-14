@@ -4,8 +4,8 @@ import com.expediagroup.graphql.generator.annotations.GraphQLDeprecated
 import suwayomi.tachidesk.global.impl.AppUpdate
 import suwayomi.tachidesk.graphql.directives.RequireAuth
 import suwayomi.tachidesk.graphql.types.AboutWebUI
-import suwayomi.tachidesk.graphql.types.RepoType
 import suwayomi.tachidesk.graphql.types.PlatformInfo
+import suwayomi.tachidesk.graphql.types.RepoType
 import suwayomi.tachidesk.graphql.types.WebUIFlavor
 import suwayomi.tachidesk.graphql.types.WebUIUpdateCheck
 import suwayomi.tachidesk.graphql.types.WebUIUpdateStatus
