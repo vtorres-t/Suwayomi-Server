@@ -5,12 +5,14 @@ import suwayomi.tachidesk.global.impl.AppUpdate
 import suwayomi.tachidesk.graphql.directives.RequireAuth
 import suwayomi.tachidesk.graphql.types.AboutWebUI
 import suwayomi.tachidesk.graphql.types.RepoType
+import suwayomi.tachidesk.graphql.types.PlatformInfo
 import suwayomi.tachidesk.graphql.types.WebUIFlavor
 import suwayomi.tachidesk.graphql.types.WebUIUpdateCheck
 import suwayomi.tachidesk.graphql.types.WebUIUpdateStatus
 import suwayomi.tachidesk.server.JavalinSetup.future
 import suwayomi.tachidesk.server.generated.BuildConfig
 import suwayomi.tachidesk.server.serverConfig
+import suwayomi.tachidesk.server.util.Platform
 import suwayomi.tachidesk.server.util.WebInterfaceManager
 import java.util.concurrent.CompletableFuture
 
@@ -23,6 +25,7 @@ class InfoQuery {
         val buildTime: Long,
         val repoUrl: String,
         val repoType: RepoType,
+        val platformInfo: PlatformInfo,
     )
 
     fun aboutServer(): AboutServerPayload =
@@ -33,6 +36,7 @@ class InfoQuery {
             BuildConfig.BUILD_TIME,
             serverConfig.repoServerUrl.value.takeIf { it.isNotBlank() } ?: BuildConfig.REPO_URL,
             serverConfig.repoServerType.value,
+            PlatformInfo(Platform.current),
         )
 
     data class CheckForServerUpdatesPayload(

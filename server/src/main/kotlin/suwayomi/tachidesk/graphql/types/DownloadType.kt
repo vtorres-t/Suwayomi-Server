@@ -27,6 +27,11 @@ import suwayomi.tachidesk.manga.impl.util.storage.DirectoryStats
 import java.util.concurrent.CompletableFuture
 import suwayomi.tachidesk.manga.impl.download.model.DownloadState as OtherDownloadState
 
+data class ChapterDownloadReorder(
+    val chapterId: Int,
+    val to: Int,
+)
+
 data class DownloadStatus(
     val state: DownloaderState,
     val queue: List<DownloadType>,
@@ -37,7 +42,7 @@ data class DownloadStatus(
             Status.Stopped -> DownloaderState.STOPPED
             Status.Started -> DownloaderState.STARTED
         },
-        downloadStatus.queue.map { DownloadType(it) },
+        downloadStatus.queue.mapIndexed { index, item -> DownloadType(item, index) },
         DirectoryStats(downloadStatus.directoryStats),
     )
 }
@@ -73,7 +78,7 @@ data class DownloadUpdates(
             Status.Started -> DownloaderState.STARTED
         },
         downloadUpdates.updates.map { DownloadUpdate(it) },
-        downloadUpdates.initial?.map { DownloadType(it) },
+        downloadUpdates.initial?.mapIndexed { index, item -> DownloadType(item, index) },
         omittedUpdates,
     )
 }
@@ -88,18 +93,18 @@ class DownloadType(
     val tries: Int,
     val position: Int,
 ) : Node {
-    constructor(downloadChapter: DownloadQueueItem) : this(
+    constructor(downloadChapter: DownloadQueueItem, position: Int) : this(
         downloadChapter.chapterId,
         downloadChapter.mangaId,
         when (downloadChapter.state) {
             OtherDownloadState.Queued -> DownloadState.QUEUED
             OtherDownloadState.Downloading -> DownloadState.DOWNLOADING
-            OtherDownloadState.Finished -> FINISHED
+            OtherDownloadState.Finished -> DownloadState.FINISHED
             OtherDownloadState.Error -> DownloadState.ERROR
         },
         downloadChapter.progress,
         downloadChapter.tries,
-        downloadChapter.position,
+        position,
     )
 
     fun manga(dataFetchingEnvironment: DataFetchingEnvironment): CompletableFuture<MangaType> {
@@ -127,7 +132,7 @@ class DownloadUpdate(
 ) : Node {
     constructor(downloadUpdate: DownloadUpdate) : this(
         downloadUpdate.type,
-        DownloadType(downloadUpdate.downloadQueueItem),
+        DownloadType(downloadUpdate.downloadQueueItem, downloadUpdate.position),
     )
 }
 
