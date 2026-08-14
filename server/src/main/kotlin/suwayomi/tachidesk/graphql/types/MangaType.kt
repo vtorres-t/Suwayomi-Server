@@ -138,9 +138,6 @@ class MangaType(
                 Manga.getMangaStorageFolderStats(mangaId)
             }
         }
-        dataFetchingEnvironment.getValueFromDataLoader<Int, MangaChapterStats>("ChapterFlagCountForMangaDataLoader", id).thenApply {
-            it.downloadCount
-        }
 
     fun unreadCount(dataFetchingEnvironment: DataFetchingEnvironment): CompletableFuture<Int> =
         dataFetchingEnvironment.getValueFromDataLoader<Int, MangaChapterStats>("ChapterFlagCountForMangaDataLoader", id).thenApply {
