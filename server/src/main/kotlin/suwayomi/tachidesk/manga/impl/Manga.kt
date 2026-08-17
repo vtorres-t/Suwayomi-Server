@@ -240,6 +240,7 @@ object Manga {
                                 genre = sManga.genre ?: mangaEntry[MangaTable.genre]
                                 status = sManga.status
                                 update_strategy = sManga.update_strategy
+                                memo = sManga.memo
                             },
                         )
                     }.getOrNull()

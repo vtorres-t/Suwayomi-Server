@@ -18,8 +18,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - (**GraphQL**) Updated GraphiQL GraphQL Playground
 - (**Downloads**) Skip LocalSource downloading
 - (**Cloudflare/flaresolverr**) Send full `POST` json body to flaresolverr instead of empty string
+- (**Webview**) Don't throw an exception when disabling CEF
 
 ### Fixed
+- (**Cloudflare/flaresolverr**) Treat a bypass as successful when a `cf_clearance` cookie is returned, so non-CloudFlare source errors are correctly passed through to the extensions.
+- (**Manga/Extension**) Fix resolving manga URLs for extensions that use memo data
 - (**Tracker**) Fix Shikimori
 - (**Extension**) Fix losing installed extension in case the update fails
 - (**Source/API**) Fix graphql browse mutation (`fetchSourceManga`) with filters including nested group changes
@@ -27,9 +30,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - (**OPDS**) Fix OPDS search charset
 - (**Downloads/API**) Fix graphql download queue items position field of unmodified items after a reorder
 - (**Downloads/API**) Fix sending updates for dequeued downloads
+- (**Download/API**) Fix subscription returning stale chapter data in some cases
 - (**WebView**) Fix that UI-WebView did not share user agent (background WebView unchanged)
 - (**WebView**) Fix authentication with subpath option
 - (**Category**) Fix library/category counts not matching the actual number of manga due to duplicate category-manga rows
+- (**Migration/Extension**) Fix `extensionRepos` setting not being migrated to `extensionStores`
 
 ## [v2.3.2243] - 2026-07-13
 

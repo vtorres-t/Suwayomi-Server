@@ -34,11 +34,13 @@ import suwayomi.tachidesk.graphql.types.KoreaderSyncLegacyStrategy
 import suwayomi.tachidesk.graphql.types.RepoType
 import suwayomi.tachidesk.graphql.types.SettingsDownloadConversionHeaderType
 import suwayomi.tachidesk.graphql.types.SettingsDownloadConversionType
+import suwayomi.tachidesk.graphql.types.WebUIChannel
 import suwayomi.tachidesk.graphql.types.WebUIFlavor
 import suwayomi.tachidesk.graphql.types.WebUIInterface
 import suwayomi.tachidesk.manga.impl.backup.BackupFlags
 import suwayomi.tachidesk.manga.impl.backup.proto.models.BackupSettingsDownloadConversionHeaderType
 import suwayomi.tachidesk.manga.impl.backup.proto.models.BackupSettingsDownloadConversionType
+import suwayomi.tachidesk.manga.impl.extension.repoMatchRegex
 import suwayomi.tachidesk.server.settings.BooleanSetting
 import suwayomi.tachidesk.server.settings.DisableableDoubleSetting
 import suwayomi.tachidesk.server.settings.DisableableIntSetting
@@ -377,6 +379,7 @@ class ServerConfig(
         defaultValue = false,
         deprecated =
             SettingsRegistry.SettingDeprecated(
+                replaceWith = null,
                 message = "Removed - does not do anything",
             ),
     )
