@@ -8,7 +8,6 @@ import kotlinx.coroutines.async
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.SortOrder
-import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greater
 import org.jetbrains.exposed.v1.core.less
@@ -45,7 +44,6 @@ import suwayomi.tachidesk.graphql.types.TrackerNodeList
 import suwayomi.tachidesk.graphql.types.TrackerType
 import suwayomi.tachidesk.manga.impl.track.tracker.Tracker
 import suwayomi.tachidesk.manga.impl.track.tracker.TrackerManager
-import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelated
 import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelatedResult
 import suwayomi.tachidesk.manga.model.table.MangaTable
 import suwayomi.tachidesk.manga.model.table.TrackRecordTable
