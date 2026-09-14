@@ -8,7 +8,6 @@ import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.greaterEq
 import org.jetbrains.exposed.v1.core.inList
-import org.jetbrains.exposed.v1.core.lessEq
 import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.minus
 import org.jetbrains.exposed.v1.core.or
@@ -18,6 +17,7 @@ import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
+import suwayomi.tachidesk.global.impl.sync.SyncYomiSyncService
 import suwayomi.tachidesk.graphql.directives.RequireAuth
 import suwayomi.tachidesk.graphql.types.CategoryMetaType
 import suwayomi.tachidesk.graphql.types.CategoryType
@@ -340,31 +340,8 @@ class CategoryMutation {
             "'order' must not be <= 0"
         }
 
-        transaction {
-            val currentOrder =
-                CategoryTable
-                    .selectAll()
-                    .where { CategoryTable.id eq categoryId }
-                    .first()[CategoryTable.order]
-
-            if (currentOrder != position) {
-                if (position < currentOrder) {
-                    CategoryTable.update({ CategoryTable.order greaterEq position }) {
-                        it[CategoryTable.order] = CategoryTable.order + 1
-                    }
-                } else {
-                    CategoryTable.update({ CategoryTable.order lessEq position }) {
-                        it[CategoryTable.order] = CategoryTable.order - 1
-                    }
-                }
-
-                CategoryTable.update({ CategoryTable.id eq categoryId }) {
-                    it[CategoryTable.order] = position
-                }
-            }
-        }
-
-        Category.normalizeCategories()
+        // position-based: stored sort_order values can collide (pre-existing adopted 0-based rows; sync skips newer local copies)
+        Category.moveCategoryToPosition(categoryId, position)
 
         val categories =
             transaction {
@@ -481,6 +458,7 @@ class CategoryMutation {
                 CategoryTable.deleteWhere { CategoryTable.id eq categoryId }
 
                 Category.normalizeCategories()
+                category?.let { SyncYomiSyncService.rememberDeletedCategory(it[CategoryTable.uid]) }
 
                 if (category != null) {
                     CategoryType(category)

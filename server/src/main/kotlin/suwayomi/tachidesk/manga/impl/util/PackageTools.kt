@@ -15,6 +15,7 @@ import com.googlecode.d2j.reader.MultiDexFileReader
 import com.googlecode.dex2jar.tools.BaksmaliBaseDexExceptionHandler
 import eu.kanade.tachiyomi.util.lang.Hash
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.reactivecircus.cache4k.Cache
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import net.dongliu.apk.parser.ApkFile
@@ -29,13 +30,13 @@ import xyz.nulldev.androidcompat.pm.toPackageInfo
 import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Path
-import java.util.concurrent.ConcurrentHashMap
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.nameWithoutExtension
 import kotlin.io.path.readBytes
 import kotlin.io.path.relativeTo
+import kotlin.time.Duration.Companion.minutes
 
 object PackageTools {
     private val logger = KotlinLogging.logger {}
@@ -152,7 +153,11 @@ object PackageTools {
         }
     }
 
-    private val lockByJar = ConcurrentHashMap<String, Mutex>()
+    private val lockByJar: Cache<String, Mutex> =
+        Cache
+            .Builder<String, Mutex>()
+            .expireAfterAccess(10.minutes)
+            .build()
 
     val jarLoaderMap = mutableMapOf<String, URLClassLoader>()
 
@@ -160,7 +165,7 @@ object PackageTools {
         jars: List<Path>,
         block: suspend (loadSources: (jar: Path, className: String) -> Any) -> T,
     ): T {
-        val mutexes = jars.map { lockByJar.getOrPut(it.absolutePathString()) { Mutex() } }
+        val mutexes = jars.map { lockByJar.get(it.absolutePathString()) { Mutex() } }
 
         mutexes.forEach { it.lock() }
 
@@ -203,7 +208,7 @@ object PackageTools {
         jar: Path,
         className: String,
     ): Any {
-        val mutex = lockByJar.getOrPut(jar.absolutePathString()) { Mutex() }
+        val mutex = lockByJar.get(jar.absolutePathString()) { Mutex() }
 
         mutex.withLock {
             return loadExtensionSourcesWithLockHeld(jar, className)
