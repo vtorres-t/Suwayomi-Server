@@ -9,16 +9,11 @@ package suwayomi.tachidesk.server
 
 import android.os.Looper
 import ch.qos.logback.classic.Level
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigException
 import com.typesafe.config.ConfigRenderOptions
-import com.typesafe.config.ConfigValue
-import com.typesafe.config.parser.ConfigDocument
 import eu.kanade.tachiyomi.App
 import eu.kanade.tachiyomi.createAppModule
 import eu.kanade.tachiyomi.network.NetworkHelper
 import eu.kanade.tachiyomi.source.local.LocalSource
-import io.github.config4k.toConfig
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.javalin.json.JavalinJackson3
 import io.javalin.json.JsonMapper
@@ -29,6 +24,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.runBlocking
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -38,6 +34,7 @@ import suwayomi.tachidesk.graphql.types.DatabaseType
 import suwayomi.tachidesk.i18n.LocalizationHelper
 import suwayomi.tachidesk.manga.impl.backup.proto.ProtoBackupExport
 import suwayomi.tachidesk.manga.impl.download.DownloadManager
+import suwayomi.tachidesk.manga.impl.extension.Extension
 import suwayomi.tachidesk.manga.impl.extension.ExtensionStoreService
 import suwayomi.tachidesk.manga.impl.update.IUpdater
 import suwayomi.tachidesk.manga.impl.update.Updater
@@ -136,78 +133,6 @@ fun setupLogLevelUpdating(
         },
         ignoreInitialValue = false,
     )
-}
-
-fun migrateConfigValue(
-    configDocument: ConfigDocument,
-    config: Config,
-    configKey: String,
-    toConfigKey: String,
-    toType: (ConfigValue) -> Any?,
-): ConfigDocument {
-    try {
-        val configValue = config.getValue(configKey)
-        val typedValue = toType(configValue)
-        if (typedValue != null) {
-            logger.debug { "Migrating config value: $configKey -> $toConfigKey" }
-            return configDocument.withValue(
-                toConfigKey,
-                typedValue.toConfig("internal").getValue("internal"),
-            )
-        }
-    } catch (_: ConfigException) {
-        // ignore, likely already migrated
-    }
-
-    return configDocument
-}
-
-fun migrateConfig(
-    configDocument: ConfigDocument,
-    config: Config,
-): ConfigDocument {
-    var updatedConfig = configDocument
-
-    val settingsRequiringMigration = SettingsRegistry.getAll().filterValues { it.deprecated?.replaceWith != null }
-    settingsRequiringMigration.forEach { (name, data) ->
-        val configKey = "server.$name"
-        val toConfigKey = "server.${data.deprecated!!.replaceWith}"
-
-        try {
-            config.getValue(configKey)
-        } catch (_: ConfigException) {
-            // Ignore, no migration required
-            return@forEach
-        }
-
-        logger.debug { "Migrating config value: $configKey -> $toConfigKey" }
-
-        try {
-            if (data.deprecated!!.migrateConfig != null) {
-                updatedConfig = data.deprecated!!.migrateConfig!!(config.getValue(configKey), updatedConfig)
-                return@forEach
-            }
-
-            if (data.deprecated!!.migrateConfigValue != null) {
-                updatedConfig =
-                    migrateConfigValue(
-                        updatedConfig,
-                        config,
-                        configKey,
-                        toConfigKey,
-                        data.deprecated!!.migrateConfigValue!!,
-                    )
-                return@forEach
-            }
-        } catch (e: Exception) {
-            logger.warn(e) { "Failed to migrate config value: $configKey -> $toConfigKey" }
-            return@forEach
-        }
-
-        shutdownApp(ExitCode.ConfigMigrationMisconfiguredFailure)
-    }
-
-    return updatedConfig
 }
 
 fun serverModule(applicationDirs: ApplicationDirs): Module =
@@ -311,6 +236,9 @@ fun applicationSetup() {
     // start app
     androidCompat.startApp(app)
 
+    // Delete files before any extension-related logic can be executed that causes the jars to get loaded
+    Extension.cleanupExtensionFiles()
+
     // Initialize NetworkHelper early
     Injekt
         .get<NetworkHelper>()
@@ -327,7 +255,16 @@ fun applicationSetup() {
             }
         } else {
             // make sure the user config file is up-to-date
-            GlobalConfigManager.updateUserConfig { migrateConfig(this, it) }
+            GlobalConfigManager.updateUserConfig {
+                try {
+                    migrateConfig(this, it)
+                } catch (e: Throwable) {
+                    logger.error(e) { "Failed to migrate config" }
+                    shutdownApp(ExitCode.ConfigMigrationFailure)
+                }
+
+                this
+            }
         }
     } catch (e: Exception) {
         logger.error(e) { "Exception while creating initial server.conf" }
@@ -358,9 +295,11 @@ fun applicationSetup() {
         "Localization service initialized. Supported languages: ${LocalizationHelper.getSupportedLocales()}"
     }
 
-    runMigrations(applicationDirs)
-
-    databaseUp()
+    runBlocking {
+        runMigrations(applicationDirs) {
+            databaseUp()
+        }
+    }
 
     try {
         LocalSource.register()

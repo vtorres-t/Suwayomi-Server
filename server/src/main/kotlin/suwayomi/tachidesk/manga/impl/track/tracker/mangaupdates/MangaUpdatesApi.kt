@@ -17,9 +17,6 @@ import kotlinx.serialization.json.putJsonObject
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
-import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.KitsuApi
-import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuRecommendationsResult
-import suwayomi.tachidesk.manga.impl.track.tracker.kitsu.dto.KitsuRelatedResult
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.MangaUpdates.Companion.READING_LIST
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.MangaUpdates.Companion.WISH_LIST
 import suwayomi.tachidesk.manga.impl.track.tracker.mangaupdates.dto.MUContext
@@ -33,8 +30,6 @@ import suwayomi.tachidesk.manga.impl.track.tracker.model.Track
 import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelated
 import suwayomi.tachidesk.manga.impl.track.tracker.model.TrackRelatedResult
 import uy.kohesive.injekt.injectLazy
-import kotlin.collections.associateBy
-import kotlin.collections.mapNotNull
 import kotlin.collections.orEmpty
 import kotlin.collections.plus
 
