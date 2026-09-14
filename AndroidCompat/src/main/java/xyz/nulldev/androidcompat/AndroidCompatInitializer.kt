@@ -1,6 +1,5 @@
 package xyz.nulldev.androidcompat
 
-import android.webkit.WebView
 import xyz.nulldev.androidcompat.config.ApplicationInfoConfigModule
 import xyz.nulldev.androidcompat.config.FilesConfigModule
 import xyz.nulldev.androidcompat.config.SystemConfigModule
