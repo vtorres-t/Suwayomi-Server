@@ -53,7 +53,6 @@ import suwayomi.tachidesk.server.settings.PathSetting
 import suwayomi.tachidesk.server.settings.SettingGroup
 import suwayomi.tachidesk.server.settings.SettingsRegistry
 import suwayomi.tachidesk.server.settings.StringSetting
-import suwayomi.tachidesk.server.util.Platform
 import uy.kohesive.injekt.injectLazy
 import xyz.nulldev.ts.config.GlobalConfigManager
 import xyz.nulldev.ts.config.SystemPropertyOverridableConfigModule
