@@ -31,8 +31,11 @@ import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.core.isNull
+import org.jetbrains.exposed.v1.core.or
 import org.jetbrains.exposed.v1.core.statements.BatchUpdateStatement
 import org.jetbrains.exposed.v1.jdbc.batchInsert
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.statements.toExecutable
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
@@ -53,8 +56,11 @@ import suwayomi.tachidesk.manga.model.dataclass.ChapterDataClass
 import suwayomi.tachidesk.manga.model.dataclass.IncludeOrExclude
 import suwayomi.tachidesk.manga.model.dataclass.MangaDataClass
 import suwayomi.tachidesk.manga.model.table.ChapterTable
+import suwayomi.tachidesk.manga.model.table.ChapterUserTable
 import suwayomi.tachidesk.manga.model.table.MangaMetaTable
 import suwayomi.tachidesk.manga.model.table.MangaTable
+import suwayomi.tachidesk.manga.model.table.MangaUserTable
+import suwayomi.tachidesk.manga.model.table.getWithUserData
 import suwayomi.tachidesk.manga.model.table.toDataClass
 import suwayomi.tachidesk.server.ApplicationDirs
 import uy.kohesive.injekt.injectLazy
@@ -256,6 +262,7 @@ object Manga {
     suspend fun getMangaStorageFolderStats(mangaId: Int): String = storageScanner.getFolderSizePretty(getMangaDownloadDir(mangaId))
 
     suspend fun getMangaFull(
+        userId: Int,
         mangaId: Int,
         onlineFetch: Boolean = false,
     ): MangaDataClass {
@@ -264,39 +271,68 @@ object Manga {
         val prettySize = storageScanner.getFolderSizePretty(downloadDirPath)
 
         return transaction {
-            val chapters = ChapterTable.selectAll().where { ChapterTable.manga eq mangaId }.toList()
+            val unreadCount =
+                ChapterTable
+                    .getWithUserData(userId)
+                    .selectAll()
+                    .where { (ChapterTable.manga eq mangaId) and (ChapterUserTable.isRead eq false or (ChapterUserTable.isRead.isNull())) }
+                    .count()
+
+            val downloadCount =
+                ChapterTable
+                    .getWithUserData(userId)
+                    .selectAll()
+                    .where { (ChapterTable.manga eq mangaId) and (ChapterUserTable.isDownloaded eq true) }
+                    .count()
+
+            val chapterCount =
+                ChapterTable
+                    .selectAll()
+                    .where { (ChapterTable.manga eq mangaId) }
+                    .count()
+
+            val lastChapterRead =
+                ChapterTable
+                    .getWithUserData(userId)
+                    .selectAll()
+                    .where { (ChapterTable.manga eq mangaId) }
+                    .orderBy(ChapterTable.sourceOrder to SortOrder.DESC)
+                    .firstOrNull { it.getOrNull(ChapterUserTable.isRead) == true }
 
             mangaDataClass.copy(
-                chapterCount = chapters.size.toLong(),
-                unreadCount = chapters.count { !it[ChapterTable.isRead] }.toLong(),
-                downloadCount = chapters.count { it[ChapterTable.isDownloaded] }.toLong(),
+                unreadCount = unreadCount,
+                downloadCount = downloadCount,
                 donwloadSize = prettySize,
-                lastChapterRead =
-                    chapters
-                        .filter { it[ChapterTable.isRead] }
-                        .maxByOrNull { it[ChapterTable.sourceOrder] }
-                        ?.let { ChapterTable.toDataClass(it) },
+                chapterCount = chapterCount,
+                lastChapterRead = lastChapterRead?.let { ChapterTable.toDataClass(it) },
             )
         }
     }
 
-    fun getMangaMetaMap(mangaId: Int): Map<String, String> =
+    fun getMangaMetaMap(
+        userId: Int,
+        mangaId: Int,
+    ): Map<String, String> =
         transaction {
             MangaMetaTable
                 .selectAll()
-                .where { MangaMetaTable.ref eq mangaId }
+                .where { MangaMetaTable.user eq userId and (MangaMetaTable.ref eq mangaId) }
                 .associate { it[MangaMetaTable.key] to it[MangaMetaTable.value] }
         }
 
     fun modifyMangaMeta(
+        userId: Int,
         mangaId: Int,
         key: String,
         value: String,
     ) {
-        modifyMangasMetas(mapOf(mangaId to mapOf(key to value)))
+        modifyMangasMetas(userId, mapOf(mangaId to mapOf(key to value)))
     }
 
-    fun modifyMangasMetas(metaByMangaId: Map<Int, Map<String, String>>) {
+    fun modifyMangasMetas(
+        userId: Int,
+        metaByMangaId: Map<Int, Map<String, String>>,
+    ) {
         transaction {
             val mangaIds = metaByMangaId.keys
             val metaKeys = metaByMangaId.flatMap { it.value.keys }
@@ -304,8 +340,10 @@ object Manga {
             val dbMetaByMangaId =
                 MangaMetaTable
                     .selectAll()
-                    .where { (MangaMetaTable.ref inList mangaIds) and (MangaMetaTable.key inList metaKeys) }
-                    .groupBy { it[MangaMetaTable.ref].value }
+                    .where {
+                        (MangaMetaTable.ref inList mangaIds) and (MangaMetaTable.key inList metaKeys) and
+                            (MangaMetaTable.user eq userId)
+                    }.groupBy { it[MangaMetaTable.ref].value }
 
             val existingMetaByMetaId =
                 mangaIds.flatMap { mangaId ->
@@ -345,6 +383,7 @@ object Manga {
                     this[MangaMetaTable.ref] = EntityID(mangaId, MangaTable)
                     this[MangaMetaTable.key] = entry.key
                     this[MangaMetaTable.value] = entry.value
+                    this[MangaMetaTable.user] = userId
                 }
             }
         }
@@ -449,9 +488,24 @@ object Manga {
     }
 
     suspend fun getMangaThumbnail(mangaId: Int): Pair<InputStream, String> {
-        val mangaEntry = transaction { MangaTable.selectAll().where { MangaTable.id eq mangaId }.first() }
+        val mangaInLibrary =
+            transaction {
+                MangaUserTable
+                    .selectAll()
+                    .where {
+                        MangaUserTable.manga eq mangaId and (MangaUserTable.inLibrary eq true)
+                    }.any()
+            }
+        val mangaSource =
+            transaction {
+                MangaTable
+                    .select(MangaTable.sourceReference)
+                    .where { MangaTable.id eq mangaId }
+                    .firstOrNull()
+                    ?.get(MangaTable.sourceReference)
+            }
 
-        if (mangaEntry[MangaTable.inLibrary] && mangaEntry[MangaTable.sourceReference] != LocalSource.ID) {
+        if (mangaInLibrary && mangaSource != LocalSource.ID) {
             return try {
                 ThumbnailDownloadHelper.getImage(mangaId)
             } catch (_: MissingThumbnailException) {
@@ -472,28 +526,38 @@ object Manga {
 
     fun getLatestChapter(mangaId: Int): ChapterDataClass? =
         transaction {
-            ChapterTable.selectAll().where { ChapterTable.manga eq mangaId }.maxByOrNull { it[ChapterTable.sourceOrder] }
-        }?.let { ChapterTable.toDataClass(it) }
-
-    fun getUnreadChapters(mangaId: Int): List<ChapterDataClass> =
-        transaction {
             ChapterTable
                 .selectAll()
-                .where { (ChapterTable.manga eq mangaId) and (ChapterTable.isRead eq false) }
+                .where { ChapterTable.manga eq mangaId }
+                .maxByOrNull { it[ChapterTable.sourceOrder] }
+        }?.let { ChapterTable.toDataClass(it) }
+
+    fun getUnreadChapters(
+        userId: Int,
+        mangaId: Int,
+    ): List<ChapterDataClass> =
+        transaction {
+            ChapterTable
+                .getWithUserData(userId)
+                .selectAll()
+                .where { (ChapterTable.manga eq mangaId) and (ChapterUserTable.isRead eq false or (ChapterUserTable.isRead.isNull())) }
                 .orderBy(ChapterTable.sourceOrder to SortOrder.DESC)
                 .map { ChapterTable.toDataClass(it) }
         }
 
-    fun isInIncludedDownloadCategory(mangaId: Int): Boolean {
+    fun isInIncludedDownloadCategory(
+        userId: Int,
+        mangaId: Int,
+    ): Boolean {
         // Verify the manga is configured to be downloaded based on it's categories.
-        var mangaCategories = CategoryManga.getMangaCategories(mangaId).toSet()
+        var mangaCategories = CategoryManga.getMangaCategories(userId, mangaId).toSet()
         // if the manga has no categories, then it's implicitly in the default category
         if (mangaCategories.isEmpty()) {
-            val defaultCategory = Category.getCategoryById(Category.DEFAULT_CATEGORY_ID)!!
+            val defaultCategory = Category.getDefaultCategory(userId) ?: return false
             mangaCategories = setOf(defaultCategory)
         }
 
-        val downloadCategoriesMap = Category.getCategoryList().groupBy { it.includeInDownload }
+        val downloadCategoriesMap = Category.getCategoryList(userId).groupBy { it.includeInDownload }
         val unsetCategories = downloadCategoriesMap[IncludeOrExclude.UNSET].orEmpty()
         // We only download if it's in the include list, and not in the exclude list.
         // Use the unset categories as the included categories if the included categories is
