@@ -1,6 +1,7 @@
 package suwayomi.tachidesk.graphql.queries
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDeprecated
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import com.expediagroup.graphql.server.extensions.getValueFromDataLoader
 import graphql.schema.DataFetchingEnvironment
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -141,6 +142,8 @@ class TrackQuery {
 
     @RequireAuth
     fun trackers(
+        @GraphQLIgnore
+        userId: Int,
         condition: TrackerCondition? = null,
         @GraphQLDeprecated(
             "Replaced with order",
@@ -161,7 +164,7 @@ class TrackQuery {
     ): TrackerNodeList {
         val (queryResults, resultsAsType) =
             run {
-                var res = TrackerManager.services.map { TrackerType(it) }
+                var res = TrackerManager.services.map { TrackerType(it, userId) }
 
                 if (condition != null) {
                     res =
@@ -418,6 +421,8 @@ class TrackQuery {
 
     @RequireAuth
     fun trackRecords(
+        @GraphQLIgnore
+        userId: Int,
         condition: TrackRecordCondition? = null,
         filter: TrackRecordFilter? = null,
         @GraphQLDeprecated(
@@ -439,7 +444,7 @@ class TrackQuery {
     ): TrackRecordNodeList {
         val queryResults =
             transaction {
-                val res = TrackRecordTable.selectAll()
+                val res = TrackRecordTable.selectAll().where { TrackRecordTable.user eq userId }
 
                 res.applyOps(condition, filter)
 
@@ -511,17 +516,21 @@ class TrackQuery {
     )
 
     @RequireAuth
-    fun searchTracker(input: SearchTrackerInput): CompletableFuture<SearchTrackerPayload> =
+    fun searchTracker(
+        @GraphQLIgnore
+        userId: Int,
+        input: SearchTrackerInput,
+    ): CompletableFuture<SearchTrackerPayload> =
         future {
             val tracker =
                 requireNotNull(TrackerManager.getTracker(input.trackerId)) {
                     "Tracker not found"
                 }
-            require(tracker.isLoggedIn) {
+            require(tracker.isLoggedIn(userId)) {
                 "Tracker needs to be logged-in to search"
             }
             SearchTrackerPayload(
-                tracker.search(input.query).insertAll().map {
+                tracker.search(userId, input.query).insertAll().map {
                     TrackSearchType(it)
                 },
             )
@@ -550,7 +559,11 @@ class TrackQuery {
      * tracker rather than failing the whole query.
      */
     @RequireAuth
-    fun mangaRelated(input: MangaRelatedInput): CompletableFuture<MangaRelatedPayload> =
+    fun mangaRelated(
+        @GraphQLIgnore
+        userId: Int,
+        input: MangaRelatedInput,
+    ): CompletableFuture<MangaRelatedPayload> =
         future {
             val title = getMangaTitle(input.mangaId)
 
@@ -561,8 +574,8 @@ class TrackQuery {
                     val anilist = TrackerManager.aniList
                     val remoteId: Long? =
                         trackRecordsMap[TrackerManager.ANILIST]
-                            ?: title?.takeIf { anilist.isLoggedIn }?.let {
-                                findRemoteIdByTitle(anilist, it)?.toString()?.toLongOrNull()
+                            ?: title?.takeIf { anilist.isLoggedIn(userId) }?.let {
+                                findRemoteIdByTitle(userId, anilist, it)?.toString()?.toLongOrNull()
                             }
 
                     if (remoteId == null) {
@@ -572,7 +585,7 @@ class TrackQuery {
 
                     logger.debug { "[AniList] Fetching related manga for remoteId: $remoteId" }
                     runCatching {
-                        anilist.getRelated(remoteId)
+                        anilist.getRelated(userId, remoteId)
                     }.onSuccess { res ->
                         logger.debug {
                             "[AniList] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}"
@@ -586,8 +599,8 @@ class TrackQuery {
                     val mal = TrackerManager.myAnimeList
                     val remoteId: Long? =
                         trackRecordsMap[TrackerManager.MYANIMELIST]
-                            ?: title?.takeIf { mal.isLoggedIn }?.let {
-                                findRemoteIdByTitle(mal, it)?.toString()?.toLongOrNull()
+                            ?: title?.takeIf { mal.isLoggedIn(userId) }?.let {
+                                findRemoteIdByTitle(userId, mal, it)?.toString()?.toLongOrNull()
                             }
 
                     if (remoteId == null) {
@@ -597,7 +610,7 @@ class TrackQuery {
 
                     logger.debug { "[MyAnimeList] Fetching related manga for remoteId: $remoteId" }
                     runCatching {
-                        mal.getRelated(remoteId)
+                        mal.getRelated(userId, remoteId)
                     }.onSuccess { res ->
                         logger.debug {
                             "[MyAnimeList] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}"
@@ -611,8 +624,8 @@ class TrackQuery {
                     val kitsu = TrackerManager.kitsu
                     val remoteId: Long? =
                         trackRecordsMap[TrackerManager.KITSU]
-                            ?: title?.takeIf { kitsu.isLoggedIn }?.let {
-                                findRemoteIdByTitle(kitsu, it)?.toString()?.toLongOrNull()
+                            ?: title?.takeIf { kitsu.isLoggedIn(userId) }?.let {
+                                findRemoteIdByTitle(userId, kitsu, it)?.toString()?.toLongOrNull()
                             }
 
                     if (remoteId == null) {
@@ -622,7 +635,7 @@ class TrackQuery {
 
                     logger.debug { "[KITSU] Fetching related manga for remoteId: $remoteId" }
                     runCatching {
-                        kitsu.getRelated(remoteId)
+                        kitsu.getRelated(userId, remoteId)
                     }.onSuccess { res ->
                         logger.debug {
                             "[KITSU] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}"
@@ -636,8 +649,8 @@ class TrackQuery {
                     val mangaUpdates = TrackerManager.mangaUpdates
                     val remoteId: Long? =
                         trackRecordsMap[TrackerManager.MANGA_UPDATES]
-                            ?: title?.takeIf { mangaUpdates.isLoggedIn }?.let {
-                                val idStr = findRemoteIdByTitle(mangaUpdates, it)?.toString() ?: ""
+                            ?: title?.takeIf { mangaUpdates.isLoggedIn(userId) }?.let {
+                                val idStr = findRemoteIdByTitle(userId, mangaUpdates, it)?.toString() ?: ""
                                 idStr.toLongOrNull()
                             }
 
@@ -648,7 +661,7 @@ class TrackQuery {
 
                     logger.debug { "[MANGA_UPDATES] Fetching related manga for remoteId: $remoteId" }
                     runCatching {
-                        mangaUpdates.getRelated(remoteId)
+                        mangaUpdates.getRelated(userId, remoteId)
                     }.onSuccess { res ->
                         logger.debug {
                             "[MANGA_UPDATES] Response received. Relations: ${res.relations.size}, Recommendations: ${res.recommendations.size}"
@@ -737,11 +750,12 @@ class TrackQuery {
      * top hit is never used to drive the related results.
      */
     private suspend fun findRemoteIdByTitle(
+        userId: Int,
         tracker: Tracker,
         title: String,
     ): Long? =
         tracker
-            .search(title)
+            .search(userId, title)
             .firstOrNull { result ->
                 (listOf(result.title) + result.alternative_titles).any { isConfidentTitleMatch(title, it) }
             }?.remote_id

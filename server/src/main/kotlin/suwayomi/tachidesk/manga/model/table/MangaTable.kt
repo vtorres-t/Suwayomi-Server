@@ -32,9 +32,6 @@ object MangaTable : IntIdTable() {
     val thumbnail_url = varchar("thumbnail_url", 2048).nullable()
     val thumbnailUrlLastFetched = long("thumbnail_url_last_fetched").default(0)
 
-    val inLibrary = bool("in_library").default(false)
-    val inLibraryAt = long("in_library_at").default(0)
-
     // the [source] field name is used by some ancestor of IntIdTable
     val sourceReference = long("source")
 
@@ -46,19 +43,9 @@ object MangaTable : IntIdTable() {
 
     val updateStrategy = varchar("update_strategy", 256).default(UpdateStrategy.ALWAYS_UPDATE.name)
 
-    // Tachiyomi reader/chapter-list bitmasks, passthrough for sync
-    val viewer = integer("viewer").default(0)
-    val viewerFlags = integer("viewer_flags").nullable()
-    val chapterFlags = integer("chapter_flags").default(0)
-
-    val lastModifiedAt = long("last_modified_at").default(0)
-    val version = long("version").default(0)
-    val isSyncing = bool("is_syncing").default(false)
     val memo = jsonObject("memo")
 
     init {
-        index(customIndexName = "idx_manga_library_title", isUnique = false, inLibrary, title)
-        index(customIndexName = "idx_manga_library_added", isUnique = false, inLibrary, inLibraryAt)
         index(customIndexName = "idx_manga_source", isUnique = false, sourceReference)
     }
 }
@@ -77,14 +64,10 @@ fun MangaTable.toDataClass(mangaEntry: ResultRow) =
         description = mangaEntry[description],
         genre = mangaEntry[genre].toGenreList(),
         status = MangaStatus.valueOf(mangaEntry[status]).name,
-        inLibrary = mangaEntry[inLibrary],
-        inLibraryAt = mangaEntry[inLibraryAt],
         realUrl = mangaEntry[realUrl],
         lastFetchedAt = mangaEntry[lastFetchedAt],
         chaptersLastFetchedAt = mangaEntry[chaptersLastFetchedAt],
         updateStrategy = UpdateStrategy.valueOf(mangaEntry[updateStrategy]),
-        lastModifiedAt = mangaEntry[lastModifiedAt],
-        version = mangaEntry[version],
         memo = mangaEntry[memo],
     )
 
