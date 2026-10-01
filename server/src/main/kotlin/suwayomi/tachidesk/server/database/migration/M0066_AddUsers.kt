@@ -57,15 +57,19 @@ class M0066_AddUsers : Migration() {
                     @Language("SQL")
                     """
                     INSERT INTO $userAccountTable(USERNAME, PASSWORD)
-                    SELECT '$adminUsername','$password';
+                    SELECT '$adminUsername','$password'
+                    WHERE NOT EXISTS (
+                        SELECT 1 FROM $userAccountTable WHERE USERNAME = '$adminUsername'
+                    );
                     """
                 }
 
                 DatabaseType.POSTGRESQL -> {
                     @Language("SQL")
                     """
-                    INSERT INTO $userAccountTable(ID, USERNAME, PASSWORD)
-                    SELECT 1,'$adminUsername','$password';
+                    INSERT INTO ${'$'}userAccountTable(ID, USERNAME, PASSWORD)
+                    VALUES (1, '${'$'}adminUsername', '${'$'}password')
+                    ON CONFLICT (username) DO NOTHING;
                     """
                 }
             }
