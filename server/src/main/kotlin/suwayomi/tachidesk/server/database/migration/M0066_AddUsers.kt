@@ -67,7 +67,7 @@ class M0066_AddUsers : Migration() {
                 DatabaseType.POSTGRESQL -> {
                     @Language("SQL")
                     """
-                    INSERT INTO ${userAccountTable}(ID, USERNAME, PASSWORD)
+                    INSERT INTO $userAccountTable(ID, USERNAME, PASSWORD)
                     VALUES (1, $adminUsername', '$password')
                     ON CONFLICT (username) DO NOTHING;
                     """
