@@ -5,17 +5,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
-@file:OptIn(kotlinx.coroutines.FlowPreview::class)
-
 package suwayomi.tachidesk.graphql.subscriptions
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDeprecated
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.conflate
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import suwayomi.tachidesk.graphql.directives.RequireAuth
 import suwayomi.tachidesk.graphql.types.DownloadStatus
@@ -31,6 +25,7 @@ class DownloadSubscription {
         }
 
     data class DownloadChangedInput(
+        @GraphQLDeprecated("Removed - has no effect")
         @GraphQLDescription(
             "Sets a max number of updates that can be contained in a download update message." +
                 "Everything above this limit will be omitted and the \"downloadStatus\" should be re-fetched via the " +
@@ -42,30 +37,8 @@ class DownloadSubscription {
     )
 
     @RequireAuth
-    fun downloadStatusChanged(input: DownloadChangedInput): Flow<DownloadUpdates> {
-        val omitUpdates = input.maxUpdates != null
-        val maxUpdates = input.maxUpdates ?: 50
-
-        return DownloadManager.updates
-            .debounce(250)
-            .conflate()
-            .map { downloadUpdates ->
-                val omittedUpdates = omitUpdates && downloadUpdates.updates.size > maxUpdates
-
-                // El motor de GraphQL no soporta procesamiento por lotes, provocando el problema N+1.
-                // Con las optimizaciones reactivas previas, este mapeo se ejecuta de forma controlada.
-                val actualDownloadUpdates =
-                    if (omittedUpdates) {
-                        suwayomi.tachidesk.manga.impl.download.model.DownloadUpdates(
-                            downloadUpdates.status,
-                            downloadUpdates.updates.subList(0, maxUpdates),
-                            downloadUpdates.initial,
-                        )
-                    } else {
-                        downloadUpdates
-                    }
-
-                DownloadUpdates(actualDownloadUpdates, omittedUpdates)
-            }.flowOn(Dispatchers.IO)
-    }
+    fun downloadStatusChanged(input: DownloadChangedInput): Flow<DownloadUpdates> =
+        DownloadManager.updates.map { downloadUpdates ->
+            DownloadUpdates(downloadUpdates)
+        }
 }
