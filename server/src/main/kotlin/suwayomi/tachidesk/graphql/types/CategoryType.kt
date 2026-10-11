@@ -3,8 +3,7 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 package suwayomi.tachidesk.graphql.types
 
@@ -16,6 +15,8 @@ import suwayomi.tachidesk.graphql.server.primitives.Edge
 import suwayomi.tachidesk.graphql.server.primitives.Node
 import suwayomi.tachidesk.graphql.server.primitives.NodeList
 import suwayomi.tachidesk.graphql.server.primitives.PageInfo
+import suwayomi.tachidesk.graphql.server.primitives.getNodeListFromDataLoaders
+import suwayomi.tachidesk.graphql.types.MangaNodeList.Companion.toNodeList
 import suwayomi.tachidesk.manga.model.dataclass.CategoryDataClass
 import suwayomi.tachidesk.manga.model.dataclass.IncludeOrExclude
 import suwayomi.tachidesk.manga.model.table.CategoryTable
@@ -50,30 +51,10 @@ class CategoryType(
         dataClass.isDefaultCategory,
     )
 
-    fun mangas(
-        dataFetchingEnvironment: DataFetchingEnvironment,
-        inLibrary: Boolean? = null,
-    ): CompletableFuture<MangaNodeList> {
-        val future = dataFetchingEnvironment.getValueFromDataLoader<Int, MangaNodeList>("MangaForCategoryDataLoader", id)
-
-        if (inLibrary == null) {
-            return future
+    fun mangas(dataFetchingEnvironment: DataFetchingEnvironment): CompletableFuture<MangaNodeList> =
+        dataFetchingEnvironment.getNodeListFromDataLoaders("MangaForCategoryDataLoader", "MangaCountForCategoryDataLoader", id) {
+            emptyList<MangaType>().toNodeList().copy(totalCount = it)
         }
-
-        return future.thenApply { mangaNodeList ->
-            val filteredNodes =
-                mangaNodeList.nodes.filter { manga ->
-                    manga.inLibrary == inLibrary
-                }
-
-            MangaNodeList(
-                nodes = filteredNodes,
-                edges = mangaNodeList.edges.filter { edge -> edge.node.inLibrary == inLibrary },
-                pageInfo = mangaNodeList.pageInfo, // Mantenemos la info de paginación previa
-                totalCount = filteredNodes.size,
-            )
-        }
-    }
 
     fun meta(dataFetchingEnvironment: DataFetchingEnvironment): CompletableFuture<List<CategoryMetaType>> =
         dataFetchingEnvironment.getValueFromDataLoader<Int, List<CategoryMetaType>>("CategoryMetaDataLoader", id)
