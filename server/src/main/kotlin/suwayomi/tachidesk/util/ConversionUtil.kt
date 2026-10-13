@@ -16,25 +16,17 @@ import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
 import javax.imageio.ImageIO
-import javax.imageio.ImageReader
 
 object ConversionUtil {
-    private val logger = KotlinLogging.logger {}
-    private val networkService: NetworkHelper by injectLazy()
+    val logger = KotlinLogging.logger {}
 
     fun readImage(
         image: InputStream,
         mimeType: String,
     ): BufferedImage? {
         val readers = ImageIO.getImageReadersByMIMEType(mimeType)
-        if (!readers.hasNext()) {
-            logger.info { "No suitable image converter found for $mimeType" }
-            return null
-        }
-
         ImageIO.createImageInputStream(image).use { inputStream ->
-            while (readers.hasNext()) {
-                val reader = readers.next() as ImageReader
+            for (reader in readers) {
                 try {
                     reader.setInput(inputStream)
                     return reader.read(0)
@@ -45,8 +37,11 @@ object ConversionUtil {
                 }
             }
         }
+        logger.info { "No suitable image converter found for $mimeType" }
         return null
     }
+
+    private val networkService: NetworkHelper by injectLazy()
 
     /**
      * Send image to external HTTP service for post-processing
@@ -71,31 +66,33 @@ object ConversionUtil {
                     ).build()
 
             val client =
-                if (conversion.callTimeout != null || conversion.connectTimeout != null) {
-                    networkService
-                        .client
-                        .newBuilder()
-                        .apply {
-                            conversion.callTimeout?.let { callTimeout(it) }
-                            conversion.connectTimeout?.let { connectTimeout(it) }
-                        }.build()
-                } else {
-                    networkService.client
-                }
-
-            val headersBuilder = Headers.Builder()
-            conversion.headers?.forEach { headersBuilder.set(it.key, it.value) }
+                networkService.client
+                    .newBuilder()
+                    .apply {
+                        if (conversion.callTimeout != null) {
+                            callTimeout(conversion.callTimeout!!)
+                        }
+                        if (conversion.connectTimeout != null) {
+                            connectTimeout(conversion.connectTimeout!!)
+                        }
+                    }.build()
 
             val response =
                 client
                     .newCall(
                         POST(
                             conversion.target,
-                            headers = headersBuilder.build(),
                             body = requestBody,
+                            headers =
+                                Headers
+                                    .Builder()
+                                    .apply {
+                                        conversion.headers?.forEach {
+                                            set(it.key, it.value)
+                                        }
+                                    }.build(),
                         ),
                     ).await()
-
             logger.debug { "HTTP conversion successful for ${imageFile.name}" }
             response.body.byteStream()
         } catch (e: Exception) {
@@ -110,31 +107,29 @@ object ConversionUtil {
         inputStream: InputStream,
         mimeType: String,
         conversion: DownloadConversion,
-    ): InputStream? {
-        var tempFile: File? = null
-        return try {
+    ): InputStream? =
+        try {
+            // Create temporary file from input stream
             val extension =
                 MimeUtils.guessExtensionFromMimeType(mimeType)
                     ?: mimeType.substringAfter('/')
 
-            tempFile = Files.createTempFile("conversion", ".$extension").toFile()
+            val tempFile = Files.createTempFile("conversion", ".$extension").toFile()
             tempFile.outputStream().use { output ->
                 inputStream.copyTo(output)
             }
 
-            imageHttpPostProcess(tempFile, conversion, mimeType)
+            // Convert using file method
+            val result = imageHttpPostProcess(tempFile, conversion, mimeType)
+
+            // Clean up temp file
+            tempFile.delete()
+
+            result
         } catch (e: Exception) {
-            logger.warn(e) { "Failed to create temp file or process HTTP converter" }
+            logger.warn(e) { "Failed to create temp file for HTTP converter" }
             null
-        } finally {
-            // Garantiza que el archivo se borre siempre, incluso si la subida falla estrepitosamente
-            try {
-                tempFile?.delete()
-            } catch (e: Exception) {
-                logger.error(e) { "Failed to delete temporary file: ${tempFile?.absolutePath}" }
-            }
         }
-    }
 
     /**
      * Check if a DownloadConversion target is an HTTP URL
