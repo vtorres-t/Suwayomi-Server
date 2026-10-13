@@ -42,9 +42,9 @@ import java.util.ArrayList;
  */
 public class Application extends ContextWrapper implements ComponentCallbacks2 {
     private ArrayList<ComponentCallbacks> mComponentCallbacks =
-            new ArrayList<>();
+            new ArrayList<ComponentCallbacks>();
     private ArrayList<ActivityLifecycleCallbacks> mActivityLifecycleCallbacks =
-            new ArrayList<>();
+            new ArrayList<ActivityLifecycleCallbacks>();
     private ArrayList<OnProvideAssistDataListener> mAssistCallbacks = null;
 
     public interface ActivityLifecycleCallbacks {
@@ -159,7 +159,7 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
     public void registerOnProvideAssistDataListener(OnProvideAssistDataListener callback) {
         synchronized (this) {
             if (mAssistCallbacks == null) {
-                mAssistCallbacks = new ArrayList<>();
+                mAssistCallbacks = new ArrayList<OnProvideAssistDataListener>();
             }
             mAssistCallbacks.add(callback);
         }
@@ -275,8 +275,10 @@ public class Application extends ContextWrapper implements ComponentCallbacks2 {
             }
             callbacks = mAssistCallbacks.toArray();
         }
-        for (Object callback : callbacks) {
-            ((OnProvideAssistDataListener) callback).onProvideAssistData(activity, data);
+        if (callbacks != null) {
+            for (int i=0; i<callbacks.length; i++) {
+                ((OnProvideAssistDataListener)callbacks[i]).onProvideAssistData(activity, data);
+            }
         }
     }
 }

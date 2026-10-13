@@ -20,6 +20,7 @@ package android.net;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.StrictMode;
 import android.util.Log;
 import libcore.net.UriCodec;
 
@@ -28,15 +29,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Collections;
-import java.util.AbstractList;
-import java.util.RandomAccess;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Immutable URI reference. A URI reference includes a URI and a fragment, the
@@ -535,6 +528,8 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
                     // Opaque URI.
                     return null;
                 }
+            } else {
+                // All relative URIs are hierarchical.
             }
             return parsePath(uriString, ssi);
         }
@@ -1308,7 +1303,7 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         if (query == null) {
             return Collections.emptySet();
         }
-        Set<String> names = new LinkedHashSet<>();
+        Set<String> names = new LinkedHashSet<String>();
         int start = 0;
         do {
             int next = query.indexOf('&', start);
@@ -1350,7 +1345,7 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
         } catch (UnsupportedEncodingException e) {
             throw new AssertionError(e);
         }
-        ArrayList<String> values = new ArrayList<>();
+        ArrayList<String> values = new ArrayList<String>();
         int start = 0;
         do {
             int nextAmpersand = query.indexOf('&', start);
@@ -1477,22 +1472,18 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
      * Reads Uris from Parcels.
      */
     public static final Parcelable.Creator<Uri> CREATOR
-            = new Parcelable.Creator<>() {
+            = new Parcelable.Creator<Uri>() {
         public Uri createFromParcel(Parcel in) {
             int type = in.readInt();
             switch (type) {
-                case NULL_TYPE_ID:
-                    return null;
-                case StringUri.TYPE_ID:
-                    return StringUri.readFrom(in);
-                case OpaqueUri.TYPE_ID:
-                    return OpaqueUri.readFrom(in);
+                case NULL_TYPE_ID: return null;
+                case StringUri.TYPE_ID: return StringUri.readFrom(in);
+                case OpaqueUri.TYPE_ID: return OpaqueUri.readFrom(in);
                 case HierarchicalUri.TYPE_ID:
                     return HierarchicalUri.readFrom(in);
             }
             throw new IllegalArgumentException("Unknown URI type: " + type);
         }
-
         public Uri[] newArray(int size) {
             return new Uri[size];
         }
@@ -1573,6 +1564,8 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             if (nextToEncode > current) {
                 // Append allowed characters leading up to this point.
                 encoded.append(s, current, nextToEncode);
+            } else {
+                // assert nextToEncode == current
             }
             // Switch to "encoding" mode.
             // Find the next allowed character.
@@ -1963,6 +1956,17 @@ public abstract class Uri implements Parcelable, Comparable<Uri> {
             return Uri.fromFile(new File(canonicalPath));
         } else {
             return this;
+        }
+    }
+    /**
+     * If this is a {@code file://} Uri, it will be reported to
+     * {@link StrictMode}.
+     *
+     * @hide
+     */
+    public void checkFileUriExposed(String location) {
+        if ("file".equals(getScheme())) {
+            //StrictMode.onFileUriExposed(location);
         }
     }
     /**

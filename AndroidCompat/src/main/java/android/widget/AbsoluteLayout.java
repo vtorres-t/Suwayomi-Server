@@ -17,7 +17,9 @@
 package android.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews.RemoteView;
 
@@ -99,7 +101,7 @@ public class AbsoluteLayout extends ViewGroup {
 
         public String debug(String output) {
             return output + "Absolute.LayoutParams={width="
-                    + width + ", height=" + height
+                    + String.valueOf(width) + ", height=" + String.valueOf(height)
                     + " x=" + x + " y=" + y + "}";
         }
     }

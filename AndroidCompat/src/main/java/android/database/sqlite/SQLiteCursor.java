@@ -158,7 +158,7 @@ public class SQLiteCursor extends AbstractWindowedCursor {
         if (mColumnNameMap == null) {
             String[] columns = mColumns;
             int columnCount = columns.length;
-            HashMap<String, Integer> map = new HashMap<>(columnCount, 1);
+            HashMap<String, Integer> map = new HashMap<String, Integer>(columnCount, 1);
             for (int i = 0; i < columnCount; i++) {
                 map.put(columns[i], i);
             }
@@ -252,6 +252,16 @@ public class SQLiteCursor extends AbstractWindowedCursor {
             // if the cursor hasn't been closed yet, close it first
             if (mWindow != null) {
                 //TODO Finish
+//                if (mStackTrace != null) {
+//                    String sql = mQuery.getSql();
+//                    int len = sql.length();
+//                    StrictMode.onSqliteObjectLeaked(
+//                        "Finalizing a Cursor that has not been deactivated or closed. " +
+//                        "database = " + mQuery.getDatabase().getLabel() +
+//                        ", table = " + mEditTable +
+//                        ", query = " + sql.substring(0, (len > 1000) ? 1000 : len),
+//                        mStackTrace);
+//                }
                 close();
             }
         } finally {

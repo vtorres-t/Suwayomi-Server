@@ -16,6 +16,7 @@
 
 package android.text;
 
+import android.annotation.ColorInt;
 import android.annotation.IntRange;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -26,6 +27,7 @@ import android.util.Log;
 import java.awt.RenderingHints;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.FontRenderContext;
+import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.text.AttributedString;
 
@@ -226,8 +228,9 @@ public class StaticLayout extends Layout {
 
         @NonNull
         public StaticLayout build() {
-            return new StaticLayout(this, mIncludePad, mEllipsize != null
+            StaticLayout result = new StaticLayout(this, mIncludePad, mEllipsize != null
                     ? COLUMNS_ELLIPSIZE : COLUMNS_NORMAL);
+            return result;
         }
 
         private CharSequence mText;

@@ -530,7 +530,7 @@ public final class ArrayMap<K, V> implements Map<K, V> {
                 if (cur == prev) {
                     throw new IllegalArgumentException("Duplicate key in ArrayMap: " + cur);
                 }
-                if (cur != null && cur.equals(prev)) {
+                if (cur != null && prev != null && cur.equals(prev)) {
                     throw new IllegalArgumentException("Duplicate key in ArrayMap: " + cur);
                 }
             }
@@ -731,47 +731,39 @@ public final class ArrayMap<K, V> implements Map<K, V> {
     // ------------------------------------------------------------------------
     private MapCollections<K, V> getCollection() {
         if (mCollections == null) {
-            mCollections = new MapCollections<>() {
+            mCollections = new MapCollections<K, V>() {
                 @Override
                 protected int colGetSize() {
                     return mSize;
                 }
-
                 @Override
                 protected Object colGetEntry(int index, int offset) {
-                    return mArray[(index << 1) + offset];
+                    return mArray[(index<<1) + offset];
                 }
-
                 @Override
                 protected int colIndexOfKey(Object key) {
                     return indexOfKey(key);
                 }
-
                 @Override
                 protected int colIndexOfValue(Object value) {
                     return indexOfValue(value);
                 }
-
                 @Override
                 protected Map<K, V> colGetMap() {
                     return ArrayMap.this;
                 }
-
                 @Override
                 protected void colPut(K key, V value) {
                     put(key, value);
                 }
-
                 @Override
                 protected V colSetValue(int index, V value) {
                     return setValueAt(index, value);
                 }
-
                 @Override
                 protected void colRemoveAt(int index) {
                     removeAt(index);
                 }
-
                 @Override
                 protected void colClear() {
                     clear();

@@ -78,7 +78,7 @@ public final class SQLiteDebug {
      * log all queries that take 200ms or longer to run.
      * @hide
      */
-    public static boolean shouldLogSlowQuery(long elapsedTimeMillis) {
+    public static final boolean shouldLogSlowQuery(long elapsedTimeMillis) {
         int slowQueryMillis = SystemProperties.getInt("db.log.slow_query_threshold", -1);
         return slowQueryMillis >= 0 && elapsedTimeMillis >= slowQueryMillis;
     }
@@ -164,7 +164,6 @@ public final class SQLiteDebug {
         for (String arg : args) {
             if (arg.equals("-v")) {
                 verbose = true;
-                break;
             }
         }
     }

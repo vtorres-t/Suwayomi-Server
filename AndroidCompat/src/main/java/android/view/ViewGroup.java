@@ -23,33 +23,49 @@ import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.TestApi;
 import android.annotation.UiThread;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.WindowInsetsAnimation.Bounds;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.view.animation.Transformation;
+import android.view.autofill.AutofillId;
+import android.view.autofill.AutofillManager;
+import android.webkit.WebView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @UiThread
@@ -420,6 +436,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         throw new RuntimeException("Stub!");
     }
 
+    // @Override
+    // void dispatchCollectViewAttributes(AttachInfo attachInfo, int visibility) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     @Override
     public void bringChildToFront(View child) {
         throw new RuntimeException("Stub!");
@@ -620,6 +641,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         throw new RuntimeException("Stub!");
     }
 
+    // @Override
+    // void dispatchAttachedToWindow(AttachInfo info, int visibility) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     @Override
     void dispatchScreenStateChanged(int screenState) {
         throw new RuntimeException("Stub!");
@@ -738,6 +764,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
     protected void setChildrenDrawingCacheEnabled(boolean enabled) {
         throw new RuntimeException("Stub!");
     }
+
+    // @Override
+    // public Bitmap createSnapshot(ViewDebug.CanvasProvider canvasProvider, boolean skipChildren) {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     /** Return true if this ViewGroup is laying out using optical bounds. */
     boolean isLayoutModeOptical() {
@@ -1315,6 +1346,13 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         throw new RuntimeException("Stub!");
     }
 
+    // @Override
+    // public void dispatchScrollCaptureSearch(
+    //         @NonNull Rect localVisibleRect, @NonNull Point windowOffset,
+    //         @NonNull Consumer<ScrollCaptureTarget> targets) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     public Animation.AnimationListener getLayoutAnimationListener() {
         throw new RuntimeException("Stub!");
     }
@@ -1556,6 +1594,15 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             return String.valueOf(size);
         }
 
+        // /** @hide */
+        // void encode(@NonNull ViewHierarchyEncoder encoder) {
+        //     throw new RuntimeException("Stub!");
+        // }
+
+        // /** @hide */
+        // protected void encodeProperties(@NonNull ViewHierarchyEncoder encoder) {
+        //     throw new RuntimeException("Stub!");
+        // }
     }
 
     public static class MarginLayoutParams extends ViewGroup.LayoutParams {
@@ -1645,6 +1692,11 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
             throw new RuntimeException("Stub!");
         }
 
+        // /** @hide */
+        // @Override
+        // protected void encodeProperties(@NonNull ViewHierarchyEncoder encoder) {
+        //     throw new RuntimeException("Stub!");
+        // }
     }
 
     static class ChildListForAccessibility {
@@ -1692,11 +1744,32 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
+    // /** @hide */
+    // @Override
+    // protected void encodeProperties(@NonNull ViewHierarchyEncoder encoder) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     /** @hide */
     // @Override
     public final void onDescendantUnbufferedRequested() {
         throw new RuntimeException("Stub!");
     }
+
+    // @Override
+    // public void dispatchCreateViewTranslationRequest(@NonNull Map<AutofillId, long[]> viewIds,
+    //         @NonNull int[] supportedFormats,
+    //         @Nullable TranslationCapability capability,
+    //         @NonNull List<ViewTranslationRequest> requests) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // @Nullable
+    // @Override
+    // public OnBackInvokedDispatcher findOnBackInvokedDispatcherForChild(@NonNull View child,
+    //         @NonNull View requester) {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     @Override
     public void setRequestedFrameRate(float frameRate) {

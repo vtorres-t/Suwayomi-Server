@@ -347,7 +347,10 @@ public class TextUtils {
      * @return true if str is null or zero length
      */
     public static boolean isEmpty(@Nullable CharSequence str) {
-        return str == null || str.length() == 0;
+        if (str == null || str.length() == 0)
+            return true;
+        else
+            return false;
     }
     /** {@hide} */
     public static String nullIfEmpty(@Nullable String str) {

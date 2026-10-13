@@ -16,6 +16,7 @@
 
 package android.view;
 
+import android.animation.AnimatorInflater;
 import android.animation.StateListAnimator;
 import android.annotation.AttrRes;
 import android.annotation.CallSuper;
@@ -27,60 +28,123 @@ import android.annotation.IntRange;
 import android.annotation.LayoutRes;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.annotation.RequiresPermission;
 import android.annotation.Size;
 import android.annotation.StyleRes;
 import android.annotation.SuppressLint;
 import android.annotation.SystemApi;
 import android.annotation.TestApi;
 import android.annotation.UiThread;
+import android.app.PendingIntent;
 import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.res.ColorStateList;
+import android.content.res.CompatibilityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BlendMode;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Insets;
+import android.graphics.Interpolator;
+import android.graphics.LinearGradient;
 import android.graphics.Matrix;
+import android.graphics.Outline;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RecordingCanvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.RenderNode;
+import android.graphics.Shader;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.hardware.input.InputManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.RemoteException;
+import android.os.SystemClock;
+import android.os.Trace;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.util.ArraySet;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.FloatProperty;
 import android.util.LayoutDirection;
+import android.util.Log;
+import android.util.LongSparseArray;
+import android.util.Pair;
 import android.util.Property;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
+import android.util.StateSet;
+import android.util.TimeUtils;
+import android.util.TypedValue;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.WindowInsets.Type;
 import android.view.WindowInsetsAnimation.Bounds;
+import android.view.WindowManager.LayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityEventSource;
+import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import android.view.accessibility.AccessibilityNodeProvider;
+import android.view.accessibility.AccessibilityWindowInfo;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Transformation;
 import android.view.autofill.AutofillId;
+import android.view.autofill.AutofillManager;
 import android.view.autofill.AutofillValue;
+import android.view.contentcapture.ContentCaptureContext;
+import android.view.contentcapture.ContentCaptureManager;
 import android.view.contentcapture.ContentCaptureSession;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Checkable;
 
+import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 @UiThread
@@ -1111,6 +1175,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         boolean mHasTintList;
     }
 
+    // ListenerInfo mListenerInfo;
+
+    // TooltipInfo mTooltipInfo;
+
     @ViewDebug.ExportedProperty(deepExport = true)
     protected Context mContext;
 
@@ -1172,6 +1240,12 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     AccessibilityDelegate mAccessibilityDelegate;
 
     ViewOverlay mOverlay;
+
+    // protected final InputEventConsistencyVerifier mInputEventConsistencyVerifier =
+    //         InputEventConsistencyVerifier.isInstrumentationEnabled() ?
+    //                 new InputEventConsistencyVerifier(this, 0) : null;
+
+    // GhostView mGhostView;
 
     @ViewDebug.ExportedProperty(category = "attributes", hasAdjacentMapping = true)
     public String[] mAttributes;
@@ -1260,6 +1334,16 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         throw new RuntimeException("Stub!");
     }
 
+    // public void setPendingCredentialRequest(@NonNull GetCredentialRequest request,
+    //         @NonNull OutcomeReceiver<GetCredentialResponse, GetCredentialException> callback) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // @Nullable
+    // public ViewCredentialHandler getViewCredentialHandler() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     public int getHorizontalFadingEdgeLength() {
         throw new RuntimeException("Stub!");
     }
@@ -1344,6 +1428,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     public int getScrollIndicators() {
         throw new RuntimeException("Stub!");
     }
+
+    // ListenerInfo getListenerInfo() {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     public void setOnScrollChangeListener(OnScrollChangeListener l) {
         throw new RuntimeException("Stub!");
@@ -1694,6 +1782,22 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         throw new RuntimeException("Stub!");
     }
 
+    // public void setOnReceiveContentListener(
+    //         @SuppressLint("NullableCollection") @Nullable String[] mimeTypes,
+    //         @Nullable OnReceiveContentListener listener) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // @Nullable
+    // public ContentInfo performReceiveContent(@NonNull ContentInfo payload) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // @Nullable
+    // public ContentInfo onReceiveContent(@NonNull ContentInfo payload) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     @SuppressLint("NullableCollection")
     @Nullable
     public String[] getReceiveContentMimeTypes() {
@@ -1707,6 +1811,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         throw new RuntimeException("Stub!");
     }
 
+    // public void onGetCredentialResponse(GetCredentialResponse response) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     public void onGetCredentialException(String errorType, String errorMsg) {
         throw new RuntimeException("Stub!");
     }
@@ -1714,6 +1822,17 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     public final AutofillId getAutofillId() {
         throw new RuntimeException("Stub!");
     }
+
+    // @Nullable
+    // public final GetCredentialRequest getPendingCredentialRequest() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // @Nullable
+    // public final OutcomeReceiver<GetCredentialResponse,
+    //         GetCredentialException> getPendingCredentialCallback() {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     public void setAutofillId(@Nullable AutofillId id) {
         throw new RuntimeException("Stub!");
@@ -2227,6 +2346,11 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     public @Nullable WindowInsetsController getWindowInsetsController() {
         throw new RuntimeException("Stub!");
     }
+
+    // @Nullable
+    // public final OnBackInvokedDispatcher findOnBackInvokedDispatcher() {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     @Deprecated
     protected boolean computeFitSystemWindows(Rect inoutInsets, Rect outLocalInsets) {
@@ -2787,6 +2911,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         throw new RuntimeException("Stub!");
     }
 
+    // public TextSegmentIterator getIteratorForGranularity(int granularity) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     public final boolean isTemporarilyDetached() {
         throw new RuntimeException("Stub!");
     }
@@ -2948,6 +3076,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
 
     protected void onConfigurationChanged(Configuration newConfig) {
     }
+
+    // void dispatchCollectViewAttributes(AttachInfo attachInfo, int visibility) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // void performCollectViewAttributes(AttachInfo attachInfo, int visibility) {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     void needGlobalAttributesUpdate(boolean force) {
         throw new RuntimeException("Stub!");
@@ -3597,6 +3733,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         throw new RuntimeException("Stub!");
     }
 
+    // public ViewRootImpl getViewRootImpl() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public ThreadedRenderer getThreadedRenderer() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     public boolean post(Runnable action) {
         throw new RuntimeException("Stub!");
     }
@@ -3905,6 +4049,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         throw new RuntimeException("Stub!");
     }
 
+    // /*package*/ IWindowSession getWindowSession() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // protected IWindow getWindow() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     int combineVisibility(int vis1, int vis2) {
         throw new RuntimeException("Stub!");
     }
@@ -3912,6 +4064,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     public void fakeFocusAfterAttachingToWindow() {
         throw new RuntimeException("Stub!");
     }
+
+    // void dispatchAttachedToWindow(AttachInfo info, int visibility) {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     void dispatchDetachedFromWindow() {
         throw new RuntimeException("Stub!");
@@ -3970,6 +4126,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     public void setLayerType(@LayerType int layerType, @Nullable Paint paint) {
         throw new RuntimeException("Stub!");
     }
+
+    // public void setRenderEffect(@Nullable RenderEffect renderEffect) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public void setBackdropRenderEffect(@Nullable RenderEffect renderEffect) {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     public void setLayerPaint(@Nullable Paint paint) {
         throw new RuntimeException("Stub!");
@@ -4055,6 +4219,10 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     public void buildDrawingCache(boolean autoScale) {
         throw new RuntimeException("Stub!");
     }
+
+    // public Bitmap createSnapshot(ViewDebug.CanvasProvider canvasProvider, boolean skipChildren) {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     public boolean isInEditMode() {
         return false;
@@ -5251,7 +5419,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         }
 
         public static final @android.annotation.NonNull Parcelable.Creator<BaseSavedState> CREATOR
-                = new Parcelable.ClassLoaderCreator<>() {
+                = new Parcelable.ClassLoaderCreator<BaseSavedState>() {
             @Override
             public BaseSavedState createFromParcel(Parcel in) {
                 return new BaseSavedState(in);
@@ -5334,6 +5502,39 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     public void setScrollCaptureHint(@ScrollCaptureHint int hint) {
         throw new RuntimeException("Stub!");
     }
+
+    // public final void setScrollCaptureCallback(@Nullable ScrollCaptureCallback callback) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // /** {@hide} */
+    // @Nullable
+    // public ScrollCaptureCallback createScrollCaptureCallbackInternal(@NonNull Rect localVisibleRect,
+    //         @NonNull Point windowOffset) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public void dispatchScrollCaptureSearch(
+    //         @NonNull Rect localVisibleRect, @NonNull Point windowOffset,
+    //         @NonNull Consumer<ScrollCaptureTarget> targets) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public void onScrollCaptureSearch(@NonNull Rect localVisibleRect,
+    //         @NonNull Point windowOffset, @NonNull Consumer<ScrollCaptureTarget> targets) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // /** {@hide} */
+    // public void encode(@NonNull ViewHierarchyEncoder stream) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // /** {@hide} */
+    // @CallSuper
+    // protected void encodeProperties(@NonNull ViewHierarchyEncoder stream) {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     boolean shouldDrawRoundScrollbar() {
         throw new RuntimeException("Stub!");
@@ -5425,6 +5626,61 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         throw new RuntimeException("Stub!");
     }
 
+    // public void onCreateViewTranslationRequest(@NonNull int[] supportedFormats,
+    //         @NonNull Consumer<ViewTranslationRequest> requestsCollector) {
+    // }
+
+    // @SuppressLint("NullableCollection")
+    // public void onCreateVirtualViewTranslationRequests(@NonNull long[] virtualIds,
+    //         @NonNull int[] supportedFormats,
+    //         @NonNull Consumer<ViewTranslationRequest> requestsCollector) {
+    //     // no-op
+    // }
+
+    // @Nullable
+    // public ViewTranslationCallback getViewTranslationCallback() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public void setViewTranslationCallback(@NonNull ViewTranslationCallback callback) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public void clearViewTranslationCallback() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // @Nullable
+    // public ViewTranslationResponse getViewTranslationResponse() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public void onViewTranslationResponse(@NonNull ViewTranslationResponse response) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public void clearViewTranslationResponse() {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public void onVirtualViewTranslationResponses(
+    //         @NonNull LongSparseArray<ViewTranslationResponse> response) {
+    //     // no-op
+    // }
+
+    // public void dispatchCreateViewTranslationRequest(@NonNull Map<AutofillId, long[]> viewIds,
+    //         @NonNull int[] supportedFormats,
+    //         @NonNull TranslationCapability capability,
+    //         @NonNull List<ViewTranslationRequest> requests) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public void generateDisplayHash(@NonNull String hashAlgorithm,
+    //         @Nullable Rect bounds, @NonNull Executor executor,
+    //         @NonNull DisplayHashResultCallback callback) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
     /**
      * The AttachedSurfaceControl itself is not a View, it is just the interface to the
      * windowing-system object that contains the entire view hierarchy.
@@ -5434,6 +5690,9 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * This will only return a non-null value when called between {@link #onAttachedToWindow}
      * and {@link #onDetachedFromWindow}.
      */
+    // public @Nullable AttachedSurfaceControl getRootSurfaceControl() {
+    //     throw new RuntimeException("Stub!");
+    // }
 
     protected int calculateFrameRateCategory() {
         throw new RuntimeException("Stub!");
@@ -5479,4 +5738,11 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
         throw new RuntimeException("Stub!");
     }
 
+    // public void reportAppJankStats(@NonNull AppJankStats appJankStats) {
+    //     throw new RuntimeException("Stub!");
+    // }
+
+    // public @Nullable JankTracker getJankTracker() {
+    //     throw new RuntimeException("Stub!");
+    // }
 }

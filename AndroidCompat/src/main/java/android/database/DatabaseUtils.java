@@ -72,7 +72,7 @@ public class DatabaseUtils {
      * @see Parcel#writeNoException
      * @see Parcel#writeException
      */
-    public static void writeExceptionToParcel(Parcel reply, Exception e) {
+    public static final void writeExceptionToParcel(Parcel reply, Exception e) {
         int code = 0;
         boolean logException = true;
         if (e instanceof FileNotFoundException) {
@@ -127,7 +127,8 @@ public class DatabaseUtils {
             prog.bindDouble(index, ((Number)value).doubleValue());
         } else if (value instanceof Number) {
             prog.bindLong(index, ((Number)value).longValue());
-        } else if (value instanceof Boolean bool) {
+        } else if (value instanceof Boolean) {
+            Boolean bool = (Boolean)value;
             if (bool) {
                 prog.bindLong(index, 1);
             } else {
@@ -279,10 +280,11 @@ public class DatabaseUtils {
     /**
      * Appends an Object to an SQL string with the proper escaping, etc.
      */
-    public static void appendValueToSql(StringBuilder sql, Object value) {
+    public static final void appendValueToSql(StringBuilder sql, Object value) {
         if (value == null) {
             sql.append("NULL");
-        } else if (value instanceof Boolean bool) {
+        } else if (value instanceof Boolean) {
+            Boolean bool = (Boolean)value;
             if (bool) {
                 sql.append('1');
             } else {
@@ -396,7 +398,7 @@ public class DatabaseUtils {
      * @param sb the StringBuilder to print to
      */
     public static void dumpCursor(Cursor cursor, StringBuilder sb) {
-        sb.append(">>>>> Dumping cursor ").append(cursor).append("\n");
+        sb.append(">>>>> Dumping cursor " + cursor + "\n");
         if (cursor != null) {
             int startPos = cursor.getPosition();
             cursor.moveToPosition(-1);
@@ -435,7 +437,7 @@ public class DatabaseUtils {
      */
     public static void dumpCurrentRow(Cursor cursor, PrintStream stream) {
         String[] cols = cursor.getColumnNames();
-        stream.println(cursor.getPosition() + " {");
+        stream.println("" + cursor.getPosition() + " {");
         int length = cols.length;
         for (int i = 0; i< length; i++) {
             String value;
@@ -458,7 +460,7 @@ public class DatabaseUtils {
      */
     public static void dumpCurrentRow(Cursor cursor, StringBuilder sb) {
         String[] cols = cursor.getColumnNames();
-        sb.append(cursor.getPosition()).append(" {\n");
+        sb.append("" + cursor.getPosition() + " {\n");
         int length = cols.length;
         for (int i = 0; i < length; i++) {
             String value;
@@ -469,7 +471,7 @@ public class DatabaseUtils {
                 // representable by a string, e.g. it is a BLOB.
                 value = "<unprintable>";
             }
-            sb.append("   ").append(cols[i]).append('=').append(value).append("\n");
+            sb.append("   " + cols[i] + '=' + value + "\n");
         }
         sb.append("}\n");
     }
@@ -905,7 +907,7 @@ public class DatabaseUtils {
             Cursor cur = null;
             try {
                 cur = mDb.rawQuery("PRAGMA table_info(" + mTableName + ")", null);
-                mColumns = new HashMap<>(cur.getCount());
+                mColumns = new HashMap<String, Integer>(cur.getCount());
                 while (cur.moveToNext()) {
                     String columnName = cur.getString(TABLE_INFO_PRAGMA_COLUMNNAME_INDEX);
                     String defaultValue = cur.getString(TABLE_INFO_PRAGMA_DEFAULT_INDEX);

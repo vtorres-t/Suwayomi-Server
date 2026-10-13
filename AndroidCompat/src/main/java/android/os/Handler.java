@@ -279,6 +279,7 @@ public class Handler {
      */
     @NonNull
     public static Handler createAsync(@NonNull Looper looper) {
+        if (looper == null) throw new NullPointerException("looper must not be null");
         return new Handler(looper, null, true);
     }
 
@@ -296,6 +297,8 @@ public class Handler {
      */
     @NonNull
     public static Handler createAsync(@NonNull Looper looper, @NonNull Callback callback) {
+        if (looper == null) throw new NullPointerException("looper must not be null");
+        if (callback == null) throw new NullPointerException("callback must not be null");
         return new Handler(looper, callback, true);
     }
 
@@ -592,6 +595,9 @@ public class Handler {
      * less funny like runUnsafe().
      */
     public final boolean runWithScissors(@NonNull Runnable r, long timeout) {
+        if (r == null) {
+            throw new IllegalArgumentException("runnable must not be null");
+        }
         if (timeout < 0) {
             throw new IllegalArgumentException("timeout must be non-negative");
         }
@@ -942,7 +948,21 @@ public class Handler {
 
     final IMessenger getIMessenger() {
         throw new RuntimeException("Stub!");
+        // synchronized (mQueue) {
+        //     if (mMessenger != null) {
+        //         return mMessenger;
+        //     }
+        //     mMessenger = new MessengerImpl();
+        //     return mMessenger;
+        // }
     }
+
+    // private final class MessengerImpl extends IMessenger.Stub {
+    //     public void send(Message msg) {
+    //         msg.sendingUid = Binder.getCallingUid();
+    //         Handler.this.sendMessage(msg);
+    //     }
+    // }
 
     private static Message getPostMessage(Runnable r) {
         Message m = Message.obtain();

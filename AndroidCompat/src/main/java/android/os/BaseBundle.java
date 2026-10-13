@@ -90,7 +90,7 @@ public class BaseBundle {
      */
     BaseBundle(@Nullable ClassLoader loader, int capacity) {
         mMap = capacity > 0 ?
-                new ArrayMap<>(capacity) : new ArrayMap<>();
+                new ArrayMap<String, Object>(capacity) : new ArrayMap<String, Object>();
         mClassLoader = loader == null ? getClass().getClassLoader() : loader;
     }
     /**
@@ -206,7 +206,60 @@ public class BaseBundle {
             }
         }
     }
-
+    /*private void initializeFromParcelLocked(@NonNull Parcel parcelledData, boolean recycleParcel) {
+        if (LOG_DEFUSABLE && sShouldDefuse && (mFlags & FLAG_DEFUSABLE) == 0) {
+//            Slog.wtf(TAG, "Attempting to unparcel a Bundle while in transit; this may "
+//                    + "clobber all data inside!", new Throwable());
+        }
+        if (isEmptyParcel(parcelledData)) {
+            if (DEBUG) {
+                Log.d(TAG, "unparcel "
+                        + Integer.toHexString(System.identityHashCode(this)) + ": empty");
+            }
+            if (mMap == null) {
+                mMap = new ArrayMap<>(1);
+            } else {
+                mMap.erase();
+            }
+            mParcelledData = null;
+            return;
+        }
+        final int count = parcelledData.readInt();
+        if (DEBUG) {
+            Log.d(TAG, "unparcel " + Integer.toHexString(System.identityHashCode(this))
+                    + ": reading " + count + " maps");
+        }
+        if (count < 0) {
+            return;
+        }
+        ArrayMap<String, Object> map = mMap;
+        if (map == null) {
+            map = new ArrayMap<>(count);
+        } else {
+            map.erase();
+            map.ensureCapacity(count);
+        }
+        try {
+            parcelledData.readArrayMapInternal(map, count, mClassLoader);
+        } catch (BadParcelableException e) {
+            if (sShouldDefuse) {
+                Log.w(TAG, "Failed to parse Bundle, but defusing quietly", e);
+                map.erase();
+            } else {
+                throw e;
+            }
+        } finally {
+            mMap = map;
+            if (recycleParcel) {
+                recycleParcel(parcelledData);
+            }
+            mParcelledData = null;
+        }
+        if (DEBUG) {
+            Log.d(TAG, "unparcel " + Integer.toHexString(System.identityHashCode(this))
+                    + " final map: " + mMap);
+        }
+    }*/
     /**
      * @hide
      */
@@ -1342,6 +1395,45 @@ public class BaseBundle {
      * @param parcel The parcel to copy this bundle to.
      */
     void writeToParcelInner(Parcel parcel, int flags) {
+        /*// If the parcel has a read-write helper, we can't just copy the blob, so unparcel it first.
+        if (parcel.hasReadWriteHelper()) {
+            unparcel();
+        }
+        // Keep implementation in sync with writeToParcel() in
+        // frameworks/native/libs/binder/PersistableBundle.cpp.
+        final ArrayMap<String, Object> map;
+        synchronized (this) {
+            // unparcel() can race with this method and cause the parcel to recycle
+            // at the wrong time. So synchronize access the mParcelledData's content.
+            if (mParcelledData != null) {
+                if (mParcelledData == NoImagePreloadHolder.EMPTY_PARCEL) {
+                    parcel.writeInt(0);
+                } else {
+                    int length = mParcelledData.dataSize();
+                    parcel.writeInt(length);
+                    parcel.writeInt(BUNDLE_MAGIC);
+                    parcel.appendFrom(mParcelledData, 0, length);
+                }
+                return;
+            }
+            map = mMap;
+        }
+        // Special case for empty bundles.
+        if (map == null || map.size() <= 0) {
+            parcel.writeInt(0);
+            return;
+        }
+        int lengthPos = parcel.dataPosition();
+        parcel.writeInt(-1); // dummy, will hold length
+        parcel.writeInt(BUNDLE_MAGIC);
+        int startPos = parcel.dataPosition();
+        parcel.writeArrayMapInternal(map);
+        int endPos = parcel.dataPosition();
+        // Backpatch length
+        parcel.setDataPosition(lengthPos);
+        int length = endPos - startPos;
+        parcel.writeInt(length);
+        parcel.setDataPosition(endPos);*/
     }
     /**
      * Reads the Parcel contents into this Bundle, typically in order for
@@ -1351,6 +1443,8 @@ public class BaseBundle {
     void readFromParcelInner(Parcel parcel) {
         // Keep implementation in sync with readFromParcel() in
         // frameworks/native/libs/binder/PersistableBundle.cpp.
+//        int length = parcel.readInt();
+//        readFromParcelInner(parcel, length);
     }
     /*private void readFromParcelInner(Parcel parcel, int length) {
         if (length < 0) {

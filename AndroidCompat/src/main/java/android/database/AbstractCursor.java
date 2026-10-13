@@ -125,7 +125,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     }
     @Override
     public boolean requery() {
-        if (mSelfObserver != null && !mSelfObserverRegistered) {
+        if (mSelfObserver != null && mSelfObserverRegistered == false) {
             mContentResolver.registerContentObserver(mNotifyUri, true, mSelfObserver);
             mSelfObserverRegistered = true;
         }
@@ -199,7 +199,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
             return true;
         }
         boolean result = onMove(mPos, position);
-        if (!result) {
+        if (result == false) {
             mPos = -1;
         } else {
             mPos = position;
@@ -267,6 +267,11 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         for (int i = 0; i < length; i++) {
             if (columnNames[i].equalsIgnoreCase(columnName)) {
                 return i;
+            }
+        }
+        if (false) {
+            if (getCount() > 0) {
+                Log.w("AbstractCursor", "Unknown column " + columnName);
             }
         }
         return -1;
@@ -378,7 +383,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
     }
     @Override
     protected void finalize() {
-        if (mSelfObserver != null && mSelfObserverRegistered) {
+        if (mSelfObserver != null && mSelfObserverRegistered == true) {
             mContentResolver.unregisterContentObserver(mSelfObserver);
         }
         try {
@@ -392,7 +397,7 @@ public abstract class AbstractCursor implements CrossProcessCursor {
         WeakReference<AbstractCursor> mCursor;
         public SelfContentObserver(AbstractCursor cursor) {
             super(null);
-            mCursor = new WeakReference<>(cursor);
+            mCursor = new WeakReference<AbstractCursor>(cursor);
         }
         @Override
         public boolean deliverSelfNotifications() {

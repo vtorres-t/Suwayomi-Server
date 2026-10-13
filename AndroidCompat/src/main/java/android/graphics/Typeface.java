@@ -16,7 +16,9 @@
 
 package android.graphics;
 
+import android.annotation.NonNull;
 import android.annotation.Nullable;
+import android.annotation.TestApi;
 import android.content.res.AssetManager;
 import android.util.Log;
 import com.android.internal.util.Preconditions;
@@ -27,7 +29,9 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.text.AttributedString;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -135,7 +139,7 @@ public class Typeface {
             Log.v(TAG, "Font loaded from " + path.toURI());
             mPath = null;
             mStyle = 0;
-            mAttributes = new HashMap<>();
+            mAttributes = new HashMap<TextAttribute, Object>();
         }
 
         public Builder(@NonNull FileDescriptor fd) {
@@ -146,7 +150,7 @@ public class Typeface {
             mFont = loadFont(new File(path));
             mPath = path;
             mStyle = 0;
-            mAttributes = new HashMap<>();
+            mAttributes = new HashMap<TextAttribute, Object>();
         }
 
         public Builder(@NonNull AssetManager assetManager, @NonNull String path) {
@@ -163,7 +167,7 @@ public class Typeface {
             // In Java, regular weight is at 1.0 and bold at 2.0, compared to 400 and 700 in TTF
             // Typical range is 0 to 1000
 
-            float jWeight = (float) (weight - NORMAL_WEIGHT) / (BOLD_WEIGHT - NORMAL_WEIGHT) * (TextAttribute.WEIGHT_BOLD - TextAttribute.WEIGHT_REGULAR) + TextAttribute.WEIGHT_REGULAR;
+            float jWeight = (weight - NORMAL_WEIGHT) / (BOLD_WEIGHT - NORMAL_WEIGHT) * (TextAttribute.WEIGHT_BOLD - TextAttribute.WEIGHT_REGULAR) + TextAttribute.WEIGHT_REGULAR;
             mAttributes.put(TextAttribute.WEIGHT, jWeight);
             return this;
         }

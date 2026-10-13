@@ -20,7 +20,8 @@ class MutableStateFlowType : CustomType {
                     .first()
                     .value,
             )
-        val result = reader(config, name)
+        val path = name
+        val result = reader(config, path)
         return MutableStateFlow(result)
     }
 

@@ -17,12 +17,7 @@ package com.android.internal.util;
 import android.annotation.Nullable;
 import android.util.ArraySet;
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import libcore.util.EmptyArray;
 import android.annotation.NonNull;
 
@@ -367,7 +362,7 @@ public class ArrayUtils {
         return (array != null) ? array.clone() : null;
     }
     public static @Nullable <T> ArraySet<T> cloneOrNull(@Nullable ArraySet<T> array) {
-        return (array != null) ? new ArraySet<>(array) : null;
+        return (array != null) ? new ArraySet<T>(array) : null;
     }
     public static @NonNull <T> ArraySet<T> add(@Nullable ArraySet<T> cur, T val) {
         if (cur == null) {
@@ -388,7 +383,7 @@ public class ArrayUtils {
         }
     }
     public static <T> boolean contains(@Nullable ArraySet<T> cur, T val) {
-        return cur != null && cur.contains(val);
+        return (cur != null) ? cur.contains(val) : false;
     }
     public static @NonNull <T> ArrayList<T> add(@Nullable ArrayList<T> cur, T val) {
         if (cur == null) {
@@ -409,7 +404,7 @@ public class ArrayUtils {
         }
     }
     public static <T> boolean contains(@Nullable Collection<T> cur, T val) {
-        return cur != null && cur.contains(val);
+        return (cur != null) ? cur.contains(val) : false;
     }
     public static @Nullable <T> T[] trimToSize(@Nullable T[] array, int size) {
         if (array == null || size == 0) {

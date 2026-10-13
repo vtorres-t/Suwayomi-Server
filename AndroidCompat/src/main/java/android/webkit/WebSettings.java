@@ -91,7 +91,7 @@ public abstract class WebSettings {
         TextSize(int size) {
             value = size;
         }
-        final int value;
+        int value;
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class WebSettings {
             return value;
         }
 
-        final int value;
+        int value;
     }
 
     /** @hide */

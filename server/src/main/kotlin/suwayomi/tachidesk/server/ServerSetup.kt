@@ -24,8 +24,10 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.cef.network.CefCookieManager
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.lowerCase
@@ -36,6 +38,7 @@ import org.jetbrains.exposed.v1.jdbc.update
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import suwayomi.tachidesk.global.impl.KcefWebView.Companion.toCefCookie
 import suwayomi.tachidesk.global.impl.sync.SyncManager
 import suwayomi.tachidesk.global.impl.util.Bcrypt
 import suwayomi.tachidesk.global.model.table.UserAccountTable
@@ -52,6 +55,7 @@ import suwayomi.tachidesk.server.database.databaseUp
 import suwayomi.tachidesk.server.generated.BuildConfig
 import suwayomi.tachidesk.server.settings.SettingsRegistry
 import suwayomi.tachidesk.server.util.AppMutex.handleAppMutex
+import suwayomi.tachidesk.server.util.CEFManager
 import suwayomi.tachidesk.server.util.ConfigTypeRegistration
 import suwayomi.tachidesk.server.util.ExitCode
 import suwayomi.tachidesk.server.util.shutdownApp
@@ -60,6 +64,7 @@ import uy.kohesive.injekt.api.get
 import xyz.nulldev.androidcompat.AndroidCompat
 import xyz.nulldev.androidcompat.AndroidCompatInitializer
 import xyz.nulldev.androidcompat.androidCompatModule
+import xyz.nulldev.androidcompat.webkit.KcefWebViewProvider
 import xyz.nulldev.ts.config.ApplicationRootDir
 import xyz.nulldev.ts.config.BASE_LOGGER_NAME
 import xyz.nulldev.ts.config.GlobalConfigManager
@@ -242,6 +247,33 @@ fun applicationSetup() {
             androidCompatModule(),
             configManagerModule(),
             serverModule(applicationDirs),
+            module {
+                single<KcefWebViewProvider.InitBrowserHandler> {
+                    object : KcefWebViewProvider.InitBrowserHandler {
+                        override fun init(provider: KcefWebViewProvider) {
+                            val networkHelper = Injekt.get<NetworkHelper>()
+                            val logger = KotlinLogging.logger {}
+                            logger.info { "Start loading cookies" }
+                            CefCookieManager.getGlobalManager().apply {
+                                val cookies = networkHelper.cookieStore.getStoredCookies()
+                                for (cookie in cookies) {
+                                    try {
+                                        if (!setCookie(
+                                                "https://" + cookie.domain,
+                                                cookie.toCefCookie(),
+                                            )
+                                        ) {
+                                            throw Exception()
+                                        }
+                                    } catch (e: Exception) {
+                                        logger.warn(e) { "Loading cookie ${cookie.name} failed" }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
         )
     }
 
@@ -426,6 +458,11 @@ fun applicationSetup() {
     DownloadManager.restoreAndResumeDownloads()
 
     SyncManager.scheduleSyncTask()
+
+    // asynchronously initialize CEF
+    GlobalScope.launch {
+        CEFManager.init()
+    }
 
     serverConfig.subscribeTo(
         serverConfig.extensionStores,

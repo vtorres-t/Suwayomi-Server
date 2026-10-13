@@ -35,7 +35,7 @@ public final class ContentValues implements Parcelable {
     public ContentValues() {
         // Choosing a default size of 8 based on analysis of typical
         // consumption by applications.
-        mValues = new HashMap<>(8);
+        mValues = new HashMap<String, Object>(8);
     }
     /**
      * Creates an empty set of values using the given initial size
@@ -43,7 +43,7 @@ public final class ContentValues implements Parcelable {
      * @param size the initial size of the set of values
      */
     public ContentValues(int size) {
-        mValues = new HashMap<>(size, 1.0f);
+        mValues = new HashMap<String, Object>(size, 1.0f);
     }
     /**
      * Creates a set of values copied from the given set
@@ -51,7 +51,7 @@ public final class ContentValues implements Parcelable {
      * @param from the values to copy
      */
     public ContentValues(ContentValues from) {
-        mValues = new HashMap<>(from.mValues);
+        mValues = new HashMap<String, Object>(from.mValues);
     }
     /**
      * Creates a set of values copied from the given HashMap. This is used
@@ -421,18 +421,17 @@ public final class ContentValues implements Parcelable {
         return mValues.keySet();
     }
     public static final Parcelable.Creator<ContentValues> CREATOR =
-            new Parcelable.Creator<>() {
-                @SuppressWarnings({"deprecation", "unchecked"})
-                public ContentValues createFromParcel(Parcel in) {
-                    // TODO - what ClassLoader should be passed to readHashMap?
-                    HashMap<String, Object> values = in.readHashMap(null);
-                    return new ContentValues(values);
-                }
-
-                public ContentValues[] newArray(int size) {
-                    return new ContentValues[size];
-                }
-            };
+            new Parcelable.Creator<ContentValues>() {
+        @SuppressWarnings({"deprecation", "unchecked"})
+        public ContentValues createFromParcel(Parcel in) {
+            // TODO - what ClassLoader should be passed to readHashMap?
+            HashMap<String, Object> values = in.readHashMap(null);
+            return new ContentValues(values);
+        }
+        public ContentValues[] newArray(int size) {
+            return new ContentValues[size];
+        }
+    };
     public int describeContents() {
         return 0;
     }
@@ -466,8 +465,8 @@ public final class ContentValues implements Parcelable {
         StringBuilder sb = new StringBuilder();
         for (String name : mValues.keySet()) {
             String value = getAsString(name);
-            if (!sb.isEmpty()) sb.append(" ");
-            sb.append(name).append("=").append(value);
+            if (sb.length() > 0) sb.append(" ");
+            sb.append(name + "=" + value);
         }
         return sb.toString();
     }

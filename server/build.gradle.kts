@@ -155,6 +155,8 @@ buildConfig {
     buildConfigField("String", "WEBUI_TAG", quoteWrap(webUIRevisionTag))
 
     buildConfigField("String", "REPO_URL", quoteWrap("https://github.com/vtorres-t/Suwayomi-Server"))
+    buildConfigField("String", "JCEF_VERSION", quoteWrap(libs.versions.jcef.get()))
+    buildConfigField("String", "JCEF_JBR_RELEASE", quoteWrap(webviewJbrRelease))
 }
 
 tasks {
@@ -168,6 +170,7 @@ tasks {
                 "Specification-Version" to getTachideskVersion(),
                 "Implementation-Version" to getTachideskRevision(),
                 "Multi-Release" to true, // needed for polyglot
+                "X-JBR-Release" to webviewJbrRelease,
             )
         }
         archiveBaseName.set(rootProject.name)

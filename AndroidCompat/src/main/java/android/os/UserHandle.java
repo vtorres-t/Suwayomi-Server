@@ -394,11 +394,10 @@ public final class UserHandle implements Parcelable {
     }
     
     public static final Parcelable.Creator<UserHandle> CREATOR
-            = new Parcelable.Creator<>() {
+            = new Parcelable.Creator<UserHandle>() {
         public UserHandle createFromParcel(Parcel in) {
             return new UserHandle(in);
         }
-
         public UserHandle[] newArray(int size) {
             return new UserHandle[size];
         }

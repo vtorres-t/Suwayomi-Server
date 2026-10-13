@@ -825,11 +825,10 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         dest.writeInt(networkSecurityConfigRes);
     }
     public static final Parcelable.Creator<ApplicationInfo> CREATOR
-            = new Parcelable.Creator<>() {
+            = new Parcelable.Creator<ApplicationInfo>() {
         public ApplicationInfo createFromParcel(Parcel source) {
             return new ApplicationInfo(source);
         }
-
         public ApplicationInfo[] newArray(int size) {
             return new ApplicationInfo[size];
         }
@@ -888,7 +887,10 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
      */
     public CharSequence loadDescription(PackageManager pm) {
         if (descriptionRes != 0) {
-            return pm.getText(packageName, descriptionRes, this);
+            CharSequence label = pm.getText(packageName, descriptionRes, this);
+            if (label != null) {
+                return label;
+            }
         }
         return null;
     }

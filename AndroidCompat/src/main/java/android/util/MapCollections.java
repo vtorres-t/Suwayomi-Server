@@ -15,12 +15,7 @@
  */
 package android.util;
 import java.lang.reflect.Array;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Helper for writing standard Java collection interfaces to a data
@@ -117,7 +112,7 @@ abstract class MapCollections<K, V> {
             return colSetValue(mIndex, object);
         }
         @Override
-        public boolean equals(Object o) {
+        public final boolean equals(Object o) {
             if (!mEntryValid) {
                 throw new IllegalStateException(
                         "This container does not support retaining Map.Entry objects");
@@ -130,7 +125,7 @@ abstract class MapCollections<K, V> {
                     && Objects.equals(e.getValue(), colGetEntry(mIndex, 1));
         }
         @Override
-        public int hashCode() {
+        public final int hashCode() {
             if (!mEntryValid) {
                 throw new IllegalStateException(
                         "This container does not support retaining Map.Entry objects");
@@ -141,7 +136,7 @@ abstract class MapCollections<K, V> {
                     (value == null ? 0 : value.hashCode());
         }
         @Override
-        public String toString() {
+        public final String toString() {
             return getKey() + "=" + getValue();
         }
     }
@@ -231,8 +226,7 @@ abstract class MapCollections<K, V> {
             }
             return result;
         }
-    }
-
+    };
     final class KeySet implements Set<K> {
         @Override
         public boolean add(K object) {
@@ -260,7 +254,7 @@ abstract class MapCollections<K, V> {
         }
         @Override
         public Iterator<K> iterator() {
-            return new ArrayIterator<>(0);
+            return new ArrayIterator<K>(0);
         }
         @Override
         public boolean remove(Object object) {
@@ -304,8 +298,7 @@ abstract class MapCollections<K, V> {
             }
             return result;
         }
-    }
-
+    };
     final class ValuesCollection implements Collection<V> {
         @Override
         public boolean add(V object) {
@@ -339,7 +332,7 @@ abstract class MapCollections<K, V> {
         }
         @Override
         public Iterator<V> iterator() {
-            return new ArrayIterator<>(1);
+            return new ArrayIterator<V>(1);
         }
         @Override
         public boolean remove(Object object) {
@@ -392,8 +385,7 @@ abstract class MapCollections<K, V> {
         public <T> T[] toArray(T[] array) {
             return toArrayHelper(array, 1);
         }
-    }
-
+    };
     public static <K, V> boolean containsAllHelper(Map<K, V> map, Collection<?> collection) {
         Iterator<?> it = collection.iterator();
         while (it.hasNext()) {

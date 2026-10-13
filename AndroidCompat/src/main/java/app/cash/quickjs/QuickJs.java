@@ -1,9 +1,6 @@
 package app.cash.quickjs;
 
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.PolyglotAccess;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Value;
+import org.graalvm.polyglot.*;
 
 import java.io.Closeable;
 import java.math.BigInteger;

@@ -58,11 +58,11 @@ public final class Rect {
         this.bottom = r.bottom;
     }
 
-    public int getWidth() {
+    public final int getWidth() {
         return right - left;
     }
 
-    public int getHeight() {
+    public final int getHeight() {
         return bottom - top;
     }
 
@@ -113,7 +113,7 @@ public final class Rect {
         out.writeInt(bottom);
     }
 
-    public static final Parcelable.Creator<Rect> CREATOR = new Parcelable.Creator<>() {
+    public static final Parcelable.Creator<Rect> CREATOR = new Parcelable.Creator<Rect>() {
         @Override
         public Rect createFromParcel(Parcel in) {
             Rect r = new Rect();

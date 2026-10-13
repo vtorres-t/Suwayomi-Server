@@ -25,6 +25,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
+import com.android.internal.util.XmlUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlSerializer;
@@ -152,6 +153,7 @@ public final class IntentFilterVerificationInfo implements Parcelable {
             } else {
                 Log.w(TAG, "Unknown tag parsing IntentFilter: " + tagName);
             }
+            XmlUtils.skipCurrentTag(parser);
         }
     }
     /** @hide */
@@ -210,11 +212,10 @@ public final class IntentFilterVerificationInfo implements Parcelable {
         dest.writeStringList(new ArrayList<>(mDomains));
     }
     public static final Creator<IntentFilterVerificationInfo> CREATOR =
-            new Creator<>() {
+            new Creator<IntentFilterVerificationInfo>() {
                 public IntentFilterVerificationInfo createFromParcel(Parcel source) {
                     return new IntentFilterVerificationInfo(source);
                 }
-
                 public IntentFilterVerificationInfo[] newArray(int size) {
                     return new IntentFilterVerificationInfo[size];
                 }

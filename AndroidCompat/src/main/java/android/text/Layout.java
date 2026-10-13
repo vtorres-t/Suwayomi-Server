@@ -34,6 +34,7 @@ import android.text.style.AlignmentSpan;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.LeadingMarginSpan.LeadingMarginSpan2;
 import android.text.style.ParagraphStyle;
+import android.util.Log;
 import com.android.internal.util.ArrayUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -452,6 +453,8 @@ public abstract class Layout {
             int end = getLineVisibleEnd(lineNum, start, previousLineEnd,
                     true /* trailingSpaceAtLastLineIsVisible */);
             // TODO: not supported
+            // paint.setStartHyphenEdit(getStartHyphenEdit(lineNum));
+            // paint.setEndHyphenEdit(getEndHyphenEdit(lineNum));
 
             int ltop = previousLineBottom;
             int lbottom = getLineTop(lineNum + 1);
@@ -1003,6 +1006,8 @@ public abstract class Layout {
         final TextPaint paint = mWorkPaint;
         paint.set(mPaint);
         // TODO: not supported
+        // paint.setStartHyphenEdit(getStartHyphenEdit(line));
+        // paint.setEndHyphenEdit(getEndHyphenEdit(line));
         tl.set(paint, mText, start, end, dir, directions, hasTabs, tabStops,
                 getEllipsisStart(line), getEllipsisStart(line) + getEllipsisCount(line),
                 isFallbackLineSpacingEnabled());

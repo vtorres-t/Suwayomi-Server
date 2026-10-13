@@ -30,6 +30,7 @@ import android.annotation.TestApi;
 import android.annotation.UserIdInt;
 import android.annotation.XmlRes;
 import android.app.ActivityManager;
+import android.app.PackageDeleteObserver;
 import android.app.PackageInstallObserver;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
@@ -43,15 +44,19 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.os.storage.StorageManager;
 import android.util.AndroidException;
+import android.util.Log;
 import com.android.internal.util.ArrayUtils;
 import kotlin.NotImplementedError;
 
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
@@ -4223,6 +4228,28 @@ public abstract class PackageManager {
     public PackageInfo getPackageArchiveInfo(String archiveFilePath, @PackageInfoFlags int flags) {
         //TODO
         throw new NotImplementedError();
+        /*
+        final PackageParser parser = new PackageParser();
+        parser.setCallback(new PackageParser.CallbackImpl(this));
+        final File apkFile = new File(archiveFilePath);
+        try {
+            if ((flags & (MATCH_DIRECT_BOOT_UNAWARE | MATCH_DIRECT_BOOT_AWARE)) != 0) {
+                // Caller expressed an explicit opinion about what encryption
+                // aware/unaware components they want to see, so fall through and
+                // give them what they want
+            } else {
+                // Caller expressed no opinion, so match everything
+                flags |= MATCH_DIRECT_BOOT_AWARE | MATCH_DIRECT_BOOT_UNAWARE;
+            }
+            PackageParser.Package pkg = parser.parseMonolithicPackage(apkFile, 0);
+            if ((flags & GET_SIGNATURES) != 0) {
+                PackageParser.collectCertificates(pkg, 0);
+            }
+            PackageUserState state = new PackageUserState();
+            return PackageParser.generatePackageInfo(pkg, null, flags, 0, 0, null, state);
+        } catch (PackageParserException e) {
+            return null;
+        }*/
     }
     /**
      * @deprecated replaced by {@link PackageInstaller}
@@ -4467,7 +4494,10 @@ public abstract class PackageManager {
      *            indicate that no callback is desired.
      * @hide
      */
-/**
+//    @RequiresPermission(Manifest.permission.DELETE_PACKAGES)
+//    public abstract void deletePackage(String packageName, IPackageDeleteObserver observer,
+//                                       @DeleteFlags int flags);
+    /**
      * Attempts to delete a package. Since this may take a little while, the
      * result will be posted back to the given observer. A deletion will fail if
      * the named package cannot be found, or if the named package is a system
@@ -4482,6 +4512,11 @@ public abstract class PackageManager {
      * @param userId The user Id
      * @hide
      */
+//    @RequiresPermission(anyOf = {
+//            Manifest.permission.DELETE_PACKAGES,
+//            Manifest.permission.INTERACT_ACROSS_USERS_FULL})
+//    public abstract void deletePackageAsUser(@NonNull String packageName,
+//                                             IPackageDeleteObserver observer, @DeleteFlags int flags, @UserIdInt int userId);
     /**
      * Retrieve the package name of the application that installed a package. This identifies
      * which market the package came from.
@@ -4503,7 +4538,9 @@ public abstract class PackageManager {
      *
      * @hide
      */
-/**
+//    public abstract void clearApplicationUserData(String packageName,
+//                                                  IPackageDataObserver observer);
+    /**
      * Attempts to delete the cache files associated with an application.
      * Since this may take a little while, the result will
      * be posted back to the given observer.  A deletion will fail if the calling context
@@ -4519,7 +4556,9 @@ public abstract class PackageManager {
      *
      * @hide
      */
-/**
+//    public abstract void deleteApplicationCacheFiles(String packageName,
+//                                                     IPackageDataObserver observer);
+    /**
      * Attempts to delete the cache files associated with an application for a given user. Since
      * this may take a little while, the result will be posted back to the given observer. A
      * deletion will fail if the calling context lacks the
@@ -4537,7 +4576,9 @@ public abstract class PackageManager {
      *            callback is desired.
      * @hide
      */
-/**
+//    public abstract void deleteApplicationCacheFilesAsUser(String packageName, int userId,
+//                                                           IPackageDataObserver observer);
+    /**
      * Free storage by deleting LRU sorted list of cache files across
      * all applications. If the currently available free storage
      * on the device is greater than or equal to the requested
@@ -4559,7 +4600,12 @@ public abstract class PackageManager {
      *
      * @hide
      */
-/** {@hide} */
+//    public void freeStorageAndNotify(long freeStorageSize, IPackageDataObserver observer) {
+//        freeStorageAndNotify(null, freeStorageSize, observer);
+//    }
+    /** {@hide} */
+//    public abstract void freeStorageAndNotify(String volumeUuid, long freeStorageSize,
+//                                              IPackageDataObserver observer);
     /**
      * Free storage by deleting LRU sorted list of cache files across
      * all applications. If the currently available free storage
@@ -4607,13 +4653,20 @@ public abstract class PackageManager {
      * @deprecated use {@link StorageStatsManager} instead.
      * @hide
      */
-/**
+//    @Deprecated
+//    public abstract void getPackageSizeInfoAsUser(String packageName, @UserIdInt int userId,
+//                                                  IPackageStatsObserver observer);
+    /**
      * Like {@link #getPackageSizeInfoAsUser(String, int, IPackageStatsObserver)}, but
      * returns the size for the calling user.
      *
      * @deprecated use {@link StorageStatsManager} instead.
      * @hide
      */
+//    @Deprecated
+//    public void getPackageSizeInfo(String packageName, IPackageStatsObserver observer) {
+//        getPackageSizeInfoAsUser(packageName, UserHandle.myUserId(), observer);
+//    }
     /**
      * @deprecated This function no longer does anything; it was an old
      * approach to managing preferred activities, which has been superseded
@@ -4901,6 +4954,8 @@ public abstract class PackageManager {
      * @param packageName the package to change the category hint for.
      * @param categoryHint the category hint to set.
      */
+//    public abstract void setApplicationCategoryHint(@NonNull String packageName,
+//                                                    @ApplicationInfo.Category int categoryHint);
     /** {@hide} */
     public static boolean isMoveStatusFinished(int status) {
         return (status < 0 || status > 100);
@@ -5133,7 +5188,36 @@ public abstract class PackageManager {
         }
     }
     /** {@hide} */
+    /*public static class LegacyPackageInstallObserver extends PackageInstallObserver {
+        private final IPackageInstallObserver mLegacy;
+        public LegacyPackageInstallObserver(IPackageInstallObserver legacy) {
+            mLegacy = legacy;
+        }
+        @Override
+        public void onPackageInstalled(String basePackageName, int returnCode, String msg,
+                                       Bundle extras) {
+            if (mLegacy == null) return;
+            try {
+                mLegacy.packageInstalled(basePackageName, returnCode);
+            } catch (RemoteException ignored) {
+            }
+        }
+    }*/
     /** {@hide} */
+    /*public static class LegacyPackageDeleteObserver extends PackageDeleteObserver {
+        private final IPackageDeleteObserver mLegacy;
+        public LegacyPackageDeleteObserver(IPackageDeleteObserver legacy) {
+            mLegacy = legacy;
+        }
+        @Override
+        public void onPackageDeleted(String basePackageName, int returnCode, String msg) {
+            if (mLegacy == null) return;
+            try {
+                mLegacy.packageDeleted(basePackageName, returnCode);
+            } catch (RemoteException ignored) {
+            }
+        }
+    }*/
     /**
      * Return the install reason that was recorded when a package was first
      * installed for a specific user. Requesting the install reason for another

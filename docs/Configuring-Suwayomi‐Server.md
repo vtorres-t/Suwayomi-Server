@@ -8,6 +8,9 @@ The configuration file is written in HOCON. Google is your friend if you want to
 ### I messed up my configuration file
 Suwayomi will create a default configuration file when one doesn't exist, you can delete `server.conf` to get a copy of the reference configuration file after a restart.
 
+### I am running Suwayomi in a headless environment (docker, NAS, VPS, etc.)
+- Set `server.initialOpenInBrowserEnabled`to false, it will prevent Suwayomi to attempt to open a browser on startup.
+
 ### My Suwayomi data directory/downloads size is getting to big
 - Set `server.downloadsPath` to the desired path, if you only need to change where downloads are stored. You have to move/remove the existing downloads manually.
 - Set the special `server.rootDir` key if you need Suwayomi to use a custom data directory path, refer to [this section](#overriding-tachidesk-servers-data-directory-path). 
@@ -44,6 +47,7 @@ server.socksProxyPort = "8080"
 ### webUI
 ```
 server.webUIEnabled = true
+server.initialOpenInBrowserEnabled = true
 server.webUIInterface = "browser" # "browser" or "electron"
 server.electronPath = ""
 server.webUIFlavor = "WebUI" # "WebUI" or "Custom"
@@ -51,12 +55,21 @@ server.webUIUpdateCheckInterval = 23
 server.webUISubpath = ""
 ```
 - `server.webUIEnabled` controls if Suwayomi will serve `Suwayomi-WebUI` and if it downloads/updates it on startup.
+- `server.initialOpenInBrowserEnabled` controls if Suwayomi will attempt to open a brwoser/electron window on startup, disabling this on headless servers is recommended.
 - `server.webUIInterface` which web interface Suwayomi should launch on startup, options are `"browser"` and `"electron"`
 - `server.electronPath` path of the main electron executable, should be in double quotes
 - `server.webUIFlavor` set `"WebUI"` to make the server download and update Suwayomi-WebUI automatically or `"Custom"` if you want the server to serve a custom web interface that you manage by yourself.
   - Note: "Custom" would be useful if you want to test preview versions of Suwayomi-WebUI or when you are using or developing other web interfaces like the web version of Suwayomi-Sorayomi.
 - `server.webUIUpdateCheckInterval` the interval time in hours at which to check for updates. Use `0` to disable update checking.
 - `server.webUISubpath` controls on which sub-path the UI is served; by default, it will be accessible on `/` (i.e. directly), with this setting it can also be set to appear at e.g. `/suwayomi`
+
+
+### webView
+```
+server.kcefEnabled = true
+```
+- `server.kcefEnabled` controls if KCEF WebView provider is enabled.
+
 
 ### Downloader
 ```

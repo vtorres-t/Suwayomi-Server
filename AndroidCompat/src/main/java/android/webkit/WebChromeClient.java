@@ -19,6 +19,7 @@ package android.webkit;
 import android.annotation.Nullable;
 import android.annotation.SystemApi;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Message;
@@ -42,11 +43,11 @@ public class WebChromeClient {
         public void onCustomViewHidden();
     }
 
-    public void onShowCustomView(View view, CustomViewCallback callback) {}
+    public void onShowCustomView(View view, CustomViewCallback callback) {};
 
     @Deprecated
     public void onShowCustomView(View view, int requestedOrientation,
-            CustomViewCallback callback) {}
+            CustomViewCallback callback) {};
 
     public void onHideCustomView() {}
 

@@ -18,18 +18,24 @@ package android.graphics;
 
 import android.annotation.ColorInt;
 import android.annotation.ColorLong;
+import android.annotation.IntDef;
 import android.annotation.IntRange;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.Size;
+import android.os.Build;
 import android.os.LocaleList;
 import android.text.SpannableString;
 import android.text.SpannedString;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.awt.Font;
 import java.awt.font.TextAttribute;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -198,7 +204,7 @@ public class Paint {
         ROUND   (1),
         SQUARE  (2);
 
-        Cap(int nativeInt) {
+        private Cap(int nativeInt) {
             this.nativeInt = nativeInt;
         }
         final int nativeInt;
@@ -209,7 +215,7 @@ public class Paint {
         ROUND   (1),
         BEVEL   (2);
 
-        Join(int nativeInt) {
+        private Join(int nativeInt) {
             this.nativeInt = nativeInt;
         }
         final int nativeInt;
@@ -220,7 +226,7 @@ public class Paint {
         CENTER  (1),
         RIGHT   (2);
 
-        Align(int nativeInt) {
+        private Align(int nativeInt) {
             this.nativeInt = nativeInt;
         }
         final int nativeInt;
@@ -234,6 +240,8 @@ public class Paint {
         setFlags(flags | HIDDEN_DEFAULT_PAINT_FLAGS);
         // TODO: Turning off hinting has undesirable side effects, we need to
         //       revisit hinting once we add support for subpixel positioning
+        // setHinting(DisplayMetrics.DENSITY_DEVICE >= DisplayMetrics.DENSITY_TV
+        //        ? HINTING_OFF : HINTING_ON);
         mCompatScaling = mInvCompatScaling = 1;
         mColor = Color.pack(Color.BLACK);
     }
@@ -248,6 +256,8 @@ public class Paint {
 
         // TODO: Turning off hinting has undesirable side effects, we need to
         //       revisit hinting once we add support for subpixel positioning
+        // setHinting(DisplayMetrics.DENSITY_DEVICE >= DisplayMetrics.DENSITY_TV
+        //        ? HINTING_OFF : HINTING_ON);
 
         mColor = Color.pack(Color.BLACK);
         mColorFilter = null;
@@ -344,7 +354,7 @@ public class Paint {
     public void setFlags(@PaintFlag int flags) {
         mFlags = flags;
 
-        Map<TextAttribute, Object> fontAttributes = new HashMap<>();
+        Map<TextAttribute, Object> fontAttributes = new HashMap<TextAttribute, Object>();
         if ((flags & UNDERLINE_TEXT_FLAG) != 0) {
             fontAttributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         } else {
@@ -602,7 +612,7 @@ public class Paint {
     }
 
     public Typeface setTypeface(Typeface typeface) {
-        Map<TextAttribute, Object> fontAttributes = new HashMap<>();
+        Map<TextAttribute, Object> fontAttributes = new HashMap<TextAttribute, Object>();
         fontAttributes.put(TextAttribute.WEIGHT, typeface.getJavaWeight());
         mTypeface = typeface
             .deriveFont(mTypeface.getFont().getStyle(), mTypeface.getFont().getSize())
@@ -731,7 +741,7 @@ public class Paint {
     }
 
     public void setFontFeatureSettings(String settings) {
-        if (settings != null && settings.isEmpty()) {
+        if (settings != null && settings.equals("")) {
             settings = null;
         }
         if ((settings == null && mFontFeatureSettings == null)
@@ -997,6 +1007,8 @@ public class Paint {
             final float oldSize = getTextSize();
             setTextSize(oldSize * mCompatScaling);
             throw new RuntimeException("Stub!");
+            // setTextSize(oldSize);
+            // return (float) Math.ceil(w * mInvCompatScaling);
         } finally {
             setFlags(oldFlag);
         }
@@ -1022,6 +1034,8 @@ public class Paint {
             final float oldSize = getTextSize();
             setTextSize(oldSize * mCompatScaling);
             throw new RuntimeException("Stub!");
+            // setTextSize(oldSize);
+            // return (float) Math.ceil(w * mInvCompatScaling);
         } finally {
             setFlags(oldFlag);
         }
@@ -1079,6 +1093,9 @@ public class Paint {
         final float oldSize = getTextSize();
         setTextSize(oldSize * mCompatScaling);
         throw new RuntimeException("Stub!");
+        // setTextSize(oldSize);
+        // if (measuredWidth != null) measuredWidth[0] *= mInvCompatScaling;
+        // return res;
     }
 
     public int breakText(CharSequence text, int start, int end,
@@ -1130,6 +1147,9 @@ public class Paint {
         final float oldSize = getTextSize();
         setTextSize(oldSize*mCompatScaling);
         throw new RuntimeException("Stub!");
+        // setTextSize(oldSize);
+        // if (measuredWidth != null) measuredWidth[0] *= mInvCompatScaling;
+        // return res;
     }
 
     public int getTextWidths(char[] text, int index, int count,
@@ -1156,6 +1176,11 @@ public class Paint {
             final float oldSize = getTextSize();
             setTextSize(oldSize * mCompatScaling);
             throw new RuntimeException("Stub!");
+            // setTextSize(oldSize);
+            // for (int i = 0; i < count; i++) {
+            //     widths[i] *= mInvCompatScaling;
+            // }
+            // return count;
         } finally {
             setFlags(oldFlag);
         }
@@ -1216,6 +1241,11 @@ public class Paint {
             final float oldSize = getTextSize();
             setTextSize(oldSize * mCompatScaling);
             throw new RuntimeException("Stub!");
+            // setTextSize(oldSize);
+            // for (int i = 0; i < end - start; i++) {
+            //     widths[i] *= mInvCompatScaling;
+            // }
+            // return end - start;
         } finally {
             setFlags(oldFlag);
         }
@@ -1252,7 +1282,14 @@ public class Paint {
         setTextSize(oldSize * mCompatScaling);
         float res = 0.0f;
         throw new RuntimeException("Stub!");
+        // setTextSize(oldSize);
 
+        // if (advances != null) {
+        //     for (int i = advancesIndex, e = i + count; i < e; i++) {
+        //         advances[i] *= mInvCompatScaling;
+        //     }
+        // }
+        // return res * mInvCompatScaling; // assume errors are not significant
     }
 
     public int getTextRunCursor(@NonNull char[] text, @IntRange(from = 0) int contextStart,

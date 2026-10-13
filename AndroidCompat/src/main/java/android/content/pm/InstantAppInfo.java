@@ -114,15 +114,14 @@ public final class InstantAppInfo implements Parcelable {
         throw new NotImplementedError();
     }
     public static final Creator<InstantAppInfo> CREATOR =
-            new Creator<>() {
-                @Override
-                public InstantAppInfo createFromParcel(Parcel parcel) {
-                    return new InstantAppInfo(parcel);
-                }
-
-                @Override
-                public InstantAppInfo[] newArray(int size) {
-                    return new InstantAppInfo[0];
-                }
-            };
+            new Creator<InstantAppInfo>() {
+        @Override
+        public InstantAppInfo createFromParcel(Parcel parcel) {
+            return new InstantAppInfo(parcel);
+        }
+        @Override
+        public InstantAppInfo[] newArray(int size) {
+            return new InstantAppInfo[0];
+        }
+    };
 }

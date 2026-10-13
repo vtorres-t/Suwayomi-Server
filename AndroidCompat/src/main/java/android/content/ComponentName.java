@@ -18,7 +18,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import java.io.PrintWriter;
-
+import java.lang.Comparable;
 /**
  * Identifier for a specific application component
  * ({@link android.app.Activity}, {@link android.app.Service},
@@ -329,11 +329,10 @@ public final class ComponentName implements Parcelable, Cloneable, Comparable<Co
     }
     
     public static final Parcelable.Creator<ComponentName> CREATOR
-            = new Parcelable.Creator<>() {
+            = new Parcelable.Creator<ComponentName>() {
         public ComponentName createFromParcel(Parcel in) {
             return new ComponentName(in);
         }
-
         public ComponentName[] newArray(int size) {
             return new ComponentName[size];
         }

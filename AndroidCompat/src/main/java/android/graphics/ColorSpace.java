@@ -156,9 +156,13 @@ public abstract class ColorSpace {
             @NonNull Model model,
             @IntRange(from = MIN_ID, to = MAX_ID) int id) {
 
-        if (name.isEmpty()) {
+        if (name == null || name.length() < 1) {
             throw new IllegalArgumentException("The name of a color space cannot be null and " +
                     "must contain at least 1 character");
+        }
+
+        if (model == null) {
+            throw new IllegalArgumentException("A color space must have a model");
         }
 
         if (id < MIN_ID || id > MAX_ID) {
@@ -1224,14 +1228,19 @@ public abstract class ColorSpace {
 
             super(name, Model.RGB, id);
 
-            if (primaries.length != 6 && primaries.length != 9) {
+            if (primaries == null || (primaries.length != 6 && primaries.length != 9)) {
                 throw new IllegalArgumentException("The color space's primaries must be " +
                         "defined as an array of 6 floats in xyY or 9 floats in XYZ");
             }
 
-            if (whitePoint.length != 2 && whitePoint.length != 3) {
+            if (whitePoint == null || (whitePoint.length != 2 && whitePoint.length != 3)) {
                 throw new IllegalArgumentException("The color space's white point must be " +
                         "defined as an array of 2 floats in xyY or 3 float in XYZ");
+            }
+
+            if (oetf == null || eotf == null) {
+                throw new IllegalArgumentException("The transfer functions of a color space " +
+                        "cannot be null");
             }
 
             if (min >= max) {

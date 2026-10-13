@@ -18,6 +18,7 @@ package android.os;
 
 import android.annotation.Nullable;
 import android.util.TimeUtils;
+import android.util.proto.ProtoOutputStream;
 
 /**
  *
@@ -570,7 +571,7 @@ public final class Message implements Parcelable {
     }
 
     public static final @android.annotation.NonNull Parcelable.Creator<Message> CREATOR
-            = new Parcelable.Creator<>() {
+            = new Parcelable.Creator<Message>() {
         public Message createFromParcel(Parcel source) {
             Message msg = Message.obtain();
             msg.readFromParcel(source);

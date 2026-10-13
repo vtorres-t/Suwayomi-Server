@@ -102,12 +102,11 @@ public class FeatureInfo implements Parcelable {
         dest.writeInt(reqGlEsVersion);
         dest.writeInt(flags);
     }
-    public static final Creator<FeatureInfo> CREATOR = new Creator<>() {
+    public static final Creator<FeatureInfo> CREATOR = new Creator<FeatureInfo>() {
         @Override
         public FeatureInfo createFromParcel(Parcel source) {
             return new FeatureInfo(source);
         }
-
         @Override
         public FeatureInfo[] newArray(int size) {
             return new FeatureInfo[size];
@@ -128,6 +127,6 @@ public class FeatureInfo implements Parcelable {
     public String getGlEsVersion() {
         int major = ((reqGlEsVersion & 0xffff0000) >> 16);
         int minor = reqGlEsVersion & 0x0000ffff;
-        return major +"."+ minor;
+        return String.valueOf(major)+"."+String.valueOf(minor);
     }
 }

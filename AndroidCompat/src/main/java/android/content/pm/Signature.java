@@ -38,7 +38,7 @@ public class Signature implements Parcelable {
     public Signature(byte[] signature) {
         mSignature = signature.clone();
     }
-    private static int parseHexDigit(int nibble) {
+    private static final int parseHexDigit(int nibble) {
         if ('0' <= nibble && nibble <= '9') {
             return nibble - '0';
         } else if ('a' <= nibble && nibble <= 'f') {
@@ -113,7 +113,7 @@ public class Signature implements Parcelable {
             return str;
         }
         str = new String(toChars());
-        mStringRef = new SoftReference<>(str);
+        mStringRef = new SoftReference<String>(str);
         return str;
     }
     /**
@@ -164,11 +164,10 @@ public class Signature implements Parcelable {
         dest.writeByteArray(mSignature);
     }
     public static final Parcelable.Creator<Signature> CREATOR
-            = new Parcelable.Creator<>() {
+            = new Parcelable.Creator<Signature>() {
         public Signature createFromParcel(Parcel source) {
             return new Signature(source);
         }
-
         public Signature[] newArray(int size) {
             return new Signature[size];
         }

@@ -66,8 +66,8 @@ public final class SQLiteDatabase extends SQLiteClosable {
     // Stores reference to all databases opened in the current process.
     // (The referent Object is not used at this time.)
     // INVARIANT: Guarded by sActiveDatabases.
-    private static final WeakHashMap<SQLiteDatabase, Object> sActiveDatabases =
-            new WeakHashMap<>();
+    private static WeakHashMap<SQLiteDatabase, Object> sActiveDatabases =
+            new WeakHashMap<SQLiteDatabase, Object>();
 
     // The optional factory to use when creating new Cursors.  May be null.
     // INVARIANT: Immutable.
@@ -243,7 +243,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
         try {
             dispose(true);
         } finally {
-            super.close();
+            super.finalize();
         }
     }
 
@@ -576,7 +576,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
      */
     @Deprecated
     public Map<String, String> getSyncedTables() {
-        return new HashMap<>(0);
+        return new HashMap<String, String>(0);
     }
 
     /**
@@ -1359,7 +1359,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
                     sql.append((i > 0) ? ",?" : "?");
                 }
             } else {
-                sql.append(nullColumnHack).append(") VALUES (NULL");
+                sql.append(nullColumnHack + ") VALUES (NULL");
             }
             sql.append(')');
 
@@ -1650,7 +1650,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
      *
      * @return The path to the database file.
      */
-    public String getPath() {
+    public final String getPath() {
         synchronized (mLock) {
             return mConfigurationLocked.path;
         }
@@ -1899,7 +1899,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
      * Used by bug report.
      */
     static ArrayList<DbStats> getDbStats() {
-        ArrayList<DbStats> dbStatsList = new ArrayList<>();
+        ArrayList<DbStats> dbStatsList = new ArrayList<DbStats>();
         for (SQLiteDatabase db : getActiveDatabases()) {
             db.collectDbStats(dbStatsList);
         }
@@ -1912,9 +1912,9 @@ public final class SQLiteDatabase extends SQLiteClosable {
     }
 
     private static ArrayList<SQLiteDatabase> getActiveDatabases() {
-        ArrayList<SQLiteDatabase> databases;
+        ArrayList<SQLiteDatabase> databases = new ArrayList<SQLiteDatabase>();
         synchronized (sActiveDatabases) {
-            databases = new ArrayList<>(sActiveDatabases.keySet());
+            databases.addAll(sActiveDatabases.keySet());
         }
         return databases;
     }
@@ -1927,7 +1927,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
      * is not open.
      */
     public List<Pair<String, String>> getAttachedDbs() {
-        ArrayList<Pair<String, String>> attachedDbs = new ArrayList<>();
+        ArrayList<Pair<String, String>> attachedDbs = new ArrayList<Pair<String, String>>();
         synchronized (mLock) {
             if (!mHasAttachedDbsLocked) {
                 // No attached databases.
@@ -1939,7 +1939,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
                 // that no thread is executing any SQL statements while a thread is calling this
                 // method.  Typically, this method is called when 'adb bugreport' is done or the
                 // caller wants to collect stats on the database and all its attached databases.
-                attachedDbs.add(new Pair<>("main", mConfigurationLocked.path));
+                attachedDbs.add(new Pair<String, String>("main", mConfigurationLocked.path));
                 return attachedDbs;
             }
 
@@ -1957,7 +1957,7 @@ public final class SQLiteDatabase extends SQLiteClosable {
                     //       1st column is the database name such as main, or the database
                     //                              name specified on the "ATTACH" command
                     //       2nd column is the database file path.
-                    attachedDbs.add(new Pair<>(c.getString(1), c.getString(2)));
+                    attachedDbs.add(new Pair<String, String>(c.getString(1), c.getString(2)));
                 }
             } finally {
                 if (c != null) {
@@ -1995,8 +1995,8 @@ public final class SQLiteDatabase extends SQLiteClosable {
                 }
             } catch (SQLiteException e) {
                 // can't get attachedDb list. do integrity check on the main database
-                attachedDbs = new ArrayList<>();
-                attachedDbs.add(new Pair<>("main", getPath()));
+                attachedDbs = new ArrayList<Pair<String, String>>();
+                attachedDbs.add(new Pair<String, String>("main", getPath()));
             }
 
             for (int i = 0; i < attachedDbs.size(); i++) {

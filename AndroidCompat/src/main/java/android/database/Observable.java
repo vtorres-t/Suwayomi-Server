@@ -31,7 +31,7 @@ public abstract class Observable<T> {
      * The list of observers.  An observer can be in the list at most
      * once and will never be null.
      */
-    protected final ArrayList<T> mObservers = new ArrayList<>();
+    protected final ArrayList<T> mObservers = new ArrayList<T>();
 
     /**
      * Adds an observer to the list. The observer cannot be null and it must not already

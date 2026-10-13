@@ -135,6 +135,7 @@ This also allows us to move to Mihon's Extension Store system and replace our Ex
 ### Changed
 - (**Database/H2**) Use the latest H2 database engine
 - (**Startup**) Crash on startup if an unrecoverable error happens
+- (**WebView**) Use JCEF directly and update to newest Chromium
 - (**Extension/Android**) Switch MessageQueue to LegacyMessageQueue from ConcurrentMessageQueue
 
 ### Fixed

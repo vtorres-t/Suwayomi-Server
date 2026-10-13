@@ -53,6 +53,7 @@ import suwayomi.tachidesk.server.settings.PathSetting
 import suwayomi.tachidesk.server.settings.SettingGroup
 import suwayomi.tachidesk.server.settings.SettingsRegistry
 import suwayomi.tachidesk.server.settings.StringSetting
+import suwayomi.tachidesk.server.util.Platform
 import suwayomi.tachidesk.server.util.downloadConversionTypeInfo
 import uy.kohesive.injekt.injectLazy
 import xyz.nulldev.ts.config.GlobalConfigManager
@@ -171,6 +172,14 @@ class ServerConfig(
         typeInfo = SettingsRegistry.PartialTypeInfo(imports = listOf("suwayomi.tachidesk.graphql.types.WebUIFlavor")),
     )
 
+    val initialOpenInBrowserEnabled: MutableStateFlow<Boolean> by BooleanSetting(
+        protoNumber = 10,
+        group = SettingGroup.WEB_UI,
+        privacySafe = true,
+        defaultValue = true,
+        description = "Open client on startup",
+    )
+
     val webUIInterface: MutableStateFlow<WebUIInterface> by EnumSetting(
         protoNumber = 11,
         group = SettingGroup.WEB_UI,
@@ -280,7 +289,7 @@ class ServerConfig(
     )
 
     val maxDownloadsInParallel: MutableStateFlow<Int> by IntSetting(
-        protoNumber = 86,
+        protoNumber = 1107,
         group = SettingGroup.DOWNLOADER,
         privacySafe = true,
         defaultValue = 3,
@@ -1004,6 +1013,22 @@ class ServerConfig(
         defaultValue = true,
         excludeFromBackup = true,
         description = "Use Hikari Connection Pool to connect to the database.",
+    )
+
+    val kcefEnabled: MutableStateFlow<Boolean> by BooleanSetting(
+        protoNumber = 86,
+        group = SettingGroup.WEB_VIEW,
+        privacySafe = true,
+        defaultValue = !Platform.current.os.isMacOS,
+        validator = {
+            if (Platform.current.os.isMacOS) {
+                return@BooleanSetting "KCEF is not supported on MacOS"
+            }
+
+            return@BooleanSetting null
+        },
+        toValidValue = { !Platform.current.os.isMacOS && it },
+        description = "Enable the WebView via CEF (Chromium) - Not supported on MacOS",
     )
 
     @Deprecated("Now per-user")

@@ -19,13 +19,7 @@ package org.json;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.Objects;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.ArrayList;
+import java.util.*;
 
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
@@ -123,7 +117,7 @@ public class JSONObject {
      * Creates a {@code JSONObject} with no name/value mappings.
      */
     public JSONObject() {
-        nameValuePairs = new LinkedHashMap<>();
+        nameValuePairs = new LinkedHashMap<String, Object>();
     }
 
     /**
@@ -208,6 +202,10 @@ public class JSONObject {
      */
     @NonNull
     public static String numberToString(@NonNull Number number) throws JSONException {
+        if (number == null) {
+            throw new JSONException("Number must be non-null");
+        }
+
         double doubleValue = number.doubleValue();
         JSON.checkDouble(doubleValue);
 
@@ -805,7 +803,7 @@ public class JSONObject {
     public JSONArray names() {
         return nameValuePairs.isEmpty()
                 ? null
-                : new JSONArray(new ArrayList<>(nameValuePairs.keySet()));
+                : new JSONArray(new ArrayList<String>(nameValuePairs.keySet()));
     }
 
     /**

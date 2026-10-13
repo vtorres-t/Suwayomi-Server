@@ -189,12 +189,11 @@ public final class PersistableBundle extends BaseBundle implements Cloneable, Pa
         }
     }
     public static final Parcelable.Creator<PersistableBundle> CREATOR =
-            new Parcelable.Creator<>() {
+            new Parcelable.Creator<PersistableBundle>() {
                 @Override
                 public PersistableBundle createFromParcel(Parcel in) {
                     return in.readPersistableBundle();
                 }
-
                 @Override
                 public PersistableBundle[] newArray(int size) {
                     return new PersistableBundle[size];
@@ -244,6 +243,12 @@ public final class PersistableBundle extends BaseBundle implements Cloneable, Pa
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
         throw new NotImplementedError();
+//        final boolean oldAllowFds = parcel.pushAllowFds(false);
+//        try {
+//            writeToParcelInner(parcel, flags);
+//        } finally {
+//            parcel.restoreAllowFds(oldAllowFds);
+//        }
     }
     /** @hide */
     public static PersistableBundle restoreFromXml(XmlPullParser in) throws IOException,

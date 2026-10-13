@@ -3,11 +3,14 @@ package android.graphics;
 import android.annotation.ColorInt;
 import android.annotation.ColorLong;
 import android.annotation.NonNull;
+import android.graphics.Path;
+import android.graphics.RectF;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.font.TextAttribute;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
@@ -19,7 +22,7 @@ import java.util.List;
 public final class Canvas {
     private BufferedImage canvasImage;
     private Graphics2D canvas;
-    private List<AffineTransform> transformStack = new ArrayList<>();
+    private List<AffineTransform> transformStack = new ArrayList<AffineTransform>();
 
     private static final String TAG = "Canvas";
 
@@ -106,7 +109,7 @@ public final class Canvas {
         canvas.scale(sx, sy);
     }
 
-    public void scale(float sx, float sy, float px, float py) {
+    public final void scale(float sx, float sy, float px, float py) {
         if (sx == 1.0f && sy == 1.0f) return;
         translate(px, py);
         scale(sx, sy);
@@ -118,7 +121,7 @@ public final class Canvas {
         canvas.rotate(degrees);
     }
 
-    public void rotate(float degrees, float px, float py) {
+    public final void rotate(float degrees, float px, float py) {
         if (degrees == 0.0f) return;
         canvas.rotate(degrees, px, py);
     }
