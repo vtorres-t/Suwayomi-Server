@@ -829,7 +829,6 @@ public class ApplicationInfo extends PackageItemInfo implements Parcelable {
         public ApplicationInfo createFromParcel(Parcel source) {
             return new ApplicationInfo(source);
         }
-
         public ApplicationInfo[] newArray(int size) {
             return new ApplicationInfo[size];
         }

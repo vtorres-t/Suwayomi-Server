@@ -107,7 +107,6 @@ public class FeatureInfo implements Parcelable {
         public FeatureInfo createFromParcel(Parcel source) {
             return new FeatureInfo(source);
         }
-
         @Override
         public FeatureInfo[] newArray(int size) {
             return new FeatureInfo[size];

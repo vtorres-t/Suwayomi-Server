@@ -488,7 +488,6 @@ public class NetworkInfo implements Parcelable {
             netInfo.mExtraInfo = in.readString();
             return netInfo;
         }
-
         @Override
         public NetworkInfo[] newArray(int size) {
             return new NetworkInfo[size];

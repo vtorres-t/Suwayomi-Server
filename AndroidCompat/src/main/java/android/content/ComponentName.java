@@ -333,7 +333,6 @@ public final class ComponentName implements Parcelable, Cloneable, Comparable<Co
         public ComponentName createFromParcel(Parcel in) {
             return new ComponentName(in);
         }
-
         public ComponentName[] newArray(int size) {
             return new ComponentName[size];
         }

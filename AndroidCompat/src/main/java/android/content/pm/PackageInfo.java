@@ -295,7 +295,6 @@ public class PackageInfo implements Parcelable {
         public PackageInfo createFromParcel(Parcel source) {
             return new PackageInfo(source);
         }
-
         @Override
         public PackageInfo[] newArray(int size) {
             return new PackageInfo[size];

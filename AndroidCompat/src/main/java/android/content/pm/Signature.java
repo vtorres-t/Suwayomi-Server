@@ -168,7 +168,6 @@ public class Signature implements Parcelable {
         public Signature createFromParcel(Parcel source) {
             return new Signature(source);
         }
-
         public Signature[] newArray(int size) {
             return new Signature[size];
         }

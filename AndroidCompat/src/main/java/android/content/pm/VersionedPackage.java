@@ -79,7 +79,6 @@ public final class VersionedPackage implements Parcelable {
         public VersionedPackage createFromParcel(Parcel source) {
             return new VersionedPackage(source);
         }
-
         @Override
         public VersionedPackage[] newArray(int size) {
             return new VersionedPackage[size];

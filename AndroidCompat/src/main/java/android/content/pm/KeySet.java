@@ -64,7 +64,6 @@ public class KeySet implements Parcelable {
         public KeySet createFromParcel(Parcel source) {
             return readFromParcel(source);
         }
-
         /**
          * Create an array of null KeySets
          */

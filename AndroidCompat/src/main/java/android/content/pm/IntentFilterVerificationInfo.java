@@ -214,7 +214,6 @@ public final class IntentFilterVerificationInfo implements Parcelable {
                 public IntentFilterVerificationInfo createFromParcel(Parcel source) {
                     return new IntentFilterVerificationInfo(source);
                 }
-
                 public IntentFilterVerificationInfo[] newArray(int size) {
                     return new IntentFilterVerificationInfo[size];
                 }
