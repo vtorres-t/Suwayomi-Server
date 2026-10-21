@@ -114,7 +114,7 @@ appdirs = "ca.gosyer:kotlin-multiplatform-appdirs:2.0.0"
 cache4k = "io.github.reactivecircus.cache4k:cache4k:0.14.0"
 zip4j = "net.lingala.zip4j:zip4j:2.11.6"
 commonscompress = "org.apache.commons:commons-compress:1.28.0"
-junrar = "com.github.junrar:junrar:8.1.1"
+junrar = "com.github.junrar:junrar:8.1.2"
 
 # AES/CBC/PKCS7Padding Cypher provider
 bouncycastle = "org.bouncycastle:bcprov-jdk18on:1.86"
@@ -155,7 +155,7 @@ cronUtils = "com.cronutils:cron-utils:9.2.1"
 
 # User
 bcrypt = "at.favre.lib:bcrypt:0.10.2"
-jwt = "com.auth0:java-jwt:4.6.1"
+jwt = "com.auth0:java-jwt:4.6.2"
 
 # moko
 moko = { module = "dev.icerock.moko:resources", version.ref = "moko" }
