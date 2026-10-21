@@ -93,6 +93,7 @@ object DBManager {
 
         val dbConfig =
             DatabaseConfig {
+                warnLongQueriesDuration = 500
                 useNestedTransactions = true
                 @OptIn(ExperimentalKeywordApi::class)
                 preserveKeywordCasing = false
