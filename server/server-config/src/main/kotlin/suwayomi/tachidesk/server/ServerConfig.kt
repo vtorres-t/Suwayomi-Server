@@ -281,7 +281,7 @@ class ServerConfig(
     )
 
     val maxDownloadsInParallel: MutableStateFlow<Int> by IntSetting(
-        protoNumber = 86,
+        protoNumber = 1107,
         group = SettingGroup.DOWNLOADER,
         privacySafe = true,
         defaultValue = 3,
