@@ -102,6 +102,24 @@ Download the latest `linux-x64`(x86_64) release from [the releases section](http
 
 `tar xvf` the downloaded file and double-click on one of the launcher scripts or run them using the terminal.
 
+#### WebView support (GNU/Linux)
+
+WebView support is implemented via [JCEF](https://github.com/JetBrains/jcef).
+This is optional, and is only necessary to support some extensions.
+
+To have a functional WebView, some X11 dependencies are required for rendering Chromium.
+These include `libxrender`, `libxcomposite` `libxdamage`, `libxkbcommon` and `libxtst`.
+
+A CEF server is launched on startup, which loads the X11 libraries.
+If those are missing, you should see "Could not load 'jcef' library".
+If so, use `ldd ~/.local/share/Tachidesk/bin/kcef/libjcef.so | grep not` to figure out which libraries are not found on your system.
+
+Refer to the [Dockerfile](https://github.com/Suwayomi/Suwayomi-Server-docker/blob/main/Dockerfile) for more details.
+
+Note that it is required to have an X session active and available to Suwayomi (i.e. `DISPLAY` is set).
+It is not enough to have `WAYLAND_DISPLAY`, if your environment does not provide xwayland (or if you run Suwayomi as a service), you need to use a tool like [`Xvfb`](https://en.wikipedia.org/wiki/Xvfb).
+The Dockerfile linked above also does this.
+
 ## Other methods of getting Suwayomi
 ### Arch Linux
 You can install Suwayomi from the AUR:

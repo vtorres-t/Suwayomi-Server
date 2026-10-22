@@ -15,5 +15,6 @@ object PageTable : IntIdTable() {
     val index = integer("index")
     val url = varchar("url", 2048)
     val imageUrl = unlimitedVarchar("image_url").nullable()
+
     val chapter = reference("chapter", ChapterTable, ReferenceOption.CASCADE)
 }

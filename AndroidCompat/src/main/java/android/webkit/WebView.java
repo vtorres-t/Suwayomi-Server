@@ -16,6 +16,7 @@
 
 package android.webkit;
 
+import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.annotation.SystemApi;
@@ -32,14 +33,17 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslCertificate;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.RemoteException;
 import android.os.StrictMode;
 import android.print.PrintDocumentAdapter;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.LongSparseArray;
 import android.util.SparseArray;
 import android.view.DragEvent;
 import android.view.KeyEvent;
@@ -51,7 +55,10 @@ import android.view.ViewGroup;
 import android.view.ViewStructure;
 import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeProvider;
+import android.view.autofill.AutofillId;
 import android.view.autofill.AutofillValue;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -64,7 +71,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
+import java.util.function.Consumer;
 
 import xyz.nulldev.androidcompat.CallableArgument;
 
@@ -988,6 +997,12 @@ public class WebView extends AbsoluteLayout
         mProvider.getViewDelegate().onAttachedToWindow();
     }
 
+    // /** @hide */
+    // protected void onDetachedFromWindowInternal() {
+    //     mProvider.getViewDelegate().onDetachedFromWindow();
+    //     super.onDetachedFromWindowInternal();
+    // }
+
     /** @hide */
     public void onMovedToDisplay(int displayId, Configuration config) {
         mProvider.getViewDelegate().onMovedToDisplay(displayId, config);
@@ -1138,6 +1153,40 @@ public class WebView extends AbsoluteLayout
     public boolean isVisibleToUserForAutofill(int virtualId) {
         return mProvider.getViewDelegate().isVisibleToUserForAutofill(virtualId);
     }
+
+    // @Nullable
+    // public void onCreateVirtualViewTranslationRequests(@NonNull long[] virtualIds,
+    //         @NonNull int[] supportedFormats,
+    //         @NonNull Consumer<ViewTranslationRequest> requestsCollector) {
+    //     mProvider.getViewDelegate().onCreateVirtualViewTranslationRequests(virtualIds,
+    //             supportedFormats, requestsCollector);
+    // }
+
+    // public void dispatchCreateViewTranslationRequest(@NonNull Map<AutofillId, long[]> viewIds,
+    //         @NonNull int[] supportedFormats,
+    //         @Nullable TranslationCapability capability,
+    //         @NonNull List<ViewTranslationRequest> requests) {
+    //     super.dispatchCreateViewTranslationRequest(viewIds, supportedFormats, capability, requests);
+    //     mProvider.getViewDelegate().dispatchCreateViewTranslationRequest(viewIds, supportedFormats,
+    //             capability, requests);
+    // }
+
+    // public void onVirtualViewTranslationResponses(
+    //         @NonNull LongSparseArray<ViewTranslationResponse> response) {
+    //     mProvider.getViewDelegate().onVirtualViewTranslationResponses(response);
+    // }
+
+    // /** @hide */
+    // public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
+    //     super.onInitializeAccessibilityNodeInfoInternal(info);
+    //     mProvider.getViewDelegate().onInitializeAccessibilityNodeInfo(info);
+    // }
+
+    // /** @hide */
+    // public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
+    //     super.onInitializeAccessibilityEventInternal(event);
+    //     mProvider.getViewDelegate().onInitializeAccessibilityEvent(event);
+    // }
 
     /** @hide */
     public boolean performAccessibilityActionInternal(int action, Bundle arguments) {
@@ -1296,6 +1345,19 @@ public class WebView extends AbsoluteLayout
     public boolean onCheckIsTextEditor() {
         return mProvider.getViewDelegate().onCheckIsTextEditor();
     }
+
+    // /** @hide */
+    // protected void encodeProperties(@NonNull ViewHierarchyEncoder encoder) {
+    //     super.encodeProperties(encoder);
+
+    //     checkThread();
+    //     encoder.addProperty("webview:contentHeight", mProvider.getContentHeight());
+    //     encoder.addProperty("webview:contentWidth", mProvider.getContentWidth());
+    //     encoder.addProperty("webview:scale", mProvider.getScale());
+    //     encoder.addProperty("webview:title", mProvider.getTitle());
+    //     encoder.addProperty("webview:url", mProvider.getUrl());
+    //     encoder.addProperty("webview:originalUrl", mProvider.getOriginalUrl());
+    // }
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {

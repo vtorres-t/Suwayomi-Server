@@ -17,6 +17,7 @@ xmlserialization = "1.0.2"
 ktlint = "1.8.0"
 koin = "4.2.2"
 moko = "0.26.4"
+jcef = "144.0.15-g72717cf-chromium-144.0.7559.172-api-1.21-262-b37"
 
 [libraries]
 # Kotlin
@@ -153,6 +154,9 @@ cron4j = "it.sauronsoftware.cron4j:cron4j:2.2.5"
 # cron-utils
 cronUtils = "com.cronutils:cron-utils:9.2.1"
 
+# Webview
+jcef = { module = "org.jetbrains.intellij.deps.jcef:jcef", version.ref = "jcef" }
+
 # User
 bcrypt = "at.favre.lib:bcrypt:0.10.2"
 jwt = "com.auth0:java-jwt:4.6.2"
@@ -207,6 +211,7 @@ shared = [
     "apk-parser",
     "axml",
     "jackson-annotations",
+    "jcef",
 ]
 
 sharedTest = [
@@ -223,6 +228,7 @@ okhttp = [
 ]
 javalin = [
     "javalin-core",
+    #"javalin-openapi",
     "javalin-rendering",
     "jte",
 ]
