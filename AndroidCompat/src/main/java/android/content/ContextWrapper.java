@@ -75,8 +75,33 @@ public class ContextWrapper extends Context {
     }
     @Override
     public Resources getResources() {
-        return mBase.getResources();
+        Resources res = mBase != null ? mBase.getResources() : null;
+        if (res == null) {
+            try {
+                java.lang.reflect.Constructor<AssetManager> constructor = AssetManager.class.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                AssetManager am = constructor.newInstance();
+
+                return new android.content.res.Resources(
+                        am,
+                        new android.util.DisplayMetrics(),
+                        new android.content.res.Configuration()
+                );
+            } catch (Exception e) {
+                try {
+                    return new android.content.res.Resources(
+                            null,
+                            new android.util.DisplayMetrics(),
+                            new android.content.res.Configuration()
+                    );
+                } catch (Exception ex) {
+                    return null;
+                }
+            }
+        }
+        return res;
     }
+
     @Override
     public PackageManager getPackageManager() {
         return mBase.getPackageManager();
