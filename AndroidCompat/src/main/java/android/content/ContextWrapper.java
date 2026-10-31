@@ -77,6 +77,11 @@ public class ContextWrapper extends Context {
     public Resources getResources() {
         Resources res = mBase != null ? mBase.getResources() : null;
         if (res == null) {
+            // Creamos una configuración de Android simulada explícita
+            android.content.res.Configuration config = new android.content.res.Configuration();
+            // Le asignamos el idioma y región por defecto de tu computadora para evitar el NullPointerException
+            config.locale = java.util.Locale.getDefault();
+
             try {
                 java.lang.reflect.Constructor<AssetManager> constructor = AssetManager.class.getDeclaredConstructor();
                 constructor.setAccessible(true);
@@ -85,22 +90,28 @@ public class ContextWrapper extends Context {
                 return new android.content.res.Resources(
                         am,
                         new android.util.DisplayMetrics(),
-                        new android.content.res.Configuration()
+                        config
                 );
             } catch (Exception e) {
                 try {
                     return new android.content.res.Resources(
                             null,
                             new android.util.DisplayMetrics(),
-                            new android.content.res.Configuration()
+                            config
                     );
                 } catch (Exception ex) {
                     return null;
                 }
             }
         }
+
+        // Si el contexto base nos devolvió un recurso real, nos aseguramos de parchar su configuración regional antes de entregarlo
+        if (res.getConfiguration() != null && res.getConfiguration().locale == null) {
+            res.getConfiguration().locale = java.util.Locale.getDefault();
+        }
         return res;
     }
+
 
     @Override
     public PackageManager getPackageManager() {
