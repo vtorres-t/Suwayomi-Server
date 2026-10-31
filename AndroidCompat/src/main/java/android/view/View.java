@@ -4182,7 +4182,21 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     }
 
     public Resources getResources() {
-        throw new RuntimeException("Stub!");
+        // En lugar de lanzar la RuntimeException("Stub!"),
+        // delegamos de forma segura al contexto asignado a esta vista.
+        if (mContext != null) {
+            return mContext.getResources();
+        }
+
+        // Si no hay contexto asignado, creamos un fallback para evitar el crash de la extensión
+        try {
+            java.lang.reflect.Constructor<Resources> constructor = Resources.class.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        } catch (Exception e) {
+            // Si todo lo demás falla, devolvemos null en vez de tumbar el servidor
+            return null;
+        }
     }
 
     @Override
