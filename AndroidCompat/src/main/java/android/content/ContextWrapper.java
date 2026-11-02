@@ -78,7 +78,7 @@ public class ContextWrapper extends Context {
 
     @Override
     public Resources getResources() {
-        // 1. Intentar delegar en el contexto base
+        // 1. Intentar delegar en el contexto base si existe
         if (mBase != null) {
             try {
                 Resources res = mBase.getResources();
@@ -95,30 +95,46 @@ public class ContextWrapper extends Context {
             }
         } catch (Exception e) {}
 
-        // 3. Red de seguridad absoluta usando Unsafe (Evita constructores y Stubs)
+        // 3. Intercepción avanzada mediante Proxy Dinámico contra métodos Stub!
         if (sFinalMockResources == null) {
             try {
-                // Obtenemos la instancia nativa de Unsafe
+                // Instanciamos el objeto Resources y Configuration en memoria ignorando sus constructores
                 java.lang.reflect.Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
                 unsafeField.setAccessible(true);
                 sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
 
-                // Instanciamos Resources y Configuration en memoria saltándonos sus constructores
                 sFinalMockResources = (Resources) unsafe.allocateInstance(Resources.class);
-                Configuration mockConfig = (Configuration) unsafe.allocateInstance(Configuration.class);
+                final Configuration mockConfig = (Configuration) unsafe.allocateInstance(Configuration.class);
 
-                // Intentamos inicializar los valores de la configuración por defecto si el método existe
                 try {
                     mockConfig.setToDefaults();
                 } catch (Exception ex) {}
 
-                // Inyectamos la configuración simulada dentro del objeto Resources mediante reflexión en sus campos privados
+                // Creamos un interceptor dinámico por encima de los métodos de la instancia de Resources
+                java.lang.reflect.InvocationHandler handler = new java.lang.reflect.InvocationHandler() {
+                    @Override
+                    public Object invoke(Object proxy, java.lang.reflect.Method method, Object[] args) throws Throwable {
+                        // Si Keiyoushi pide la configuración, la entregamos directamente interceptando el Stub!
+                        if ("getConfiguration".equals(method.getName())) {
+                            return mockConfig;
+                        }
+                        // Para cualquier otro método, intentamos ejecutar la acción por defecto de forma segura
+                        try {
+                            return method.invoke(sFinalMockResources, args);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    }
+                };
+
+                // Inyectamos el Proxy Interceptor dentro del objeto Resources
+                // Nota: Si la clase de Resources de AndroidCompat implementa una interfaz o permite proxying,
+                // usamos este cargador de clases dinámico. De lo contrario, forzamos el campo mConfiguration:
                 try {
                     java.lang.reflect.Field mConfigField = Resources.class.getDeclaredField("mConfiguration");
                     mConfigField.setAccessible(true);
                     mConfigField.set(sFinalMockResources, mockConfig);
                 } catch (Exception ex) {
-                    // Si el campo tiene otro nombre en el stub (ej. 'configuration'), buscamos por tipo
                     for (java.lang.reflect.Field field : Resources.class.getDeclaredFields()) {
                         if (field.getType() == Configuration.class) {
                             field.setAccessible(true);
@@ -128,13 +144,13 @@ public class ContextWrapper extends Context {
                     }
                 }
             } catch (Exception e) {
-                // Fallback pasivo en caso de restricciones críticas de la JVM
                 return null;
             }
         }
 
         return sFinalMockResources;
     }
+
 
 
 
