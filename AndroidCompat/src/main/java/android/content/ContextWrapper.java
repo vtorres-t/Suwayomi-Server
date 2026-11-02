@@ -73,88 +73,10 @@ public class ContextWrapper extends Context {
     public AssetManager getAssets() {
         return mBase.getAssets();
     }
-
-    private static Resources sFinalMockResources = null;
-
     @Override
     public Resources getResources() {
-        // 1. Intentar delegar en el contexto base si existe
-        if (mBase != null) {
-            try {
-                Resources res = mBase.getResources();
-                if (res != null) return res;
-            } catch (Exception e) {}
-        }
-
-        // 2. Intentar delegar en el contexto de aplicación
-        try {
-            Context appCtx = getApplicationContext();
-            if (appCtx != null && appCtx != this) {
-                Resources appRes = appCtx.getResources();
-                if (appRes != null) return appRes;
-            }
-        } catch (Exception e) {}
-
-        // 3. Intercepción avanzada mediante Proxy Dinámico contra métodos Stub!
-        if (sFinalMockResources == null) {
-            try {
-                // Instanciamos el objeto Resources y Configuration en memoria ignorando sus constructores
-                java.lang.reflect.Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-                unsafeField.setAccessible(true);
-                sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-
-                sFinalMockResources = (Resources) unsafe.allocateInstance(Resources.class);
-                final Configuration mockConfig = (Configuration) unsafe.allocateInstance(Configuration.class);
-
-                try {
-                    mockConfig.setToDefaults();
-                } catch (Exception ex) {}
-
-                // Creamos un interceptor dinámico por encima de los métodos de la instancia de Resources
-                java.lang.reflect.InvocationHandler handler = new java.lang.reflect.InvocationHandler() {
-                    @Override
-                    public Object invoke(Object proxy, java.lang.reflect.Method method, Object[] args) throws Throwable {
-                        // Si Keiyoushi pide la configuración, la entregamos directamente interceptando el Stub!
-                        if ("getConfiguration".equals(method.getName())) {
-                            return mockConfig;
-                        }
-                        // Para cualquier otro método, intentamos ejecutar la acción por defecto de forma segura
-                        try {
-                            return method.invoke(sFinalMockResources, args);
-                        } catch (Exception e) {
-                            return null;
-                        }
-                    }
-                };
-
-                // Inyectamos el Proxy Interceptor dentro del objeto Resources
-                // Nota: Si la clase de Resources de AndroidCompat implementa una interfaz o permite proxying,
-                // usamos este cargador de clases dinámico. De lo contrario, forzamos el campo mConfiguration:
-                try {
-                    java.lang.reflect.Field mConfigField = Resources.class.getDeclaredField("mConfiguration");
-                    mConfigField.setAccessible(true);
-                    mConfigField.set(sFinalMockResources, mockConfig);
-                } catch (Exception ex) {
-                    for (java.lang.reflect.Field field : Resources.class.getDeclaredFields()) {
-                        if (field.getType() == Configuration.class) {
-                            field.setAccessible(true);
-                            field.set(sFinalMockResources, mockConfig);
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        return sFinalMockResources;
+        return mBase.getResources();
     }
-
-
-
-
-
     @Override
     public PackageManager getPackageManager() {
         return mBase.getPackageManager();

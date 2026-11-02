@@ -16,9 +16,6 @@
 
 package android.webkit;
 
-import android.content.res.Resources;
-import android.content.res.Configuration;
-import android.util.DisplayMetrics;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -913,8 +910,6 @@ public class WebView extends AbsoluteLayout
 
     private WebViewProvider mProvider;
 
-    private static Resources sMockResources = null;
-
     private class FindListenerDistributor implements FindListener {
         private FindListener mFindDialogFindListener;
         private FindListener mUserFindListener;
@@ -1381,34 +1376,6 @@ public class WebView extends AbsoluteLayout
         }
         return super.onResolvePointerIcon(event, pointerIndex);
     }
-
-    @Override
-    public Resources getResources() {
-        if (sMockResources == null) {
-            Configuration config = new Configuration();
-            config.setToDefaults();
-
-            DisplayMetrics metrics = new DisplayMetrics();
-            metrics.setToDefaults();
-
-            try {
-                // Forzamos el acceso al constructor oculto de AssetManager
-                java.lang.reflect.Constructor<android.content.res.AssetManager> constructor =
-                        android.content.res.AssetManager.class.getDeclaredConstructor();
-                constructor.setAccessible(true);
-                android.content.res.AssetManager am = constructor.newInstance();
-
-                sMockResources = new Resources(am, metrics, config);
-            } catch (Exception e) {
-                Log.e(LOGTAG, "Error creando AssetManager simulado por reflexion", e);
-                // Fallback de emergencia si la reflexion falla
-                return super.getResources();
-            }
-        }
-        return sMockResources;
-    }
-
-
 
     public static class DummyWebViewFactoryProvider implements WebViewFactoryProvider {
         public Statics getStatics() { throw new RuntimeException("Not supported"); }
