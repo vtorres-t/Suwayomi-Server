@@ -92,11 +92,11 @@ jobs:
           name: jar-standard
           path: release
 
-      - name: Download Musl Jar
-        uses: actions/download-artifact@v8
-        with:
-          name: jar-musl
-          path: release
+#      - name: Download Musl Jar
+#        uses: actions/download-artifact@v8
+#        with:
+#          name: jar-musl
+#          path: release
 
       - name: Generate checksums
         run: cd release && sha256sum * > Checksums.sha256
