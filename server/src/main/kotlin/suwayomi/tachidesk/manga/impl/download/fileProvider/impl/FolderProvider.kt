@@ -89,11 +89,13 @@ class FolderProvider(
             zipOutputStream.setMethod(ZipArchiveOutputStream.DEFLATED)
             zipOutputStream.setLevel(Deflater.DEFAULT_COMPRESSION)
 
-            chapterDir
+            val imageFiles = chapterDir
                 .listFiles()
                 ?.filter { it.isFile }
                 ?.sortedBy { it.name }
-                ?.forEach { imageFile ->
+
+            if (imageFiles != null) {
+                for (imageFile in imageFiles) {
                     FileInputStream(imageFile).use { fileInputStream ->
                         val zipEntry = ZipArchiveEntry(imageFile.name)
                         zipEntry.time = 0L
@@ -102,11 +104,13 @@ class FolderProvider(
                         zipOutputStream.closeArchiveEntry()
                     }
                 }
+            }
         }
 
         val zipData = byteArrayOutputStream.toByteArray()
         return ByteArrayInputStream(zipData) to zipData.size.toLong()
     }
+
 
     override suspend fun getArchiveSize(): Long {
         val chapterDir = File(getChapterDownloadPath(mangaId, chapterId))
