@@ -74,50 +74,50 @@ public class ContextWrapper extends Context {
         return mBase.getAssets();
     }
 
-    private static Resources sMockResources = null;
-
     @Override
     public Resources getResources() {
-        Resources res = null;
+        // 1. Intentamos obtener los recursos reales del contexto base si existen
         if (mBase != null) {
             try {
-                res = mBase.getResources();
+                Resources res = mBase.getResources();
+                if (res != null) {
+                    return res;
+                }
             } catch (Exception e) {
-                // Previene fallos colaterales si mBase lanza excepciones
+                // Silenciar fallos si mBase no está listo o es un stub vacio
             }
         }
 
-        if (res == null) {
-            if (sMockResources == null) {
-                Configuration config = new Configuration();
-                config.setToDefaults();
-
-                android.util.DisplayMetrics metrics = new android.util.DisplayMetrics();
-                metrics.setToDefaults();
-
-                try {
-                    // 1. Forzamos el acceso al constructor oculto de AssetManager
-                    java.lang.reflect.Constructor<AssetManager> amConstructor =
-                            AssetManager.class.getDeclaredConstructor();
-                    amConstructor.setAccessible(true);
-                    AssetManager am = amConstructor.newInstance();
-
-                    // 2. Forzamos el acceso al constructor de Resources para evitar dependencias abstractas
-                    java.lang.reflect.Constructor<Resources> resConstructor =
-                            Resources.class.getDeclaredConstructor(AssetManager.class, android.util.DisplayMetrics.class, Configuration.class);
-                    resConstructor.setAccessible(true);
-
-                    sMockResources = resConstructor.newInstance(am, metrics, config);
-                } catch (Exception e) {
-                    // Fallback definitivo en memoria si el entorno restringe drásticamente la reflexión
-                    return null;
+        // 2. Si mBase nos devuelve null, recurrimos al "ApplicationContext" global
+        // El contexto global de la aplicación Suwayomi ya está completamente inicializado y libre de stubs.
+        try {
+            Context appCtx = getApplicationContext();
+            if (appCtx != null && appCtx != this) {
+                Resources appRes = appCtx.getResources();
+                if (appRes != null) {
+                    return appRes;
                 }
             }
-            return sMockResources;
+        } catch (Exception e) {
+            // Silenciar fallos de recursión
         }
 
-        return res;
+        // 3. Fallback definitivo por reflexión para saltarse los bloqueos "Stub!" del entorno aislado
+        try {
+            java.lang.reflect.Method getStaticRes = Class.forName("xyz.nulldev.androidcompat.AndroidCompat")
+                    .getDeclaredMethod("getGlobalResources");
+            getStaticRes.setAccessible(true);
+            Resources globalRes = (Resources) getStaticRes.invoke(null);
+            if (globalRes != null) {
+                return globalRes;
+            }
+        } catch (Exception e) {
+            // Fallback si la clase global de Suwayomi tiene otra firma
+        }
+
+        return null;
     }
+
 
 
     @Override
