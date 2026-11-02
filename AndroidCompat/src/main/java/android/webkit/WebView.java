@@ -1386,21 +1386,28 @@ public class WebView extends AbsoluteLayout
     public Resources getResources() {
         if (sMockResources == null) {
             Configuration config = new Configuration();
-            config.setToDefaults(); // Configura valores por defecto en lugar de null
+            config.setToDefaults();
 
             DisplayMetrics metrics = new DisplayMetrics();
             metrics.setToDefaults();
 
             try {
-                // Instancia un objeto Resources real usando un AssetManager simulado o vacío
-                sMockResources = new Resources(new android.content.res.AssetManager(), metrics, config);
+                // Forzamos el acceso al constructor oculto de AssetManager
+                java.lang.reflect.Constructor<android.content.res.AssetManager> constructor =
+                        android.content.res.AssetManager.class.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                android.content.res.AssetManager am = constructor.newInstance();
+
+                sMockResources = new Resources(am, metrics, config);
             } catch (Exception e) {
-                // Fallback en caso de que el constructor de AssetManager sea inaccesible en el entorno de ejecución
+                Log.e(LOGTAG, "Error creando AssetManager simulado por reflexion", e);
+                // Fallback de emergencia si la reflexion falla
                 return super.getResources();
             }
         }
         return sMockResources;
     }
+
 
 
     public static class DummyWebViewFactoryProvider implements WebViewFactoryProvider {
