@@ -181,6 +181,12 @@ tasks {
         destinationDirectory.set(File("$rootDir/server/build"))
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
         mergeServiceFiles("META-INF/services")
+
+        exclude("android/net/Network.class")
+        exclude("android/net/NetworkCapabilities.class")
+        exclude("android/net/NetworkRequest.class")
+        exclude("android/net/NetworkRequest\$Builder.class")
+
         dependencies {
             // The deprecated GraalVM js-community POM chain declares `<type>pom</type>`
             // dependencies, which puts literal .pom artifacts on the resolved classpath.
