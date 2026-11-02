@@ -16,6 +16,9 @@
 
 package android.webkit;
 
+import android.content.res.Resources;
+import android.content.res.Configuration;
+import android.util.DisplayMetrics;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -910,6 +913,8 @@ public class WebView extends AbsoluteLayout
 
     private WebViewProvider mProvider;
 
+    private static Resources sMockResources = null;
+
     private class FindListenerDistributor implements FindListener {
         private FindListener mFindDialogFindListener;
         private FindListener mUserFindListener;
@@ -1376,6 +1381,27 @@ public class WebView extends AbsoluteLayout
         }
         return super.onResolvePointerIcon(event, pointerIndex);
     }
+
+    @Override
+    public Resources getResources() {
+        if (sMockResources == null) {
+            Configuration config = new Configuration();
+            config.setToDefaults(); // Configura valores por defecto en lugar de null
+
+            DisplayMetrics metrics = new DisplayMetrics();
+            metrics.setToDefaults();
+
+            try {
+                // Instancia un objeto Resources real usando un AssetManager simulado o vacío
+                sMockResources = new Resources(new android.content.res.AssetManager(), metrics, config);
+            } catch (Exception e) {
+                // Fallback en caso de que el constructor de AssetManager sea inaccesible en el entorno de ejecución
+                return super.getResources();
+            }
+        }
+        return sMockResources;
+    }
+
 
     public static class DummyWebViewFactoryProvider implements WebViewFactoryProvider {
         public Statics getStatics() { throw new RuntimeException("Not supported"); }
