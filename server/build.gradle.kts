@@ -33,6 +33,11 @@ plugins {
 }
 
 dependencies {
+
+    // AndroidCompat
+    implementation(projects.androidCompat)
+    implementation(projects.androidCompat.config)
+
     // Shared
     implementation(libs.bundles.shared)
     testImplementation(libs.bundles.sharedTest)
@@ -83,10 +88,6 @@ dependencies {
 
     // AES/CBC/PKCS7Padding Cypher provider for zh.copymanga
     implementation(libs.bouncycastle)
-
-    // AndroidCompat
-    implementation(projects.androidCompat)
-    implementation(projects.androidCompat.config)
 
     // i18n
     implementation(projects.server.i18n)
