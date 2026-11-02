@@ -17,15 +17,20 @@
 package android.util;
 
 import android.annotation.NonNull;
+import android.annotation.Nullable;
 import android.annotation.TestApi;
+import android.os.Build;
 import android.os.SystemClock;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A class containing utility methods related to time zones.
@@ -168,7 +173,7 @@ public class TimeUtils {
         }
 
         int millis = (int)(duration%1000);
-        int seconds = (int) Math.floor((double) duration / 1000);
+        int seconds = (int) Math.floor(duration / 1000);
         int days = 0, hours = 0, minutes = 0;
 
         if (seconds >= SECONDS_PER_DAY) {
@@ -338,11 +343,15 @@ public class TimeUtils {
                                         @NonNull LocalTime start,
                                         @NonNull LocalTime end) {
         //    ////////E----+-----S////////
-        return (!reference.isBefore(start) || !reference.isAfter(end))
+        if ((reference.isBefore(start) && reference.isAfter(end)
                 //    -----+----S//////////E------
-                && (!reference.isBefore(end) || !reference.isBefore(start) || !start.isBefore(end))
+                || (reference.isBefore(end) && reference.isBefore(start) && start.isBefore(end))
                 //    ---------S//////////E---+---
-                && ((!reference.isAfter(end) || !reference.isAfter(start)) || !start.isBefore(end));
+                || (reference.isAfter(end) && reference.isAfter(start)) && start.isBefore(end))) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
