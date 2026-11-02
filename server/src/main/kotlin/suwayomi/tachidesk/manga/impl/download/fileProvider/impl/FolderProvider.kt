@@ -89,10 +89,11 @@ class FolderProvider(
             zipOutputStream.setMethod(ZipArchiveOutputStream.DEFLATED)
             zipOutputStream.setLevel(Deflater.DEFAULT_COMPRESSION)
 
-            val imageFiles = chapterDir
-                .listFiles()
-                ?.filter { it.isFile }
-                ?.sortedBy { it.name }
+            val imageFiles =
+                chapterDir
+                    .listFiles()
+                    ?.filter { it.isFile }
+                    ?.sortedBy { it.name }
 
             if (imageFiles != null) {
                 for (imageFile in imageFiles) {
@@ -110,7 +111,6 @@ class FolderProvider(
         val zipData = byteArrayOutputStream.toByteArray()
         return ByteArrayInputStream(zipData) to zipData.size.toLong()
     }
-
 
     override suspend fun getArchiveSize(): Long {
         val chapterDir = File(getChapterDownloadPath(mangaId, chapterId))
