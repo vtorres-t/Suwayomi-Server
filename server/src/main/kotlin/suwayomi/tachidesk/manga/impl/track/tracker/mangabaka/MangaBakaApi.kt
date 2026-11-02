@@ -52,7 +52,7 @@ class MangaBakaApi(
                     .newBuilder()
                     .header(
                         "User-Agent",
-                        "Suwayomi/Suwayomi-Server/${BuildConfig.VERSION} (${BuildConfig.GITHUB})",
+                        "vtorres-t/Suwayomi-Server/${BuildConfig.VERSION} (${BuildConfig.REPO_URL})",
                     ).build()
                     .let(it::proceed)
             }.build()
