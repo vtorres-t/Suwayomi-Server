@@ -78,7 +78,7 @@ public class ContextWrapper extends Context {
 
     @Override
     public Resources getResources() {
-        // 1. Intento prioritario: delegar en el contexto base
+        // 1. Intentar delegar en el contexto base
         if (mBase != null) {
             try {
                 Resources res = mBase.getResources();
@@ -86,7 +86,7 @@ public class ContextWrapper extends Context {
             } catch (Exception e) {}
         }
 
-        // 2. Segundo intento: delegar en el contexto de aplicación
+        // 2. Intentar delegar en el contexto de aplicación
         try {
             Context appCtx = getApplicationContext();
             if (appCtx != null && appCtx != this) {
@@ -95,54 +95,47 @@ public class ContextWrapper extends Context {
             }
         } catch (Exception e) {}
 
-        // 3. Red de seguridad absoluta contra NullPointerException y Stub!
-        // Creamos una subclase anónima dinámica de Resources saltándonos el constructor Stub nativo.
+        // 3. Red de seguridad absoluta usando Unsafe (Evita constructores y Stubs)
         if (sFinalMockResources == null) {
             try {
-                // Buscamos el constructor más básico de la clase Resources de forma segura
-                java.lang.reflect.Constructor<Resources> constructor =
-                        Resources.class.getDeclaredConstructor();
-                constructor.setAccessible(true);
+                // Obtenemos la instancia nativa de Unsafe
+                java.lang.reflect.Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+                unsafeField.setAccessible(true);
+                sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
 
-                // Creamos una subclase anónima sobre la marcha
-                sFinalMockResources = new Resources() {
-                    private Configuration mMockConfig = null;
+                // Instanciamos Resources y Configuration en memoria saltándonos sus constructores
+                sFinalMockResources = (Resources) unsafe.allocateInstance(Resources.class);
+                Configuration mockConfig = (Configuration) unsafe.allocateInstance(Configuration.class);
 
-                    @Override
-                    public Configuration getConfiguration() {
-                        if (mMockConfig == null) {
-                            try {
-                                // Evitamos "new Configuration()" usando instanciación insegura u oculta
-                                java.lang.reflect.Constructor<Configuration> configCons =
-                                        Configuration.class.getDeclaredConstructor();
-                                configCons.setAccessible(true);
-                                mMockConfig = configCons.newInstance();
-                                mMockConfig.setToDefaults();
-                            } catch (Exception ex) {
-                                // Si aun así diera Stub!, usamos un proxy de interfaz o devolvemos un objeto vacío
-                                mMockConfig = super.getConfiguration();
-                            }
-                        }
-                        return mMockConfig;
-                    }
-                };
-            } catch (Exception e) {
-                // Si falla la generación avanzada, usamos la asignación directa por reflexión pura
+                // Intentamos inicializar los valores de la configuración por defecto si el método existe
                 try {
-                    sun.misc.Unsafe unsafe = null;
-                    java.lang.reflect.Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
-                    unsafeField.setAccessible(true);
-                    unsafe = (sun.misc.Unsafe) unsafeField.get(null);
-                    sFinalMockResources = (Resources) unsafe.allocateInstance(Resources.class);
+                    mockConfig.setToDefaults();
+                } catch (Exception ex) {}
+
+                // Inyectamos la configuración simulada dentro del objeto Resources mediante reflexión en sus campos privados
+                try {
+                    java.lang.reflect.Field mConfigField = Resources.class.getDeclaredField("mConfiguration");
+                    mConfigField.setAccessible(true);
+                    mConfigField.set(sFinalMockResources, mockConfig);
                 } catch (Exception ex) {
-                    // Fallback pasivo desesperado
-                    return null;
+                    // Si el campo tiene otro nombre en el stub (ej. 'configuration'), buscamos por tipo
+                    for (java.lang.reflect.Field field : Resources.class.getDeclaredFields()) {
+                        if (field.getType() == Configuration.class) {
+                            field.setAccessible(true);
+                            field.set(sFinalMockResources, mockConfig);
+                            break;
+                        }
+                    }
                 }
+            } catch (Exception e) {
+                // Fallback pasivo en caso de restricciones críticas de la JVM
+                return null;
             }
         }
 
         return sFinalMockResources;
     }
+
 
 
 
