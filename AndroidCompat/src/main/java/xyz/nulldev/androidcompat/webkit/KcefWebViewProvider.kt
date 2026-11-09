@@ -633,10 +633,9 @@ class KcefWebViewProvider(
     ): Array<String> = throw RuntimeException("Stub!")
 
     override fun destroy() {
-        browser?.close(true)
         browser?.dispose()
         browser = null
-        kcefClient?.disposeWithJsHandler()
+        kcefClient?.dispose()
         kcefClient = null
     }
 
@@ -660,7 +659,6 @@ class KcefWebViewProvider(
         loadUrl: String,
         additionalHttpHeaders: Map<String, String>,
     ) {
-        browser?.close(true)
         browser?.dispose()
         chromeClient.onProgressChanged(view, 0)
         initialRequestData = InitialRequestData(additionalHttpHeaders = additionalHttpHeaders)
@@ -685,7 +683,6 @@ class KcefWebViewProvider(
         url: String,
         postData: ByteArray,
     ) {
-        browser?.close(true)
         browser?.dispose()
         chromeClient.onProgressChanged(view, 0)
         initialRequestData = InitialRequestData(myPostData = postData)
@@ -717,7 +714,6 @@ class KcefWebViewProvider(
         encoding: String?,
         historyUrl: String?,
     ) {
-        browser?.close(true)
         browser?.dispose()
         chromeClient.onProgressChanged(view, 0)
         val url = baseUrl ?: "about:blank"
@@ -740,13 +736,10 @@ class KcefWebViewProvider(
         script: String,
         resultCallback: ValueCallback<String>?,
     ) {
-        browser!!.evaluateJavaScript(
-            script.removePrefix("javascript:"),
-        )
-            {
-                Log.v(TAG, "JS returned: $it")
-                handler.post { resultCallback?.onReceiveValue(it) }
-            }
+        browser!!.evaluateJavaScript(script.removePrefix("javascript:")) {
+            Log.v(TAG, "JS returned: $it")
+            handler.post { resultCallback?.onReceiveValue(it) }
+        }
     }
 
     override fun saveWebArchive(filename: String): Unit = throw RuntimeException("Stub!")

@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - (**Database/Settings/API**) Add setting `databaseSchema` to be able to configure the database schema name
 - (**Database/Settings/API**) Add setting `hikariMaxPoolSize` to be able to configure the maximum number of connections to the database
 - (**Extension/Android**) Implement android.net.Network*
+- (**System**) Embed AppImage update information for delta updates
 - (**System**) Support ppc64 and s390x architectures
 - (**Tracker**) Add MangaBaka tracker
 
@@ -50,9 +51,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - (**TrayIcon**) Use DorkBox OS 1.11 to restore tray menus on localized Windows
 - (**WebUI/API**) Fix server info queries failing when WebUI serving is disabled and no local WebUI version is installed
 - (**WebView**) Fix the server not shutting down on a termination signal once the WebView started
+- (**WebView**) Fix WebView pages sometimes staying open and running after being closed
 - (**WebView**) Pass `evaluateJavascript` results to extensions serialized as JSON, like Android
+- (**WebView**) Report dead renderers through `onRenderProcessGone` instead of leaving extensions waiting
+- (**WebView**) Fix `evaluateJavascript` not returning the result of multi-line scripts
 
 ### Deprecated
+- (**Authentication**) `BASIC_AUTH` is now deprecated
 - (**Downloads/Updates/API**) Remove `maxUpdates` `download` and `update` subscription input as it is not needed anymore due to subscriptions now supporting data loader batching
 
 ## [v2.4.2366] + [WebUI: v20260929.01] - 2026-09-29
